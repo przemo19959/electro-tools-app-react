@@ -28,10 +28,12 @@ function App() {
           <Button color="inherit">Login</Button>
         </Toolbar>
       </StyledAppBar>
-      <StyledContainer>
+      <StyledRow>
         <Sidenav open={sidenavOpen}/>
-        <Home/>
-      </StyledContainer>
+        <StyledContainer>
+          <Home/>
+        </StyledContainer>
+      </StyledRow>
     </div>
   )
 }
@@ -46,8 +48,15 @@ const StyledAppBar = styled(AppBar)`
   }
 `;
 
+const StyledRow = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 const StyledContainer = styled.div`
   height: calc(100vh - 48px);
   overflow: auto;
   display: flex;
+  flex-direction: column;
+  flex: 1;
 `;
