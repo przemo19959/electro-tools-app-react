@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { NavLink } from "react-router";
 
 type SidenavProps = {
   open: boolean;
@@ -11,7 +12,8 @@ export const Sidenav = ({
 
   return (
     <StyledContainer>
-      <div style={{ marginBottom: 16 }}>Home</div>
+      <NavLink to="/">Home</NavLink>
+      <NavLink to="/projects">Projects</NavLink>
     </StyledContainer>
   );
 };

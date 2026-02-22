@@ -1,10 +1,10 @@
 import './App.css'
-import {AppBar, Button, IconButton, Toolbar} from "@mui/material";
+import { AppBar, Button, IconButton, Toolbar } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
-import {Home} from "./views/home/home";
 import styled from "@emotion/styled";
-import {Sidenav} from "./components/sidenav/Sidenav";
-import {useState} from "react";
+import { Sidenav } from "./components/sidenav/Sidenav";
+import { useState } from "react";
+import { Outlet } from 'react-router';
 
 function App() {
   const [sidenavOpen, setSidenavOpen] = useState(false);
@@ -18,20 +18,20 @@ function App() {
             edge="start"
             color="inherit"
             aria-label="menu"
-            sx={{mr: 2}}
+            sx={{ mr: 2 }}
             onClick={() => setSidenavOpen(!sidenavOpen)}
           >
-            <MenuIcon/>
+            <MenuIcon />
           </IconButton>
           <div>News</div>
-          <div style={{flex: 1}}/>
+          <div style={{ flex: 1 }} />
           <Button color="inherit">Login</Button>
         </Toolbar>
       </StyledAppBar>
       <StyledRow>
-        <Sidenav open={sidenavOpen}/>
+        <Sidenav open={sidenavOpen} />
         <StyledContainer>
-          <Home/>
+          <Outlet />
         </StyledContainer>
       </StyledRow>
     </div>
