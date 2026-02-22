@@ -5,6 +5,8 @@ import styled from "@emotion/styled";
 import { Sidenav } from "./components/sidenav/Sidenav";
 import { useState } from "react";
 import { Outlet } from 'react-router';
+import { OverlaySpinner } from './components/overlay-spinner/overlay-spinner';
+import { AlertStack } from './components/alert-stack/alert-stack';
 
 function App() {
   const [sidenavOpen, setSidenavOpen] = useState(false);
@@ -32,8 +34,10 @@ function App() {
         <Sidenav open={sidenavOpen} />
         <StyledContainer>
           <Outlet />
+          <AlertStack/>
         </StyledContainer>
       </StyledRow>
+      <OverlaySpinner/>
     </div>
   )
 }
@@ -59,4 +63,5 @@ const StyledContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
+  position: relative;
 `;

@@ -5,16 +5,20 @@ import App from './App.tsx'
 import { BrowserRouter, Route, Routes } from 'react-router'
 import { Home } from './views/home/home.tsx'
 import { Projects } from './views/projects/projects.tsx'
+import { Provider } from 'react-redux'
+import { store } from './store/store.ts'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/projects" element={<Projects />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>,
-  </StrictMode>,
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/projects" element={<Projects />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </Provider>
+  </StrictMode>
 )
