@@ -1,5 +1,123 @@
+import { Avatar, Card, CardContent, CardHeader, IconButton } from "@mui/material";
+import { red } from "@mui/material/colors";
+import AddIcon from '@mui/icons-material/Add';
+import styled from "@emotion/styled";
+import { useState } from "react";
+import { Search } from "../../components/search/search";
+import DeleteIcon from '@mui/icons-material/Delete';
+import type { DataTableColumn, DataTableSort } from "../../components/data-table/types";
+import { DataTable } from "../../components/data-table/data-table";
+
+type Project = {
+    id: number;
+    name: string;
+    owner: string;
+    elementCount: number;
+}
+
+const projects: Project[] = [
+    { id: 1, name: 'Data Grid', owner: 'the Community version', elementCount: 100 },
+    { id: 2, name: 'Data Grid Pro', owner: 'the Pro version', elementCount: 200 },
+    { id: 3, name: 'Data Grid Premium', owner: 'the Premium version', elementCount: 300 },
+    { id: 4, name: 'Analytics Dashboard', owner: 'Ops Team', elementCount: 87 },
+    { id: 5, name: 'Client Portal', owner: 'Frontend Guild', elementCount: 143 },
+    { id: 6, name: 'Asset Tracker', owner: 'Platform Team', elementCount: 59 },
+    { id: 7, name: 'Workflow Engine', owner: 'Automation Squad', elementCount: 212 },
+    { id: 8, name: 'Invoice Manager', owner: 'Finance Tools', elementCount: 96 },
+    { id: 9, name: 'Fleet Monitor', owner: 'IoT Division', elementCount: 174 },
+    { id: 10, name: 'Knowledge Base', owner: 'Support Team', elementCount: 121 },
+    { id: 11, name: 'Release Planner', owner: 'DevOps Group', elementCount: 68 },
+    { id: 12, name: 'Security Console', owner: 'Security Team', elementCount: 251 },
+];
+
+const columns: DataTableColumn<Project>[] = [
+    { key: 'name', label: 'Project Name' },
+    { key: 'owner', label: 'Project Owner' },
+    { key: 'elementCount', label: 'Element Count' },
+    {
+        key: 'actions' as keyof Project,
+        label: 'Actions',
+        render: (v) => (
+            <StyledRow>
+                <IconButton aria-label="delete" size="small" onClick={e => {
+                    e.stopPropagation();
+                    console.log(`Delete project with id ${v.id}`);
+                }}>
+                    <DeleteIcon />
+                </IconButton>
+            </StyledRow >
+        ),
+    },
+];
+
 export const Projects = () => {
+    const [query, setQuery] = useState<string>('');
+    const [sort, setSort] = useState<DataTableSort<Project> | undefined>(undefined);
+    const [selection, setSelection] = useState<string[]>([]);
+    const [page, setPage] = useState(0);
+    const [pageSize, setPageSize] = useState(5);
+
     return (
-        <div> Projects</div>
+        <StyledCard>
+            <StyledCardHeader
+                avatar={
+                    <Avatar sx={{ bgcolor: red[500] }} aria-label="project">
+                        P
+                    </Avatar>
+                }
+                action={
+                    <IconButton aria-label="add project">
+                        <AddIcon />
+                    </IconButton>
+                }
+                title="Projects"
+                subheader="Manage your projects here"
+            />
+            <CardContent>
+                <StyledColumn>
+                    <StyledRow>
+                        <Search value={query} onChange={(v) => {
+                            setQuery(v);
+                            console.log(v);
+                        }} />
+                    </StyledRow>
+                    <DataTable
+                        title="Projects"
+                        columns={columns}
+                        items={projects}
+                        getItemId={v => `${v.id}`}
+                        page={page}
+                        onPageChange={setPage}
+                        pageSize={pageSize}
+                        onPageSizeChange={setPageSize}
+                        selection={selection}
+                        sort={sort}
+                        onSortChange={setSort}
+                        onSelectAll={(v) => { }}
+                        onClick={(v) => { }}
+                    />
+                </StyledColumn>
+            </CardContent>
+        </StyledCard>
     )
 };
+
+const StyledCard = styled(Card)`
+  margin: 16px;
+`;
+
+const StyledCardHeader = styled(CardHeader)`
+    text-align: left;
+`;
+
+const StyledColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+`;
+
+const StyledRow = styled.div`
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+`;
