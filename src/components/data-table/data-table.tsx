@@ -12,6 +12,7 @@ import Checkbox from '@mui/material/Checkbox';
 import { type DataTableColumn, type DataTableSort } from './types';
 import { DataTableToolbar } from './data-table-toolbar';
 import { DataTableHead, type DataTableHeadProps } from './data-table-head';
+import styled from '@emotion/styled';
 
 type DataTableProps<T> = {
     columns: DataTableColumn<T>[];
@@ -94,10 +95,11 @@ export const DataTable = <T,>({
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * pageSize - items.length) : 0;
 
     return (
-        <div>
+        <StyledColumn>
             <DataTableToolbar title={title ?? ''} numSelected={selection.length} />
-            <TableContainer>
+            <TableContainer style={{ flex: 1 }}>
                 <Table
+                    stickyHeader
                     sx={{ minWidth: 750 }}
                     aria-labelledby="tableTitle"
                     size='small'
@@ -136,7 +138,7 @@ export const DataTable = <T,>({
                                         const content = col.render ? col.render(item) : String(item[col.key]);
 
                                         return (
-                                            <TableCell align="right">{content}</TableCell>
+                                            <TableCell key={String(col.key)} align="right">{content}</TableCell>
                                         );
                                     })}
                                 </TableRow>
@@ -155,6 +157,7 @@ export const DataTable = <T,>({
                 </Table>
             </TableContainer>
             <TablePagination
+                style={{ minHeight: '60px' }}
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
                 count={items.length}
@@ -163,6 +166,14 @@ export const DataTable = <T,>({
                 rowsPerPage={pageSize}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-        </div>
+        </StyledColumn>
     );
 }
+
+const StyledColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex: 1;
+    min-height: 0
+`;

@@ -1,12 +1,12 @@
 import './App.css'
 import { AppBar, Button, IconButton, Toolbar } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
-import styled from "@emotion/styled";
 import { Sidenav } from "./components/sidenav/Sidenav";
 import { useState } from "react";
 import { Outlet } from 'react-router';
 import { OverlaySpinner } from './components/overlay-spinner/overlay-spinner';
 import { AlertStack } from './components/alert-stack/alert-stack';
+import styled from "@emotion/styled";
 
 function App() {
   const [sidenavOpen, setSidenavOpen] = useState(false);
@@ -27,17 +27,17 @@ function App() {
           </IconButton>
           <div>News</div>
           <div style={{ flex: 1 }} />
-          <Button color="inherit">Login</Button>
+          <Button color="primary">Login</Button>
         </Toolbar>
       </StyledAppBar>
       <StyledRow>
         <Sidenav open={sidenavOpen} />
         <StyledContainer>
           <Outlet />
-          <AlertStack/>
+          <AlertStack />
         </StyledContainer>
       </StyledRow>
-      <OverlaySpinner/>
+      <OverlaySpinner />
     </div>
   )
 }
@@ -57,11 +57,12 @@ const StyledRow = styled.div`
   align-items: center;
 `;
 
-const StyledContainer = styled.div`
-  height: calc(100vh - 48px);
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  position: relative;
-`;
+const StyledContainer = styled.div(({ theme }) => ({
+  height: "calc(100vh - 48px)",
+  overflow: "auto",
+  display: "flex",
+  flexDirection: "column",
+  flex: 1,
+  position: "relative",
+  backgroundColor: theme.palette.background.default,
+}));

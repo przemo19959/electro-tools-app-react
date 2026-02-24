@@ -1,5 +1,4 @@
 import { Avatar, Card, CardContent, CardHeader, IconButton } from "@mui/material";
-import { red } from "@mui/material/colors";
 import AddIcon from '@mui/icons-material/Add';
 import styled from "@emotion/styled";
 import { useState } from "react";
@@ -61,9 +60,9 @@ export const Projects = () => {
         <StyledCard>
             <StyledCardHeader
                 avatar={
-                    <Avatar sx={{ bgcolor: red[500] }} aria-label="project">
+                    <StyledAvatar aria-label="project">
                         P
-                    </Avatar>
+                    </StyledAvatar>
                 }
                 action={
                     <IconButton aria-label="add project">
@@ -73,47 +72,51 @@ export const Projects = () => {
                 title="Projects"
                 subheader="Manage your projects here"
             />
-            <CardContent>
-                <StyledColumn>
-                    <StyledRow>
-                        <Search value={query} onChange={(v) => {
-                            setQuery(v);
-                            console.log(v);
-                        }} />
-                    </StyledRow>
-                    <DataTable
-                        title="Projects"
-                        columns={columns}
-                        items={projects}
-                        getItemId={v => `${v.id}`}
-                        page={page}
-                        onPageChange={setPage}
-                        pageSize={pageSize}
-                        onPageSizeChange={setPageSize}
-                        selection={selection}
-                        sort={sort}
-                        onSortChange={setSort}
-                        onSelectAll={(v) => { }}
-                        onClick={(v) => { }}
-                    />
-                </StyledColumn>
-            </CardContent>
+            <StyledCardContent>
+                <StyledRow>
+                    <Search value={query} onChange={(v) => {
+                        setQuery(v);
+                        console.log(v);
+                    }} />
+                </StyledRow>
+                <DataTable
+                    title="Projects"
+                    columns={columns}
+                    items={projects}
+                    getItemId={v => `${v.id}`}
+                    page={page}
+                    onPageChange={setPage}
+                    pageSize={pageSize}
+                    onPageSizeChange={setPageSize}
+                    selection={selection}
+                    sort={sort}
+                    onSortChange={setSort}
+                    onSelectAll={(v) => { }}
+                    onClick={(v) => { }}
+                />
+            </StyledCardContent>
         </StyledCard>
     )
 };
 
 const StyledCard = styled(Card)`
   margin: 16px;
+
+  display: flex;
+  flex-direction:column;
+  flex: 1;
+  min-height:0;
 `;
+
+const StyledCardContent = styled(CardContent)`
+    display: flex;
+    flex-direction:column;
+    flex: 1;
+    min-height:0;
+`
 
 const StyledCardHeader = styled(CardHeader)`
     text-align: left;
-`;
-
-const StyledColumn = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
 `;
 
 const StyledRow = styled.div`
@@ -121,3 +124,8 @@ const StyledRow = styled.div`
     gap: 1rem;
     align-items: center;
 `;
+
+const StyledAvatar = styled(Avatar)(({ theme }) => ({
+    backgroundColor: theme.palette.secondary.main,
+    color: theme.palette.secondary.contrastText,
+}));
