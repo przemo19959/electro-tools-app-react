@@ -47,7 +47,7 @@ export const Search = ({
                     ),
                     endAdornment: (
                         <InputAdornment position="end">
-                            <IconButton onClick={handleClear}>
+                            <IconButton onClick={handleClear} size="small">
                                 <ClearIcon />
                             </IconButton>
                         </InputAdornment>

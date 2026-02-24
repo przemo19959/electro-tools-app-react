@@ -31,8 +31,8 @@ export const DataTableHead = <T,>({
             {columns.map((col) => (
                 <TableCell
                     key={String(col.key)}
-                    align={col.numeric ? 'right' : 'left'}
-                    padding={col.disablePadding ? 'none' : 'normal'}
+                    align="left"
+                    padding="normal"
                     sortDirection={sort?.key === col.key ? sort.order : false}
                 >
                     <TableSortLabel
@@ -51,4 +51,4 @@ export const DataTableHead = <T,>({
             ))}
         </TableRow>
     </TableHead>
-)
+);

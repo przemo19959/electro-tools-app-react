@@ -1,4 +1,4 @@
-import { Avatar, Card, CardContent, CardHeader, IconButton } from "@mui/material";
+import { Avatar, Button, Card, CardContent, CardHeader, IconButton, Tooltip } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import styled from "@emotion/styled";
 import { useState } from "react";
@@ -33,20 +33,25 @@ const projects: Project[] = [
 const columns: DataTableColumn<Project>[] = [
     { key: 'name', label: 'Project Name' },
     { key: 'owner', label: 'Project Owner' },
-    { key: 'elementCount', label: 'Element Count' },
+    { key: 'elementCount', label: 'Element Count', colStyle: { width: '200px' } },
     {
         key: 'actions' as keyof Project,
         label: 'Actions',
         render: (v) => (
             <StyledRow>
-                <IconButton aria-label="delete" size="small" onClick={e => {
-                    e.stopPropagation();
-                    console.log(`Delete project with id ${v.id}`);
-                }}>
-                    <DeleteIcon />
-                </IconButton>
+                <Tooltip title="Delete">
+                    <IconButton aria-label="delete" size="small" onClick={e => {
+                        e.stopPropagation();
+                        console.log(`Delete project with id ${v.id}`);
+                    }}>
+                        <DeleteIcon />
+                    </IconButton>
+                </Tooltip>
             </StyledRow >
         ),
+        colStyle: {
+            width: '40px',
+        }
     },
 ];
 
@@ -83,9 +88,9 @@ export const Projects = () => {
                     </StyledAvatar>
                 }
                 action={
-                    <IconButton aria-label="add project">
-                        <AddIcon />
-                    </IconButton>
+                    <Button variant="contained" endIcon={<AddIcon />}>
+                        Create Project
+                    </Button>
                 }
                 title="Projects"
                 subheader="Manage your projects here"
@@ -138,6 +143,10 @@ const StyledCardContent = styled(CardContent)`
 
 const StyledCardHeader = styled(CardHeader)`
     text-align: left;
+
+    .MuiCardHeader-action{
+        margin: 0;
+    }
 `;
 
 const StyledRow = styled.div`

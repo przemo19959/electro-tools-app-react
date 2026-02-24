@@ -57,7 +57,6 @@ const StyledRow = styled.div<{ numSelected: number }>`
     flex: 1;
 
     ${({ theme }) => css`
-        padding-right: ${theme.spacing(1)};
         padding-left: ${theme.spacing(1)};
     `}
 

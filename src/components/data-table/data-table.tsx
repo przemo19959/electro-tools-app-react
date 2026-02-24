@@ -45,10 +45,15 @@ export const DataTable = <T,>({
 }: DataTableProps<T>) => {
     const handleSortChange = (property: keyof T) => {
         const isAsc = sort?.key === property && sort?.order === 'asc';
-        onSortChange({
-            key: property,
-            order: isAsc ? 'desc' : 'asc',
-        });
+
+        if (!isAsc && sort) {
+            onSortChange(undefined);
+        } else {
+            onSortChange({
+                key: property,
+                order: isAsc ? 'desc' : 'asc',
+            });
+        }
     };
 
     const handleChangePage = (_event: unknown, newPage: number) => {
@@ -72,6 +77,10 @@ export const DataTable = <T,>({
                     aria-labelledby="tableTitle"
                     size='small'
                 >
+                    <colgroup>
+                        <col />
+                        {columns.map(v => (<col key={String(v.key)} style={v.colStyle} />))}
+                    </colgroup>
                     <DataTableHead
                         columns={columns}
                         selectionCount={selection.length}
@@ -96,7 +105,7 @@ export const DataTable = <T,>({
                                     selected={isItemSelected}
                                     sx={{ cursor: 'pointer' }}
                                 >
-                                    <TableCell padding="checkbox">
+                                    <TableCell padding="checkbox" align="center">
                                         <Checkbox
                                             color="primary"
                                             checked={isItemSelected}
@@ -106,7 +115,7 @@ export const DataTable = <T,>({
                                         const content = col.render ? col.render(item) : String(item[col.key]);
 
                                         return (
-                                            <TableCell key={String(col.key)} align="right">{content}</TableCell>
+                                            <TableCell key={String(col.key)} align={col.align ?? 'left'}>{content}</TableCell>
                                         );
                                     })}
                                 </TableRow>
@@ -134,7 +143,7 @@ export const DataTable = <T,>({
                 rowsPerPage={pageSize}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-        </StyledColumn>
+        </StyledColumn >
     );
 }
 
