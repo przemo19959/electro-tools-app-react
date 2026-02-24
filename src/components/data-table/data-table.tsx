@@ -10,7 +10,6 @@ import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 
 import { type DataTableColumn, type DataTableSort } from './types';
-import { DataTableToolbar } from './data-table-toolbar';
 import { DataTableHead, type DataTableHeadProps } from './data-table-head';
 import styled from '@emotion/styled';
 
@@ -27,7 +26,6 @@ type DataTableProps<T> = {
     onPageSizeChange: (v: number) => void;
     getItemId: (v: T) => string;
     selectedBy?: (v: T) => string;
-    title?: string;
 } & Pick<DataTableHeadProps<T>, 'onSelectAll'>;
 
 export const DataTable = <T,>({
@@ -44,7 +42,6 @@ export const DataTable = <T,>({
     onPageSizeChange,
     selectedBy,
     getItemId,
-    title,
 }: DataTableProps<T>) => {
     const handleSortChange = (property: keyof T) => {
         const isAsc = sort?.key === property && sort?.order === 'asc';
@@ -53,34 +50,6 @@ export const DataTable = <T,>({
             order: isAsc ? 'desc' : 'asc',
         });
     };
-
-    // const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     if (event.target.checked) {
-    //         const newSelected = items.map((n) => n.id);
-    //         setSelected(newSelected);
-    //         return;
-    //     }
-    //     setSelected([]);
-    // };
-
-    // const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
-    //     const selectedIndex = selected.indexOf(id);
-    //     let newSelected: readonly number[] = [];
-
-    //     if (selectedIndex === -1) {
-    //         newSelected = newSelected.concat(selected, id);
-    //     } else if (selectedIndex === 0) {
-    //         newSelected = newSelected.concat(selected.slice(1));
-    //     } else if (selectedIndex === selected.length - 1) {
-    //         newSelected = newSelected.concat(selected.slice(0, -1));
-    //     } else if (selectedIndex > 0) {
-    //         newSelected = newSelected.concat(
-    //             selected.slice(0, selectedIndex),
-    //             selected.slice(selectedIndex + 1),
-    //         );
-    //     }
-    //     setSelected(newSelected);
-    // };
 
     const handleChangePage = (_event: unknown, newPage: number) => {
         onPageChange(newPage);
@@ -96,8 +65,7 @@ export const DataTable = <T,>({
 
     return (
         <StyledColumn>
-            <DataTableToolbar title={title ?? ''} numSelected={selection.length} />
-            <TableContainer style={{ flex: 1 }}>
+            <TableContainer>
                 <Table
                     stickyHeader
                     sx={{ minWidth: 750 }}

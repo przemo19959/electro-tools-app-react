@@ -1,63 +1,71 @@
-import { IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
+import { IconButton, Tooltip, Typography } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { alpha } from '@mui/material/styles';
+import { alpha, css } from '@mui/material/styles';
+import styled from '@emotion/styled';
+import type { ReactNode } from "react";
 
 type DataTableToolbarProps = {
-    title: string;
+    beforeSlot?: ReactNode;
     numSelected: number;
 }
 
 
 export const DataTableToolbar = ({
-    title,
     numSelected,
+    beforeSlot,
 }: DataTableToolbarProps) => {
     return (
-        <Toolbar
-            sx={[
-                {
-                    pl: { sm: 2 },
-                    pr: { xs: 1, sm: 1 },
-                },
-                numSelected > 0 && {
-                    bgcolor: (theme) =>
-                        alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-                },
-            ]}
-        >
-            {numSelected > 0 ? (
-                <Typography
-                    sx={{ flex: '1 1 100%' }}
-                    color="inherit"
-                    variant="subtitle1"
-                    component="div"
-                >
-                    {numSelected} selected
-                </Typography>
-            ) : (
-                <Typography
-                    sx={{ flex: '1 1 100%' }}
-                    variant="h6"
-                    id="tableTitle"
-                    component="div"
-                >
-                    {title}
-                </Typography>
-            )}
-            {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton>
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
-            ) : (
-                <Tooltip title="Filter list">
-                    <IconButton>
-                        <FilterListIcon />
-                    </IconButton>
-                </Tooltip>
-            )}
-        </Toolbar>
+        <StyledContainer>
+            {beforeSlot}
+            <StyledRow numSelected={numSelected}>
+                {numSelected > 0 && (
+                    <StyledTitleTypography color="inherit" variant="subtitle1">
+                        {numSelected} selected
+                    </StyledTitleTypography>
+                )}
+                <div style={{ flex: 1 }} />
+                {numSelected > 0 ? (
+                    <Tooltip title="Delete">
+                        <IconButton>
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
+                ) : (
+                    <Tooltip title="Filter list">
+                        <IconButton>
+                            <FilterListIcon />
+                        </IconButton>
+                    </Tooltip>
+                )}
+            </StyledRow>
+        </StyledContainer>
     );
 }
+
+const StyledContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+`;
+
+const StyledRow = styled.div<{ numSelected: number }>`
+    display: flex;
+    align-items: center;
+    border-radius: 1rem;
+    gap: 1rem;
+    flex: 1;
+
+    ${({ theme }) => css`
+        padding-right: ${theme.spacing(1)};
+        padding-left: ${theme.spacing(1)};
+    `}
+
+    ${({ numSelected, theme }) => numSelected > 0 && css`
+        background-color: ${alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity)}
+    `}
+`;
+
+const StyledTitleTypography = styled(Typography)({
+    flex: '1 1 100%',
+});

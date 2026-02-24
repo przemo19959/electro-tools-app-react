@@ -6,6 +6,7 @@ import { Search } from "../../components/search/search";
 import DeleteIcon from '@mui/icons-material/Delete';
 import type { DataTableColumn, DataTableSort } from "../../components/data-table/types";
 import { DataTable } from "../../components/data-table/data-table";
+import { DataTableToolbar } from "../../components/data-table/data-table-toolbar";
 
 type Project = {
     id: number;
@@ -49,6 +50,23 @@ const columns: DataTableColumn<Project>[] = [
     },
 ];
 
+const onToggle = (project: Project, selection: string[]): string[] => {
+    const key = `${project.id}`;
+    if (selection.includes(key)) {
+        return selection.filter(v => v !== key);
+    } else {
+        return [...selection, key];
+    }
+}
+
+const onAllToggle = (selectAll: boolean, projects: Project[]): string[] => {
+    if (selectAll) {
+        return projects.map(v => v.id + '');
+    } else {
+        return [];
+    }
+}
+
 export const Projects = () => {
     const [query, setQuery] = useState<string>('');
     const [sort, setSort] = useState<DataTableSort<Project> | undefined>(undefined);
@@ -73,14 +91,16 @@ export const Projects = () => {
                 subheader="Manage your projects here"
             />
             <StyledCardContent>
-                <StyledRow>
-                    <Search value={query} onChange={(v) => {
-                        setQuery(v);
-                        console.log(v);
-                    }} />
-                </StyledRow>
+                <DataTableToolbar
+                    beforeSlot={(
+                        <Search value={query} onChange={(v) => {
+                            setQuery(v);
+                            console.log(v);
+                        }} />
+                    )}
+                    numSelected={selection.length}
+                />
                 <DataTable
-                    title="Projects"
                     columns={columns}
                     items={projects}
                     getItemId={v => `${v.id}`}
@@ -91,8 +111,8 @@ export const Projects = () => {
                     selection={selection}
                     sort={sort}
                     onSortChange={setSort}
-                    onSelectAll={(v) => { }}
-                    onClick={(v) => { }}
+                    onSelectAll={(v) => setSelection(onAllToggle(v, projects))}
+                    onClick={(v) => setSelection(onToggle(v, selection))}
                 />
             </StyledCardContent>
         </StyledCard>
@@ -113,6 +133,7 @@ const StyledCardContent = styled(CardContent)`
     flex-direction:column;
     flex: 1;
     min-height:0;
+    gap: .5rem;
 `
 
 const StyledCardHeader = styled(CardHeader)`
