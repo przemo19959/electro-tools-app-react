@@ -25,7 +25,7 @@ export const Search = ({
         if (timeoutId.current) {
             clearTimeout(timeoutId.current);
         }
-        setLocalValue(value);   
+        setLocalValue(value);
         timeoutId.current = setTimeout(() => {
             onChange(value);
         }, 300);
@@ -47,9 +47,11 @@ export const Search = ({
                     ),
                     endAdornment: (
                         <InputAdornment position="end">
-                            <IconButton onClick={handleClear} size="small">
-                                <ClearIcon />
-                            </IconButton>
+                            {localValue && (
+                                <IconButton onClick={handleClear} size="small">
+                                    <ClearIcon />
+                                </IconButton>
+                            )}
                         </InputAdornment>
                     ),
                 },

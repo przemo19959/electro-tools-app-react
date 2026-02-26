@@ -27,7 +27,7 @@ export const DataTableToolbar = ({
                 <div style={{ flex: 1 }} />
                 {numSelected > 0 ? (
                     <Tooltip title="Delete">
-                        <IconButton>
+                        <IconButton color="error">
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>

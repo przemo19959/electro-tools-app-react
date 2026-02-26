@@ -1,14 +1,15 @@
-import { Avatar, Button, Card, CardContent, CardHeader, IconButton, Tooltip } from "@mui/material";
+import { Avatar, Button, Card, CardContent, CardHeader } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import styled from "@emotion/styled";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Search } from "../../components/search/search";
-import DeleteIcon from '@mui/icons-material/Delete';
 import type { DataTableColumn, DataTableSort } from "../../components/data-table/types";
 import { DataTable } from "../../components/data-table/data-table";
 import { DataTableToolbar } from "../../components/data-table/data-table-toolbar";
+import { EditProjectModal } from "./edit-project-modal";
+import { ProjectActions } from "./project-actions";
 
-type Project = {
+export type Project = {
     id: number;
     name: string;
     owner: string;
@@ -30,31 +31,6 @@ const projects: Project[] = [
     { id: 12, name: 'Security Console', owner: 'Security Team', elementCount: 251 },
 ];
 
-const columns: DataTableColumn<Project>[] = [
-    { key: 'name', label: 'Project Name' },
-    { key: 'owner', label: 'Project Owner' },
-    { key: 'elementCount', label: 'Element Count', colStyle: { width: '200px' } },
-    {
-        key: 'actions' as keyof Project,
-        label: 'Actions',
-        render: (v) => (
-            <StyledRow>
-                <Tooltip title="Delete">
-                    <IconButton aria-label="delete" size="small" onClick={e => {
-                        e.stopPropagation();
-                        console.log(`Delete project with id ${v.id}`);
-                    }}>
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
-            </StyledRow >
-        ),
-        colStyle: {
-            width: '40px',
-        }
-    },
-];
-
 const onToggle = (project: Project, selection: string[]): string[] => {
     const key = `${project.id}`;
     if (selection.includes(key)) {
@@ -72,12 +48,39 @@ const onAllToggle = (selectAll: boolean, projects: Project[]): string[] => {
     }
 }
 
+type EditProjectModalMode = 'CREATE' | 'EDIT' | 'NONE';
+
 export const Projects = () => {
     const [query, setQuery] = useState<string>('');
     const [sort, setSort] = useState<DataTableSort<Project> | undefined>(undefined);
     const [selection, setSelection] = useState<string[]>([]);
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(5);
+
+    const [editProjectModalMode, setEditProjectModalMode] = useState<EditProjectModalMode>('NONE');
+    const [editedProject, setEditedProject] = useState<Project | undefined>(undefined);
+
+    const columns: DataTableColumn<Project>[] = useMemo(() => [
+        { key: 'name', label: 'Project Name' },
+        { key: 'owner', label: 'Project Owner' },
+        { key: 'elementCount', label: 'Element Count', colStyle: { width: '200px' } },
+        {
+            key: 'actions' as keyof Project,
+            label: 'Actions',
+            render: (v) => (
+                <ProjectActions
+                    onDelete={() => console.log(`Delete project with id ${v.id}`)}
+                    onEdit={() => {
+                        setEditProjectModalMode('EDIT');
+                        setEditedProject(v);
+                    }}
+                />
+            ),
+            colStyle: {
+                width: '40px',
+            }
+        },
+    ], []);
 
     return (
         <StyledCard>
@@ -88,7 +91,14 @@ export const Projects = () => {
                     </StyledAvatar>
                 }
                 action={
-                    <Button variant="contained" endIcon={<AddIcon />}>
+                    <Button
+                        variant="contained"
+                        endIcon={<AddIcon />}
+                        onClick={() => {
+                            setEditedProject(undefined);
+                            setEditProjectModalMode('CREATE');
+                        }}
+                    >
                         Create Project
                     </Button>
                 }
@@ -120,6 +130,17 @@ export const Projects = () => {
                     onClick={(v) => setSelection(onToggle(v, selection))}
                 />
             </StyledCardContent>
+            {editProjectModalMode !== 'NONE' && (
+                <EditProjectModal
+                    edit={editProjectModalMode === 'EDIT'}
+                    project={editedProject}
+                    onSuccess={() => {
+                        setEditProjectModalMode('NONE');
+                        console.log('reload page');
+                    }}
+                    onCancel={() => setEditProjectModalMode('NONE')}
+                />
+            )}
         </StyledCard>
     )
 };
@@ -147,12 +168,6 @@ const StyledCardHeader = styled(CardHeader)`
     .MuiCardHeader-action{
         margin: 0;
     }
-`;
-
-const StyledRow = styled.div`
-    display: flex;
-    gap: 1rem;
-    align-items: center;
 `;
 
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
