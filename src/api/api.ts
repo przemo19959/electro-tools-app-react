@@ -269,22 +269,22 @@ export interface PageReadProjectDto {
   number?: number;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
   sort?: SortObject;
-  pageable?: PageableObject;
   empty?: boolean;
 }
 
 export interface PageableObject {
   /** @format int64 */
   offset?: number;
-  paged?: boolean;
-  sort?: SortObject;
   /** @format int32 */
   pageSize?: number;
   /** @format int32 */
   pageNumber?: number;
+  sort?: SortObject;
+  paged?: boolean;
   unpaged?: boolean;
 }
 
@@ -700,20 +700,6 @@ export class Api<
      * No description
      *
      * @tags project-controller
-     * @name DeleteById2
-     * @request DELETE:/api/v1/projects/{projectId}
-     */
-    deleteById2: (projectId: string, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/api/v1/projects/${projectId}`,
-        method: "DELETE",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags project-controller
      * @name FindAll
      * @request GET:/api/v1/projects
      */
@@ -735,6 +721,22 @@ export class Api<
       this.request<ReadProjectDto, any>({
         path: `/api/v1/projects`,
         method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags project-controller
+     * @name DeleteAllById
+     * @request DELETE:/api/v1/projects
+     */
+    deleteAllById: (data: string[], params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/v1/projects`,
+        method: "DELETE",
         body: data,
         type: ContentType.Json,
         ...params,
@@ -799,10 +801,10 @@ export class Api<
      * No description
      *
      * @tags overcurrent-protection-element-controller
-     * @name DeleteById3
+     * @name DeleteById2
      * @request DELETE:/api/v1/overcurrentProtectionElements/{overcurrentProtectionElementId}
      */
-    deleteById3: (
+    deleteById2: (
       overcurrentProtectionElementId: string,
       params: RequestParams = {},
     ) =>
@@ -856,10 +858,10 @@ export class Api<
      * No description
      *
      * @tags load-element-controller
-     * @name DeleteById4
+     * @name DeleteById3
      * @request DELETE:/api/v1/loadElements/{loadElementId}
      */
-    deleteById4: (loadElementId: string, params: RequestParams = {}) =>
+    deleteById3: (loadElementId: string, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/api/v1/loadElements/${loadElementId}`,
         method: "DELETE",

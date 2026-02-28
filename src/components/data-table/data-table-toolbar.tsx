@@ -8,12 +8,14 @@ import type { ReactNode } from "react";
 type DataTableToolbarProps = {
     beforeSlot?: ReactNode;
     numSelected: number;
+    onDeleteSelected?: () => void;
 }
 
 
 export const DataTableToolbar = ({
     numSelected,
     beforeSlot,
+    onDeleteSelected,
 }: DataTableToolbarProps) => {
     return (
         <StyledContainer>
@@ -27,7 +29,7 @@ export const DataTableToolbar = ({
                 <div style={{ flex: 1 }} />
                 {numSelected > 0 ? (
                     <Tooltip title="Delete">
-                        <IconButton color="error">
+                        <IconButton color="error" onClick={onDeleteSelected}>
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>

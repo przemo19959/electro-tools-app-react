@@ -48,7 +48,7 @@ export const Projects = () => {
 
     const {
         pageAll,
-        deleteById,
+        deleteAllById,
     } = useProjectApi();
 
     const reload = useCallback((
@@ -133,6 +133,10 @@ export const Projects = () => {
                         }} />
                     )}
                     numSelected={selection.length}
+                    onDeleteSelected={() => {
+                        setDeleteProjectIds(selection);
+                        setDeleteModalMessage(`Do you want to delete ${selection.length} project(s)?`);
+                    }}
                 />
                 <DataTable
                     columns={columns}
@@ -172,14 +176,13 @@ export const Projects = () => {
                 <ConfirmModal
                     message={deleteModalMessage}
                     onConfirm={() => {
-                        deleteById(deleteProjectIds[0])
+                        deleteAllById(deleteProjectIds)
                             .then(() => {
-                                const newPage = projects.length === 1 ? 0 : page;
-                                setPage(newPage);
-                                setSelection(prev => prev.filter(v2 => v2 !== deleteProjectIds[0]));
-                                reload(newPage, pageSize, sort, query);
+                                setPage(0);
+                                setSelection(prev => prev.filter(v2 => !deleteProjectIds.includes(v2)));
+                                reload(0, pageSize, sort, query);
                                 setDeleteModalMessage(undefined);
-                            });
+                            })
                     }}
                     onClose={() => setDeleteModalMessage(undefined)}
                 />

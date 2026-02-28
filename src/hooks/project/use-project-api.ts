@@ -47,10 +47,10 @@ export const useProjectApi = () => {
             .finally(() => dispatch(decrement()));
     }
     
-    const deleteById = (projectId: string) => {
+    const deleteAllById = (projectIds: string[]) => {
         dispatch(increment());
-        return ApiInstance.projectController.deleteById2(projectId, { signal: abortControllerRef.current?.signal })
-            .then(() => success('Project removed successfully'))
+        return ApiInstance.projectController.deleteAllById(projectIds, { signal: abortControllerRef.current?.signal })
+            .then(() => success('Projects removed successfully'))
             .finally(() => dispatch(decrement()));
     }
 
@@ -66,6 +66,6 @@ export const useProjectApi = () => {
         pageAll,
         create,
         update,
-        deleteById,
+        deleteAllById,
     }
 }
