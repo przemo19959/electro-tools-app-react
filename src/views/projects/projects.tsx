@@ -11,6 +11,7 @@ import { ProjectActions } from "./project-actions";
 import { useProjectApi } from "../../hooks/project/use-project-api";
 import { type ReadProjectDto } from "../../api/api";
 import dayjs from "dayjs";
+import { ConfirmModal } from "../../components/modals/confirm-modal";
 
 const onToggle = (project: ReadProjectDto, selection: string[]): string[] => {
     const key = `${project.id}`;
@@ -42,6 +43,8 @@ export const Projects = () => {
 
     const [editProjectModalMode, setEditProjectModalMode] = useState<EditProjectModalMode>('NONE');
     const [editedProject, setEditedProject] = useState<ReadProjectDto | undefined>(undefined);
+    const [deleteModalMessage, setDeleteModalMessage] = useState<string | undefined>(undefined);
+    const [deleteProjectIds, setDeleteProjectIds] = useState<string[]>([]);
 
     const {
         pageAll,
@@ -76,13 +79,8 @@ export const Projects = () => {
                 <ProjectActions
                     onDelete={() => {
                         if (v.id) {
-                            deleteById(v.id)
-                                .then(() => {
-                                    const newPage = projects.length === 1 ? 0 : page;
-                                    setPage(newPage);
-                                    setSelection(prev => prev.filter(v2 => v2 !== v.id));
-                                    reload(newPage, pageSize, sort, query);
-                                });
+                            setDeleteProjectIds([v.id]);
+                            setDeleteModalMessage(`Do you want to delete project ${v.name}?`);
                         }
                     }}
                     onEdit={() => {
@@ -95,7 +93,7 @@ export const Projects = () => {
                 width: '40px',
             }
         },
-    ], [deleteById, pageSize, query, reload, sort, projects.length, page]);
+    ], []);
 
 
     useEffect(() => {
@@ -168,6 +166,22 @@ export const Projects = () => {
                         reload(page, pageSize, sort, query);
                     }}
                     onCancel={() => setEditProjectModalMode('NONE')}
+                />
+            )}
+            {deleteModalMessage !== undefined && (
+                <ConfirmModal
+                    message={deleteModalMessage}
+                    onConfirm={() => {
+                        deleteById(deleteProjectIds[0])
+                            .then(() => {
+                                const newPage = projects.length === 1 ? 0 : page;
+                                setPage(newPage);
+                                setSelection(prev => prev.filter(v2 => v2 !== deleteProjectIds[0]));
+                                reload(newPage, pageSize, sort, query);
+                                setDeleteModalMessage(undefined);
+                            });
+                    }}
+                    onClose={() => setDeleteModalMessage(undefined)}
                 />
             )}
         </StyledCard>

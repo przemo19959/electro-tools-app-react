@@ -66,9 +66,6 @@ export const DataTable = <T,>({
         onPageSizeChange(parseInt(event.target.value, 10));
     };
 
-    // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * pageSize - items.length) : 0;
-
     return (
         <StyledColumn>
             <TableContainer>
@@ -122,13 +119,11 @@ export const DataTable = <T,>({
                                 </TableRow>
                             );
                         })}
-                        {emptyRows > 0 && (
-                            <TableRow
-                                style={{
-                                    height: 33 * emptyRows,
-                                }}
-                            >
-                                <TableCell colSpan={columns.length + 1} />
+                        {items.length === 0 && (
+                            <TableRow>
+                                <TableCell colSpan={columns.length + 1} align='center'>
+                                    No Data
+                                </TableCell>
                             </TableRow>
                         )}
                     </TableBody>

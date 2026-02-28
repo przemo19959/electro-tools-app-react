@@ -1,11 +1,9 @@
-import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import Slide from '@mui/material/Slide';
-import { type TransitionProps } from '@mui/material/transitions';
+
 import * as zod from "zod"
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -14,15 +12,7 @@ import styled from '@emotion/styled';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useProjectApi } from '../../hooks/project/use-project-api';
 import type { ReadProjectDto } from '../../api/api';
-
-const Transition = React.forwardRef(function Transition(
-    props: TransitionProps & {
-        children: React.ReactElement<any, any>;
-    },
-    ref: React.Ref<unknown>,
-) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
+import { ModalTransition } from '../../components/modals/modal-transition';
 
 const PROJECT_SCHEMA = zod.object({
     name: zod.string().min(1, "Field is required"),
@@ -74,7 +64,7 @@ export const EditProjectModal = ({
         <Dialog
             open
             slots={{
-                transition: Transition,
+                transition: ModalTransition,
             }}
             keepMounted
             onClose={onCancel}
