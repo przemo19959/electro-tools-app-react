@@ -20,7 +20,7 @@ export const AlertStack = () => {
 
 const StyledCol = styled.div`
     position: absolute;
-    top: 1rem;
+    top: 2rem;
     left: 50%;
 
     display: flex;
@@ -30,4 +30,5 @@ const StyledCol = styled.div`
 
 const StyledAlert = styled(Alert)`
     transform: translateX(-50%);
+    z-index:9999;
 `;

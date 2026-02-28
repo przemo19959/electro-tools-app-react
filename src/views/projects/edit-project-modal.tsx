@@ -10,9 +10,10 @@ import * as zod from "zod"
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { IconButton, InputAdornment, TextField } from '@mui/material';
-import type { Project } from './projects';
 import styled from '@emotion/styled';
 import ClearIcon from '@mui/icons-material/Clear';
+import { useProjectApi } from '../../hooks/project/use-project-api';
+import type { ReadProjectDto } from '../../api/api';
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -33,7 +34,7 @@ type ProjectForm = {
 
 type EditProjectModalProps = {
     edit: boolean;
-    project: Project | undefined;
+    project: ReadProjectDto | undefined;
     onSuccess: () => void;
     onCancel: () => void;
 }
@@ -44,6 +45,8 @@ export const EditProjectModal = ({
     onSuccess,
     onCancel,
 }: EditProjectModalProps) => {
+    const { create, update } = useProjectApi();
+
     const {
         handleSubmit,
         control,
@@ -59,9 +62,11 @@ export const EditProjectModal = ({
 
     const onApply = (data: ProjectForm) => {
         if (isValid) {
-            console.log(data);
-            //call update/create API
-            onSuccess();
+            (
+                edit && project?.id
+                    ? update(project.id, { name: data.name })
+                    : create({ name: data.name })
+            ).then(onSuccess)
         }
     };
 

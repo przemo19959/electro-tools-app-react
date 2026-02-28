@@ -9,6 +9,9 @@ import { Provider } from 'react-redux'
 import { store } from './store/store.ts'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { theme } from './theme.ts'
+import { Api } from './api/api.ts'
+
+export const ApiInstance = new Api({ baseUrl: '', baseApiParams: { format: 'json' } })
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

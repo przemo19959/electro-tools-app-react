@@ -1,37 +1,18 @@
 import { Avatar, Button, Card, CardContent, CardHeader } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import styled from "@emotion/styled";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Search } from "../../components/search/search";
 import type { DataTableColumn, DataTableSort } from "../../components/data-table/types";
 import { DataTable } from "../../components/data-table/data-table";
 import { DataTableToolbar } from "../../components/data-table/data-table-toolbar";
 import { EditProjectModal } from "./edit-project-modal";
 import { ProjectActions } from "./project-actions";
+import { useProjectApi } from "../../hooks/project/use-project-api";
+import { type ReadProjectDto } from "../../api/api";
+import dayjs from "dayjs";
 
-export type Project = {
-    id: number;
-    name: string;
-    owner: string;
-    elementCount: number;
-}
-
-const projects: Project[] = [
-    { id: 1, name: 'Data Grid', owner: 'the Community version', elementCount: 100 },
-    { id: 2, name: 'Data Grid Pro', owner: 'the Pro version', elementCount: 200 },
-    { id: 3, name: 'Data Grid Premium', owner: 'the Premium version', elementCount: 300 },
-    { id: 4, name: 'Analytics Dashboard', owner: 'Ops Team', elementCount: 87 },
-    { id: 5, name: 'Client Portal', owner: 'Frontend Guild', elementCount: 143 },
-    { id: 6, name: 'Asset Tracker', owner: 'Platform Team', elementCount: 59 },
-    { id: 7, name: 'Workflow Engine', owner: 'Automation Squad', elementCount: 212 },
-    { id: 8, name: 'Invoice Manager', owner: 'Finance Tools', elementCount: 96 },
-    { id: 9, name: 'Fleet Monitor', owner: 'IoT Division', elementCount: 174 },
-    { id: 10, name: 'Knowledge Base', owner: 'Support Team', elementCount: 121 },
-    { id: 11, name: 'Release Planner', owner: 'DevOps Group', elementCount: 68 },
-    { id: 12, name: 'Security Console', owner: 'Security Team', elementCount: 251 },
-];
-
-const onToggle = (project: Project, selection: string[]): string[] => {
+const onToggle = (project: ReadProjectDto, selection: string[]): string[] => {
     const key = `${project.id}`;
     if (selection.includes(key)) {
         return selection.filter(v => v !== key);
@@ -40,7 +21,7 @@ const onToggle = (project: Project, selection: string[]): string[] => {
     }
 }
 
-const onAllToggle = (selectAll: boolean, projects: Project[]): string[] => {
+const onAllToggle = (selectAll: boolean, projects: ReadProjectDto[]): string[] => {
     if (selectAll) {
         return projects.map(v => v.id + '');
     } else {
@@ -52,24 +33,58 @@ type EditProjectModalMode = 'CREATE' | 'EDIT' | 'NONE';
 
 export const Projects = () => {
     const [query, setQuery] = useState<string>('');
-    const [sort, setSort] = useState<DataTableSort<Project> | undefined>(undefined);
+    const [sort, setSort] = useState<DataTableSort<ReadProjectDto> | undefined>(undefined);
     const [selection, setSelection] = useState<string[]>([]);
     const [page, setPage] = useState(0);
-    const [pageSize, setPageSize] = useState(5);
+    const [pageSize, setPageSize] = useState(10);
+    const [totalElements, setTotalElements] = useState<number>(0);
+    const [projects, setProjects] = useState<ReadProjectDto[]>([]);
 
     const [editProjectModalMode, setEditProjectModalMode] = useState<EditProjectModalMode>('NONE');
-    const [editedProject, setEditedProject] = useState<Project | undefined>(undefined);
+    const [editedProject, setEditedProject] = useState<ReadProjectDto | undefined>(undefined);
 
-    const columns: DataTableColumn<Project>[] = useMemo(() => [
-        { key: 'name', label: 'Project Name' },
-        { key: 'owner', label: 'Project Owner' },
-        { key: 'elementCount', label: 'Element Count', colStyle: { width: '200px' } },
+    const {
+        pageAll,
+        deleteById,
+    } = useProjectApi();
+
+    const reload = useCallback((
+        page: number,
+        pageSize: number,
+        sort?: DataTableSort<ReadProjectDto>,
+        query?: string,
+    ) => pageAll(
+        page,
+        pageSize,
+        sort,
+        query,
+    ).then(v => {
+        setTotalElements(v.totalElements ?? 0);
+        setProjects(v.content ?? []);
+    }), [pageAll]);
+
+    const columns: DataTableColumn<ReadProjectDto>[] = useMemo(() => [
+        { key: 'name', label: 'Project name' },
+        { key: 'elementCount', label: 'Element count', colStyle: { width: '200px' } },
+        { key: 'createdBy', label: 'owner' },
+        { key: 'modifiedBy', label: 'Modified by' },
+        { key: 'modifiedDate', label: 'Last modified at', render: v => dayjs(v.modifiedDate).format('YYYY-MM-DD HH:mm') },
         {
-            key: 'actions' as keyof Project,
+            key: 'actions' as keyof ReadProjectDto,
             label: 'Actions',
             render: (v) => (
                 <ProjectActions
-                    onDelete={() => console.log(`Delete project with id ${v.id}`)}
+                    onDelete={() => {
+                        if (v.id) {
+                            deleteById(v.id)
+                                .then(() => {
+                                    const newPage = projects.length === 1 ? 0 : page;
+                                    setPage(newPage);
+                                    setSelection(prev => prev.filter(v2 => v2 !== v.id));
+                                    reload(newPage, pageSize, sort, query);
+                                });
+                        }
+                    }}
                     onEdit={() => {
                         setEditProjectModalMode('EDIT');
                         setEditedProject(v);
@@ -80,7 +95,12 @@ export const Projects = () => {
                 width: '40px',
             }
         },
-    ], []);
+    ], [deleteById, pageSize, query, reload, sort, projects.length, page]);
+
+
+    useEffect(() => {
+        reload(page, pageSize, sort, query);
+    }, []); //this must be empty
 
     return (
         <StyledCard>
@@ -109,8 +129,9 @@ export const Projects = () => {
                 <DataTableToolbar
                     beforeSlot={(
                         <Search value={query} onChange={(v) => {
+                            setPage(0);
                             setQuery(v);
-                            console.log(v);
+                            reload(0, pageSize, sort, v);
                         }} />
                     )}
                     numSelected={selection.length}
@@ -120,14 +141,22 @@ export const Projects = () => {
                     items={projects}
                     getItemId={v => `${v.id}`}
                     page={page}
-                    onPageChange={setPage}
+                    onPageChange={(v) => {
+                        setPage(v);
+                        reload(v, pageSize, sort, query);
+                    }}
                     pageSize={pageSize}
-                    onPageSizeChange={setPageSize}
+                    onPageSizeChange={(v) => {
+                        setPage(0);
+                        setPageSize(v);
+                        reload(0, v, sort, query);
+                    }}
                     selection={selection}
                     sort={sort}
                     onSortChange={setSort}
                     onSelectAll={(v) => setSelection(onAllToggle(v, projects))}
                     onClick={(v) => setSelection(onToggle(v, selection))}
+                    totalElements={totalElements}
                 />
             </StyledCardContent>
             {editProjectModalMode !== 'NONE' && (
@@ -136,7 +165,7 @@ export const Projects = () => {
                     project={editedProject}
                     onSuccess={() => {
                         setEditProjectModalMode('NONE');
-                        console.log('reload page');
+                        reload(page, pageSize, sort, query);
                     }}
                     onCancel={() => setEditProjectModalMode('NONE')}
                 />

@@ -24,6 +24,7 @@ type DataTableProps<T> = {
     onPageChange: (v: number) => void;
     pageSize: number;
     onPageSizeChange: (v: number) => void;
+    totalElements: number;
     getItemId: (v: T) => string;
     selectedBy?: (v: T) => string;
 } & Pick<DataTableHeadProps<T>, 'onSelectAll'>;
@@ -40,6 +41,7 @@ export const DataTable = <T,>({
     onPageChange,
     pageSize,
     onPageSizeChange,
+    totalElements,
     selectedBy,
     getItemId,
 }: DataTableProps<T>) => {
@@ -62,7 +64,6 @@ export const DataTable = <T,>({
 
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
         onPageSizeChange(parseInt(event.target.value, 10));
-        onPageChange(0);
     };
 
     // Avoid a layout jump when reaching the last page with empty rows.
@@ -127,7 +128,7 @@ export const DataTable = <T,>({
                                     height: 33 * emptyRows,
                                 }}
                             >
-                                <TableCell colSpan={columns.length} />
+                                <TableCell colSpan={columns.length + 1} />
                             </TableRow>
                         )}
                     </TableBody>
@@ -137,7 +138,7 @@ export const DataTable = <T,>({
                 style={{ minHeight: '60px' }}
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={items.length}
+                count={totalElements}
                 page={page}
                 onPageChange={handleChangePage}
                 rowsPerPage={pageSize}
