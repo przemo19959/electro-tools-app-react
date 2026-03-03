@@ -26,7 +26,9 @@ export const DataTableHead = <T,>({
                     color="primary"
                     indeterminate={selectionCount > 0 && selectionCount < rowCount}
                     checked={rowCount > 0 && selectionCount === rowCount}
-                    onChange={(e) => onSelectAll(e.target.checked)} />
+                    onChange={(e) => onSelectAll(e.target.checked)}
+                    data-cy="header-checkbox" 
+                    />
             </TableCell>
             {columns.map((col) => (
                 <TableCell

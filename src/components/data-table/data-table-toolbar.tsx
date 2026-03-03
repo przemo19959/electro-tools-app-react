@@ -22,7 +22,7 @@ export const DataTableToolbar = ({
             {beforeSlot}
             <StyledRow numSelected={numSelected}>
                 {numSelected > 0 && (
-                    <StyledTitleTypography color="inherit" variant="subtitle1">
+                    <StyledTitleTypography color="inherit" variant="subtitle1" data-cy="selection-count-label">
                         {numSelected} selected
                     </StyledTitleTypography>
                 )}

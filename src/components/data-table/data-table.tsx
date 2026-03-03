@@ -107,13 +107,14 @@ export const DataTable = <T,>({
                                         <Checkbox
                                             color="primary"
                                             checked={isItemSelected}
+                                            data-cy="row-checkbox"
                                         />
                                     </TableCell>
                                     {columns.map((col) => {
                                         const content = col.render ? col.render(item) : String(item[col.key]);
 
                                         return (
-                                            <TableCell key={String(col.key)} align={col.align ?? 'left'}>{content}</TableCell>
+                                            <TableCell key={String(col.key)} align={col.align ?? 'left'} data-cy={`${String(col.key)}_data_cell`}>{content}</TableCell>
                                         );
                                     })}
                                 </TableRow>

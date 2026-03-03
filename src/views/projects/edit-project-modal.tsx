@@ -69,7 +69,7 @@ export const EditProjectModal = ({
             keepMounted
             onClose={onCancel}
         >
-            <DialogTitle>{`${edit ? 'Edit' : 'Create'} project`}</DialogTitle>
+            <DialogTitle data-cy="edit_project_modal_title">{`${edit ? 'Edit' : 'Create'} project`}</DialogTitle>
             <StyledDialogContent>
                 <form>
                     <StyledCol>
@@ -100,6 +100,7 @@ export const EditProjectModal = ({
                                                 ),
                                             },
                                         }}
+                                        data-cy="edit_project_modal_name_tf"
                                     />
                                 );
                             }}
@@ -108,8 +109,8 @@ export const EditProjectModal = ({
                 </form>
             </StyledDialogContent>
             <DialogActions>
-                <Button onClick={onCancel} variant='outlined' color='secondary'>Cancel</Button>
-                <Button onClick={handleSubmit(onApply)} color="primary">Agree</Button>
+                <Button onClick={onCancel} variant='outlined' color='secondary' data-cy="edit_project_modal_cancel_btn">Cancel</Button>
+                <Button onClick={handleSubmit(onApply)} color="primary" data-cy="edit_project_modal_apply_btn">Agree</Button>
             </DialogActions>
         </Dialog>
     );

@@ -12,6 +12,7 @@ import { useProjectApi } from "../../hooks/project/use-project-api";
 import { type ReadProjectDto } from "../../api/api";
 import dayjs from "dayjs";
 import { ConfirmModal } from "../../components/modals/confirm-modal";
+import { HANDLE_ABORT_EXCEPTION } from "../../utils/api-utils";
 
 const onToggle = (project: ReadProjectDto, selection: string[]): string[] => {
     const key = `${project.id}`;
@@ -64,12 +65,13 @@ export const Projects = () => {
     ).then(v => {
         setTotalElements(v.totalElements ?? 0);
         setProjects(v.content ?? []);
-    }), [pageAll]);
+    })
+        .catch(HANDLE_ABORT_EXCEPTION), [pageAll]);
 
     const columns: DataTableColumn<ReadProjectDto>[] = useMemo(() => [
         { key: 'name', label: 'Project name' },
         { key: 'elementCount', label: 'Element count', colStyle: { width: '200px' } },
-        { key: 'createdBy', label: 'owner' },
+        { key: 'createdBy', label: 'Owner' },
         { key: 'modifiedBy', label: 'Modified by' },
         { key: 'modifiedDate', label: 'Last modified at', render: v => dayjs(v.modifiedDate).format('YYYY-MM-DD HH:mm') },
         {
@@ -116,6 +118,7 @@ export const Projects = () => {
                             setEditedProject(undefined);
                             setEditProjectModalMode('CREATE');
                         }}
+                        data-cy="create_project_btn"
                     >
                         Create Project
                     </Button>

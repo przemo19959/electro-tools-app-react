@@ -56,6 +56,7 @@ export const Search = ({
                     ),
                 },
             }}
+            data-cy="search_tf"
         />
     )
 };

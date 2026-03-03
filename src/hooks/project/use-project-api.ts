@@ -5,6 +5,7 @@ import { ApiInstance } from "../../main";
 import { useAppDispatch } from "../../store/hooks";
 import { addAlert } from "../../components/alert-stack/alert-stack-slice";
 import type { DataTableSort } from "../../components/data-table/types";
+import { ABORT_MESSAGE } from "../../utils/api-utils";
 
 export const useProjectApi = () => {
     const dispatch = useAppDispatch();
@@ -46,7 +47,7 @@ export const useProjectApi = () => {
             .then(() => success('Project updated successfully'))
             .finally(() => dispatch(decrement()));
     }
-    
+
     const deleteAllById = (projectIds: string[]) => {
         dispatch(increment());
         return ApiInstance.projectController.deleteAllById(projectIds, { signal: abortControllerRef.current?.signal })
@@ -58,7 +59,7 @@ export const useProjectApi = () => {
         abortControllerRef.current = new AbortController();
 
         return () => {
-            abortControllerRef.current?.abort('expected');
+            abortControllerRef.current?.abort(ABORT_MESSAGE);
         }
     }, []);
 
