@@ -3,6 +3,7 @@ import Slide from "@mui/material/Slide";
 import React from 'react';
 import type { ReactElement } from 'react';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ModalTransition = React.forwardRef<HTMLDivElement, TransitionProps & { children: ReactElement<unknown, any> }>((
     props,
     ref,
