@@ -34,7 +34,7 @@ jobs:
         with:
           name: build
           if-no-files-found: error
-          path: build
+          path: dist
 
   cypress-e2e:
     runs-on: ubuntu-latest
@@ -48,7 +48,7 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           name: build
-          path: build
+          path: dist
 
       - name: Cypress run
         uses: cypress-io/github-action@v7
