@@ -15,6 +15,7 @@ export const Sidenav = ({
     <StyledContainer>
       <NavLink to="/">Home</NavLink>
       <NavLink to="/projects">Projects</NavLink>
+      <NavLink to="/planner">Planner</NavLink>
     </StyledContainer>
   );
 };

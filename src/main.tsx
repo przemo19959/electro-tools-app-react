@@ -10,6 +10,7 @@ import { store } from './store/store.ts'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { theme } from './theme.ts'
 import { Api } from './api/api.ts'
+import { Planner } from './views/planner/planner.tsx'
 
 export const ApiInstance = new Api({ baseUrl: '', baseApiParams: { format: 'json' } })
 
@@ -23,6 +24,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/" element={<App />}>
               <Route path="/" element={<Home />} />
               <Route path="/projects" element={<Projects />} />
+              <Route path="/planner" element={<Planner />} />
             </Route>
           </Routes>
         </BrowserRouter>

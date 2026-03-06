@@ -1,6 +1,5 @@
-import { Avatar, Button, Card, CardContent, CardHeader } from "@mui/material";
+import { Button } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
-import styled from "@emotion/styled";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Search } from "../../components/search/search";
 import type { DataTableColumn, DataTableSort } from "../../components/data-table/types";
@@ -13,6 +12,7 @@ import { type ReadProjectDto } from "../../api/api";
 import dayjs from "dayjs";
 import { ConfirmModal } from "../../components/modals/confirm-modal";
 import { HANDLE_ABORT_EXCEPTION } from "../../utils/api-utils";
+import { StyledAvatar, StyledCard, StyledCardContent, StyledCardHeader } from "../styles";
 
 const onToggle = (project: ReadProjectDto, selection: string[]): string[] => {
     const key = `${project.id}`;
@@ -193,33 +193,3 @@ export const Projects = () => {
         </StyledCard>
     )
 };
-
-const StyledCard = styled(Card)`
-  margin: 16px;
-
-  display: flex;
-  flex-direction:column;
-  flex: 1;
-  min-height:0;
-`;
-
-const StyledCardContent = styled(CardContent)`
-    display: flex;
-    flex-direction:column;
-    flex: 1;
-    min-height:0;
-    gap: .5rem;
-`
-
-const StyledCardHeader = styled(CardHeader)`
-    text-align: left;
-
-    .MuiCardHeader-action{
-        margin: 0;
-    }
-`;
-
-const StyledAvatar = styled(Avatar)(({ theme }) => ({
-    backgroundColor: theme.palette.secondary.main,
-    color: theme.palette.secondary.contrastText,
-}));
