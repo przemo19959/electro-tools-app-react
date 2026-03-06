@@ -31,6 +31,7 @@ export const ProjectActions = ({ onDelete, onEdit }: ProjectActionsProps) => (
                     e.stopPropagation();
                     onDelete();
                 }}
+                data-cy="delete_action"
             >
                 <DeleteIcon />
             </IconButton>

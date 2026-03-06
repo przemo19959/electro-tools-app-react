@@ -20,9 +20,12 @@ let projects = [
   { id: '100019-18', name: 'Project 1019', createdBy: 'user37', modifiedBy: 'user38', modifiedDate: '2025-01-19T08:00:00.000Z', elementCount: 228 },
   { id: '100020-19', name: 'Project 1020', createdBy: 'user39', modifiedBy: 'user40', modifiedDate: '2025-01-20T08:00:00.000Z', elementCount: 240 },
 ];
+const originalProjects = structuredClone(projects);
 
 describe('template spec', () => {
   beforeEach(() => {
+    projects = originalProjects;
+
     cy.intercept('GET', '**/projects/page*', (req) => {
       const page = Math.max(0, Number.parseInt(String(req.query.page ?? 0), 10) || 0);
       const size = Math.max(1, Number.parseInt(String(req.query.size ?? 10), 10) || 10);
@@ -76,13 +79,52 @@ describe('template spec', () => {
         body: createdProject,
       });
     }).as('createProject');
+
+    cy.intercept('PUT', '**/projects/*', (req) => {
+      const projectId = req.url.split('/').pop() ?? '';
+      const projectIndex = projects.findIndex((project) => project.id === projectId);
+
+      if (projectIndex === -1) {
+        req.reply({ statusCode: 404 });
+        return;
+      }
+
+      const updatedProject = {
+        ...projects[projectIndex],
+        ...req.body,
+      };
+
+      projects = [
+        ...projects.slice(0, projectIndex),
+        updatedProject,
+        ...projects.slice(projectIndex + 1),
+      ];
+
+      req.reply({
+        statusCode: 200,
+        body: updatedProject,
+      });
+    }).as('updateProject');
+
+    cy.intercept('DELETE', '**/projects', (req) => {
+      const idsToDelete = Array.isArray(req.body)
+        ? req.body.map((id: unknown) => String(id))
+        : [];
+
+      projects = projects.filter((project) => !idsToDelete.includes(project.id));
+
+      req.reply({
+        statusCode: 200,
+        body: null,
+      });
+    }).as('deleteProjects');
   });
 
   it('data is fetched and shown', () => {
     cy.visit('/projects')
     cy.wait('@getProjectsPage');
     cy.contains('No Data').should('not.exist');
-    
+
     //when search changes, page and totals are shown correctly
     cy.get('#root p:nth-child(4)').should('have.text', '1–10 of 20');
     cy.get('#root div[tabindex="0"]').should('have.text', '10');
@@ -99,7 +141,13 @@ describe('template spec', () => {
     cy.get('[data-testid="ClearIcon"]').click();
     cy.get('#root p:nth-child(4)').should('have.text', '1–10 of 20');
     cy.get('#root div[tabindex="0"]').should('have.text', '10');
-    
+  });
+
+  it('data table selection works fine', () => {
+    cy.visit('/projects')
+    cy.wait('@getProjectsPage');
+    cy.contains('No Data').should('not.exist');
+
     //when single items selected
     cy.get('tr:nth-of-type(1) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').check();
     cy.get('[data-cy="selection-count-label"]').should('have.text', '1 selected');
@@ -107,13 +155,13 @@ describe('template spec', () => {
     cy.get('#root tr[aria-checked="true"] input.PrivateSwitchBase-input').should('have.value', 'on');
     cy.get('#root input[data-indeterminate="true"]').should('have.value', 'on');
     cy.get('tr:nth-of-type(2) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').should('not.be.checked');
-    
+
     //when second item selected
     cy.get('tr:nth-of-type(3) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').check();
     cy.get('tr:nth-of-type(3) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').should('be.checked');
     cy.get('[data-cy="selection-count-label"]').should('have.text', '2 selected');
     cy.get('button[aria-label="Delete"] path').should('be.visible');
-    
+
     //when all selected through header checkbox
     cy.get('[data-cy="header-checkbox"] input.PrivateSwitchBase-input').check();
     cy.get('[data-cy="selection-count-label"]').should('have.text', '10 selected');
@@ -121,33 +169,39 @@ describe('template spec', () => {
     cy.get('tr:nth-of-type(9) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').should('be.checked');
     cy.get('tr:nth-of-type(8) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').should('be.checked');
     cy.get('tr:nth-of-type(7) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').should('be.checked');
-    
+
     //when single deselected now
     cy.get('tr:nth-of-type(2) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').uncheck();
     cy.get('[data-cy="selection-count-label"]').should('have.text', '9 selected');
     cy.get('#root tr[aria-checked="false"] input.PrivateSwitchBase-input').should('not.be.checked');
     cy.get('#root input[data-indeterminate="true"]').should('have.attr', 'data-indeterminate', 'true');
-    
+
     //when header checkbox clicked again, select all again
     cy.get('[data-cy="header-checkbox"] input.PrivateSwitchBase-input').check();
     cy.get('[data-cy="selection-count-label"]').should('have.text', '10 selected');
     cy.get('tr:nth-of-type(2) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').should('be.checked');
-    
+
     //when header checkbox clicked, deselect all
     cy.get('[data-cy="header-checkbox"] input.PrivateSwitchBase-input').uncheck();
     cy.get('[data-cy="header-checkbox"] input.PrivateSwitchBase-input').should('not.be.checked');
     cy.get('tr:nth-of-type(1) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').should('not.be.checked');
     cy.get('tr:nth-of-type(2) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').should('not.be.checked');
-    
+  });
+
+  it('create project flow works', () => {
+    cy.visit('/projects')
+    cy.wait('@getProjectsPage');
+    cy.contains('No Data').should('not.exist');
+
     //basic create project flow
     cy.get('[data-cy="create_project_btn"]').click();
     cy.get('[data-cy="edit_project_modal_title"]').should('be.visible');
     cy.get('[data-cy="edit_project_modal_title"]').should('have.text', 'Create project');
-    
+
     cy.get('[data-cy="edit_project_modal_apply_btn"]').click();
     cy.get('[data-cy="edit_project_modal_name_tf"] p:nth-child(3)').should('have.text', 'Field is required');
     cy.get('[data-cy="edit_project_modal_name_tf"] input').click();
-    
+
     cy.get('[data-cy="edit_project_modal_apply_btn"]').click();
     cy.get('[data-cy="edit_project_modal_name_tf"] p:nth-child(3)').should('have.text', 'Field is required');
     cy.get('[data-cy="edit_project_modal_name_tf"] input').click();
@@ -156,12 +210,12 @@ describe('template spec', () => {
     cy.get('[data-testid="ClearIcon"]').should('be.visible');
     cy.get('[data-testid="ClearIcon"] path').click();
     cy.get('[data-cy="edit_project_modal_name_tf"] input').should('have.text', '');
-    
+
     cy.get('[data-cy="edit_project_modal_apply_btn"]').click();
     cy.get('[data-cy="edit_project_modal_name_tf"] p:nth-child(3)').should('have.text', 'Field is required');
     cy.get('[data-cy="edit_project_modal_cancel_btn"]').click();
     cy.get('[data-cy="edit_project_modal_title"]').should('not.exist');
-    
+
     //create new project and assert
     cy.get('[data-cy="create_project_btn"]').click();
     cy.get('[data-cy="edit_project_modal_name_tf"] input').click();
@@ -175,6 +229,33 @@ describe('template spec', () => {
     cy.get('[data-cy="search_tf"] input').should('have.value', '');
   });
 
+  it('update project flow works', () => {
+    cy.visit('/projects')
+    cy.wait('@getProjectsPage');
+    cy.contains('No Data').should('not.exist');
+
+    //update project and assert
+    cy.get('tr:nth-child(1) [data-cy="name_data_cell"]').should('have.text', 'Project 1001');
+    cy.get('tr:nth-of-type(1) [data-testid="EditIcon"] path').click();
+    cy.get('[data-cy="edit_project_modal_title"]').should('have.text', 'Edit project');
+    cy.get('[data-cy="edit_project_modal_name_tf"] input').should('have.value', 'Project 1001');
+    cy.get('[data-testid="ClearIcon"]').should('be.visible');
+    cy.get('[data-cy="edit_project_modal_cancel_btn"]').click();
+    cy.get('#root p:nth-child(4)').should('have.text', '1–10 of 20');
+    cy.get('tr:nth-child(1) [data-cy="name_data_cell"]').should('have.text', 'Project 1001');
+    cy.get('tr:nth-child(1) [data-testid="EditIcon"]').click();
+    cy.get('[data-cy="edit_project_modal_apply_btn"]').click();
+    cy.get('tr:nth-child(1) [data-cy="name_data_cell"]').should('have.text', 'Project 1001');
+    cy.get('#root p:nth-child(4)').should('have.text', '1–10 of 20');
+    cy.get('tr:nth-of-type(1) [data-testid="EditIcon"] path').click();
+    cy.get('[data-cy="edit_project_modal_name_tf"] input').click();
+    cy.get('[data-cy="edit_project_modal_name_tf"] input').type('aaa');
+    cy.get('[data-cy="edit_project_modal_name_tf"] input').should('have.value', 'Project 1001aaa');
+    cy.get('[data-cy="edit_project_modal_apply_btn"]').click();
+    cy.get('tr:nth-child(1) [data-cy="name_data_cell"]').should('have.text', 'Project 1001aaa');
+    cy.get('#root p:nth-child(4)').should('have.text', '1–10 of 20');
+  })
+
   it('shows empty state when API returns no projects', () => {
     cy.intercept('GET', '**/projects/page*', {
       fixture: 'projects-empty-page.json',
@@ -184,5 +265,76 @@ describe('template spec', () => {
     cy.wait('@getEmptyProjectsPage');
     cy.contains('No Data').should('be.visible');
     cy.get('tbody tr').should('have.length', 1); //cause there is row with No Data
+  });
+
+  it('delete single project flow', function() {
+    cy.visit('/projects')
+    cy.wait('@getProjectsPage');
+    cy.contains('No Data').should('not.exist');
+    
+    cy.get('#root p:nth-child(4)').should('have.text', '1–10 of 20');
+    cy.get('tr:nth-of-type(1) [data-testid="DeleteIcon"] path').click();
+    cy.get('[data-cy="confirm_modal_text"]').should('have.text', 'Do you want to delete project Project 1001?');
+    cy.get('[data-cy="confirm_modal_cancel_btn"]').click();
+    cy.get('tr:nth-child(1) [data-cy="name_data_cell"]').should('have.text', 'Project 1001');
+    cy.get('tr:nth-of-type(1) [data-testid="DeleteIcon"] path').click();
+    cy.get('[data-cy="confirm_modal_apply_btn"]').click();
+    cy.get('tr:nth-child(1) [data-cy="name_data_cell"]').should('have.text', 'Project 1002');
+    cy.get('#root p:nth-child(4)').should('have.text', '1–10 of 19');
+    
+    //when deleting selected item, selection is adjusted correctly
+    cy.get('tr:nth-of-type(2) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').check();
+    cy.get('tr:nth-of-type(1) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').check();
+    cy.get('[data-cy="selection-count-label"]').should('have.text', '2 selected');
+    cy.get('tr:nth-child(1) [data-testid="DeleteIcon"] path').click();
+    cy.get('[data-cy="confirm_modal_apply_btn"]').click();
+    cy.get('[data-cy="selection-count-label"]').should('have.text', '1 selected');
+    cy.get('#root p:nth-child(4)').should('have.text', '1–10 of 18');
+
+    //when using search to find
+    cy.get('[data-cy="search_tf"] input').click();
+    cy.get('[data-cy="search_tf"] input').type('1001');
+    cy.get('#root td').should('have.text', 'No Data');
+    cy.get('[data-cy="search_tf"] input').click();
+    cy.get('[data-cy="search_tf"] input').clear();
+    cy.get('[data-cy="search_tf"] input').type('1002');
+    cy.get('#root td').should('have.text', 'No Data');
+    cy.get('[data-cy="search_tf"] input').click();
+    cy.get('[data-cy="search_tf"] input').clear();
+    cy.get('[data-cy="search_tf"] input').type('1003');
+    cy.get('[data-cy="name_data_cell"]').should('have.text', 'Project 1003');
+  });
+
+  it('delete multi project flow', ()=>{
+    cy.visit('/projects')
+    cy.wait('@getProjectsPage');
+    cy.contains('No Data').should('not.exist');
+
+    cy.get('tr:nth-of-type(1) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').check();
+    cy.get('tr:nth-of-type(2) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').check();
+    cy.get('tr:nth-of-type(3) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').check();
+    cy.get('[data-cy="selection-count-label"]').should('have.text', '3 selected');
+
+    cy.get('tr:nth-child(2) [data-testid="DeleteIcon"] path').click();
+    cy.get('[data-cy="confirm_modal_apply_btn"]').click();
+    cy.get('#root p:nth-child(4)').should('have.text', '1–10 of 19');
+    cy.get('[data-cy="selection-count-label"]').should('have.text', '2 selected');
+
+    cy.get('button[aria-label="Delete"] path').click();
+    cy.get('[data-cy="confirm_modal_text"]').should('have.text', 'Do you want to delete 2 project(s)?');
+    cy.get('[data-cy="confirm_modal_apply_btn"]').click();
+    cy.get('#root p:nth-child(4)').should('have.text', '1–10 of 17');
+
+    cy.get('[data-cy="search_tf"] input').click();
+    cy.get('[data-cy="search_tf"] input').type('1001');
+    cy.get('#root td').should('have.text', 'No Data');
+    cy.get('[data-cy="search_tf"] input').click();
+    cy.get('[data-cy="search_tf"] input').clear();
+    cy.get('[data-cy="search_tf"] input').type('1002');
+    cy.get('#root td').should('have.text', 'No Data');
+    cy.get('[data-cy="search_tf"] input').click();
+    cy.get('[data-cy="search_tf"] input').clear();
+    cy.get('[data-cy="search_tf"] input').type('1003');
+    cy.get('#root td').should('have.text', 'No Data');
   });
 })

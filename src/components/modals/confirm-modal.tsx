@@ -33,11 +33,11 @@ export const ConfirmModal = ({
                 Confirmation
             </StyledDialogTitle>
             <DialogContent>
-                <DialogContentText>{message}</DialogContentText>
+                <DialogContentText data-cy="confirm_modal_text">{message}</DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose} variant='outlined' color='secondary'>Cancel</Button>
-                <Button onClick={onConfirm} color='primary'>Confirm</Button>
+                <Button onClick={onClose} variant='outlined' color='secondary' data-cy="confirm_modal_cancel_btn">Cancel</Button>
+                <Button onClick={onConfirm} color='primary' data-cy="confirm_modal_apply_btn">Confirm</Button>
             </DialogActions>
         </Dialog>
     );
