@@ -3,7 +3,7 @@ import { useAppDispatch } from "../../store/hooks";
 import { addAlert } from "../../components/alert-stack/alert-stack-slice";
 import { ApiInstance } from "../../main";
 import { decrement, increment } from "../../components/overlay-spinner/overlay-spinner-slice";
-import type { CreateAbstractElementDto, UpdateAbstractElementDto } from "../../api/api";
+import type { CreateAbstractElementDto, UpdateAbstractElementDto, UpdateBasicElementPositionDto } from "../../api/api";
 import { ABORT_MESSAGE } from "../../utils/api-utils";
 
 
@@ -40,6 +40,13 @@ export const useElectricElementApi = () => {
             .then(() => success('Element updated successfully'))
             .finally(() => dispatch(decrement()));
     }
+    
+    const updatePositions = (data: UpdateBasicElementPositionDto[]) => {
+        dispatch(increment());
+        return ApiInstance.basicElementController.updatePositions(data, { signal: abortControllerRef.current?.signal })
+            .then(() => success('Element positions updated successfully'))
+            .finally(() => dispatch(decrement()));
+    }
 
     const deleteAllById = (elementIds: string[]) => {
         dispatch(increment());
@@ -60,6 +67,7 @@ export const useElectricElementApi = () => {
         getTrees,
         create,
         update,
+        updatePositions,
         deleteAllById,
     }
 }

@@ -23,8 +23,6 @@ export interface UpdateTerminalElementDto {
 }
 
 export interface UpdateWireDto {
-  /** @format uuid */
-  id?: string;
   diameter?:
     | "D_05"
     | "D_075"
@@ -168,6 +166,15 @@ export interface UpdateAbstractElementDto {
   wire?: UpdateWireDto;
 }
 
+export interface UpdateBasicElementPositionDto {
+  /** @format uuid */
+  elementId?: string;
+  /** @format double */
+  x?: number;
+  /** @format double */
+  y?: number;
+}
+
 export interface CreateTerminalElementDto {
   /** @format double */
   x?: number;
@@ -288,9 +295,9 @@ export interface PageReadProjectDto {
   content?: ReadProjectDto[];
   /** @format int32 */
   number?: number;
+  sort?: SortObject;
   /** @format int32 */
   numberOfElements?: number;
-  sort?: SortObject;
   pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
@@ -300,8 +307,8 @@ export interface PageReadProjectDto {
 export interface PageableObject {
   /** @format int64 */
   offset?: number;
-  sort?: SortObject;
   paged?: boolean;
+  sort?: SortObject;
   unpaged?: boolean;
   /** @format int32 */
   pageNumber?: number;
@@ -920,6 +927,25 @@ export class Api<
     ) =>
       this.request<ReadAbstractElementDto, any>({
         path: `/api/v1/elements/${basicElementId}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags basic-element-controller
+     * @name UpdatePositions
+     * @request PUT:/api/v1/elements/positions
+     */
+    updatePositions: (
+      data: UpdateBasicElementPositionDto[],
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/api/v1/elements/positions`,
         method: "PUT",
         body: data,
         type: ContentType.Json,

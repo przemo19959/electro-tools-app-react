@@ -11,6 +11,7 @@ import { useAppDispatch } from "../../store/hooks";
 import { addAlert } from "../../components/alert-stack/alert-stack-slice";
 import { useElectricElementApi } from "../../hooks/element/use-electric-element-api";
 import { HANDLE_ABORT_EXCEPTION } from "../../utils/api-utils";
+import type { UpdateBasicElementPositionDto } from "../../api/api";
 
 type EditElementModalMode = 'CREATE' | 'EDIT' | 'NONE';
 
@@ -23,22 +24,23 @@ export const Planner = () => {
     const dispatch = useAppDispatch();
     const params = useParams();
     const navigate = useNavigate();
-    const { getTrees } = useElectricElementApi();
+    const { getTrees, updatePositions } = useElectricElementApi();
 
     const reload = () => {
         if (params.projectId) {
             getTrees(params.projectId)
                 .then(v => {
-                    setNodes(v.map(v2 => ({
-                        id: v2.id ?? '',
-                        position: {
-                            x: v2.x ?? 0,
-                            y: v2.y ?? 0,
-                        },
-                        data: {
-                            label: v2.label,
-                        }
-                    })));
+                    setNodes(v.map(v2 => {
+                        const { id, x, y, ...rest } = v2;
+                        return ({
+                            id: id ?? '',
+                            position: {
+                                x: x ?? 0,
+                                y: y ?? 0,
+                            },
+                            data: rest,
+                        });
+                    }));
                 })
                 .catch(HANDLE_ABORT_EXCEPTION)
         }
@@ -62,8 +64,25 @@ export const Planner = () => {
     }, []);
 
     const onNodesChange = useCallback(
-        (changes: NodeChange<Node>[]) => setNodes((prev) => applyNodeChanges(changes, prev)),
-        [],
+        (changes: NodeChange<Node>[]) => {
+
+            setNodes((prev) => applyNodeChanges(changes, prev));
+
+            const positionDragEndChanges: UpdateBasicElementPositionDto[] = changes
+                .map(v => {
+                    if (v.type === 'position' && v.dragging === false) {
+                        return ({
+                            elementId: v.id,
+                            ...v.position,
+                        }) as UpdateBasicElementPositionDto
+                    }
+                    return {};
+                }).filter(v => Boolean(v.elementId));
+            if (positionDragEndChanges.length !== 0) {
+                updatePositions(positionDragEndChanges);
+            }
+        },
+        [updatePositions],
     );
     const onEdgesChange = useCallback(
         (changes: EdgeChange<Edge>[]) => setEdges((prev) => applyEdgeChanges(changes, prev)),

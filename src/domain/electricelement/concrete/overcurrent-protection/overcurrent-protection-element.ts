@@ -18,6 +18,8 @@ export type CreateEmptyOvercurrentElement = {
 export class OvercurrentProtectionElement extends ElectricElement {
     constructor(
         public id: string,
+        public x: number,
+        public y: number,
         public parentId: string | undefined,
 
         public wire: Wire,
@@ -30,7 +32,7 @@ export class OvercurrentProtectionElement extends ElectricElement {
         public overCurrentProtectionType: OvercurrentProtectionType,
         public amperage: number,
     ) {
-        super(id, parentId, 'OVER_CURRENT_PROTECTION', wire, label, messages, children, context);
+        super(id, x, y, parentId, 'OVER_CURRENT_PROTECTION', wire, label, messages, children, context);
     }
 
     static predefined({
@@ -41,6 +43,8 @@ export class OvercurrentProtectionElement extends ElectricElement {
         const predefinedValues = OVERCURRENT_PREDEFINED_MAP[predefinedValue];
         return new OvercurrentProtectionElement(
             '',
+            0,
+            0,
             parentId,
             Wire.empty(),
             `${TYPE_TO_DEFAULT_LABEL.OVER_CURRENT_PROTECTION}${existingCount ?? ''}`,
@@ -55,6 +59,8 @@ export class OvercurrentProtectionElement extends ElectricElement {
     static createFromDB(data: any) {
         return new OvercurrentProtectionElement(
             data.id,
+            data.x,
+            data.y,
             data.parentId,
             Wire.createFromDB(data),
             data.label,
@@ -69,6 +75,8 @@ export class OvercurrentProtectionElement extends ElectricElement {
     static createFromRaw(data: any) {
         return new OvercurrentProtectionElement(
             data.id,
+            data.x,
+            data.y,
             data.parentId,
             Wire.createFromRaw(data.wire),
             data.label,
@@ -83,6 +91,8 @@ export class OvercurrentProtectionElement extends ElectricElement {
     clone(): ElectricElement {
         return new OvercurrentProtectionElement(
             this.id,
+            this.x,
+            this.y,
             this.parentId,
             Wire.createFromRaw(this.wire),
             this.label,

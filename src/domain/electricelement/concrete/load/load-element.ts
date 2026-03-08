@@ -24,6 +24,8 @@ export const PREDEFINED_LOAD_MAP: Record<LoadElementSubType, number> = {
 export class LoadElement extends ElectricElement {
     constructor(
         public id: string,
+        public x: number,
+        public y: number,
         public parentId: string | undefined,
 
         public wire: Wire,
@@ -39,12 +41,14 @@ export class LoadElement extends ElectricElement {
         public config: LoadConfig,
         public zeroed: boolean,
     ) {
-        super(id, parentId, 'LOAD', wire, label, messages, children, context);
+        super(id, x, y, parentId, 'LOAD', wire, label, messages, children, context);
     }
 
     static empty(parentId?: string, existingCount?: number) {
         return new LoadElement(
             '',
+            0,
+            0,
             parentId,
             Wire.empty(),
             `${TYPE_TO_DEFAULT_LABEL.LOAD}${existingCount ?? ''}`,
@@ -73,6 +77,8 @@ export class LoadElement extends ElectricElement {
     static createFromDB(data: any) {
         return new LoadElement(
             data.id,
+            data.x,
+            data.y,
             data.parentId,
             Wire.createFromDB(data),
             data.label,
@@ -90,6 +96,8 @@ export class LoadElement extends ElectricElement {
     static createFromRaw(data: any) {
         return new LoadElement(
             data.id,
+            data.x,
+            data.y,
             data.parentId,
             Wire.createFromRaw(data.wire),
             data.label,
@@ -118,6 +126,8 @@ export class LoadElement extends ElectricElement {
     clone(): ElectricElement {
         return new LoadElement(
             this.id,
+            this.x,
+            this.y,
             this.parentId,
             Wire.createFromRaw(this.wire),
             this.label,

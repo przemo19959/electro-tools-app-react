@@ -12,6 +12,8 @@ import type { CreateAbstractElementDto, ReadAbstractElementDto, UpdateAbstractEl
 export class ElectricElement {
     constructor(
         public id: string,
+        public x: number,
+        public y: number,
         public parentId: string | undefined,
         public type: ElectricElementType,
 
@@ -27,6 +29,8 @@ export class ElectricElement {
     static empty(parentId?: string, existingCount?: number) {
         return new ElectricElement(
             '',
+            0,
+            0,
             parentId,
             'UNKNOWN',
             Wire.empty(),
@@ -40,6 +44,8 @@ export class ElectricElement {
     static createFromDB(data: ReadAbstractElementDto) {
         return new ElectricElement(
             data.id ?? '',
+            data.x ?? 0,
+            data.y ?? 0,
             data.parentId,
             'UNKNOWN',
             data.wire ? Wire.createFromDB(data.wire) : Wire.empty(),
@@ -53,6 +59,8 @@ export class ElectricElement {
     static createFromRaw(data: any) {
         return new ElectricElement(
             data.id,
+            data.x,
+            data.y,
             data.parentId,
             'UNKNOWN',
             Wire.createFromRaw(data.wire),
@@ -92,6 +100,8 @@ export class ElectricElement {
     clone(): ElectricElement {
         return new ElectricElement(
             this.id,
+            this.x,
+            this.y,
             this.parentId,
             this.type,
             Wire.createFromRaw(this.wire),

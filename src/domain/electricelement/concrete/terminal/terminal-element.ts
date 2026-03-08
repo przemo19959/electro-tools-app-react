@@ -7,6 +7,8 @@ import { TerminalType } from "./terminal-type";
 export class TerminalElement extends ElectricElement {
     constructor(
         public id: string,
+        public x: number,
+        public y: number,
         public parentId: string | undefined,
 
         public wire: Wire,
@@ -18,12 +20,14 @@ export class TerminalElement extends ElectricElement {
 
         public terminalType: TerminalType,
     ) {
-        super(id, parentId, 'TERMINAL', wire, label, messages, children, context);
+        super(id, x, y, parentId, 'TERMINAL', wire, label, messages, children, context);
     }
 
     static empty(_parentId?: string, existingCount?: number, wire = Wire.empty()) {
         return new TerminalElement(
             '',
+            0,
+            0,
             undefined,
             wire,
             `${TYPE_TO_DEFAULT_LABEL.TERMINAL}${existingCount ?? ''}`,
@@ -37,6 +41,8 @@ export class TerminalElement extends ElectricElement {
     static createFromDB(data: any) {
         return new TerminalElement(
             data.id,
+            data.x,
+            data.y,
             undefined,
             Wire.createFromDB(data),
             data.label,
@@ -50,6 +56,8 @@ export class TerminalElement extends ElectricElement {
     static createFromRaw(data: any) {
         return new TerminalElement(
             data.id,
+            data.x,
+            data.y,
             undefined,
             Wire.createFromRaw(data.wire),
             data.label,
@@ -63,6 +71,8 @@ export class TerminalElement extends ElectricElement {
     clone(): ElectricElement {
         return new TerminalElement(
             this.id,
+            this.x,
+            this.y,
             this.parentId,
             Wire.createFromRaw(this.wire),
             this.label,

@@ -9,6 +9,8 @@ import { RCD_NOMINAL_VALUES } from "./types";
 export class RcdElement extends ElectricElement {
     constructor(
         public id: string,
+        public x: number,
+        public y: number,
         public parentId: string | undefined,
 
         public wire: Wire,
@@ -21,12 +23,14 @@ export class RcdElement extends ElectricElement {
         public nominalCurrent: number,
         public diffCurrent: number,
     ) {
-        super(id, parentId, 'RCD', wire, label, messages, children, context);
+        super(id, x, y, parentId, 'RCD', wire, label, messages, children, context);
     }
 
     static empty(parentId?: string, existingCount?: number) {
         return new RcdElement(
             '',
+            0,
+            0,
             parentId,
             Wire.empty(),
             `${TYPE_TO_DEFAULT_LABEL.RCD}${existingCount ?? ''}`,
@@ -41,6 +45,8 @@ export class RcdElement extends ElectricElement {
     static createFromDB(data: any) {
         return new RcdElement(
             data.id,
+            data.x,
+            data.y,
             data.parentId,
             Wire.createFromDB(data),
             data.label,
@@ -55,6 +61,8 @@ export class RcdElement extends ElectricElement {
     static createFromRaw(data: any) {
         return new RcdElement(
             data.id,
+            data.x,
+            data.y,
             data.parentId,
             Wire.createFromRaw(data.wire),
             data.label,
@@ -69,6 +77,8 @@ export class RcdElement extends ElectricElement {
     clone(): ElectricElement {
         return new RcdElement(
             this.id,
+            this.x,
+            this.y,
             this.parentId,
             Wire.createFromRaw(this.wire),
             this.label,
