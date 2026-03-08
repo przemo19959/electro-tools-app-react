@@ -26,7 +26,7 @@ export const Search = ({
             clearTimeout(timeoutId.current);
         }
         setLocalValue(value);
-        timeoutId.current = setTimeout(() => {
+        timeoutId.current = window.setTimeout(() => {
             onChange(value);
         }, 300);
     }

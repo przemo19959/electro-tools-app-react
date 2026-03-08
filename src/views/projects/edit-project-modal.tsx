@@ -5,14 +5,13 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 
 import * as zod from "zod"
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
-import { IconButton, InputAdornment, TextField } from '@mui/material';
 import styled from '@emotion/styled';
-import ClearIcon from '@mui/icons-material/Clear';
 import { useProjectApi } from '../../hooks/project/use-project-api';
 import type { ReadProjectDto } from '../../api/api';
 import { ModalTransition } from '../../components/modals/modal-transition';
+import { FormTextField } from '../../components/form-text-field/form-text-field';
 
 const PROJECT_SCHEMA = zod.object({
     name: zod.string().min(1, "Field is required"),
@@ -73,37 +72,13 @@ export const EditProjectModal = ({
             <StyledDialogContent>
                 <form>
                     <StyledCol>
-                        <Controller
-                            name="name"
+                        <FormTextField
                             control={control}
-                            render={({ field }) => {
-                                const hasError = Boolean(errors[field.name]);
-                                return (
-                                    <TextField
-                                        label="Name"
-                                        variant="outlined"
-                                        size="small"
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                        error={hasError}
-                                        helperText={hasError ? errors[field.name]?.message : ''}
-                                        slotProps={{
-                                            input: {
-                                                endAdornment: (
-                                                    <InputAdornment position="end">
-                                                        {field.value && (
-                                                            <IconButton onClick={() => setValue('name', '')} size="small">
-                                                                <ClearIcon />
-                                                            </IconButton>
-                                                        )}
-                                                    </InputAdornment>
-                                                ),
-                                            },
-                                        }}
-                                        data-cy="edit_project_modal_name_tf"
-                                    />
-                                );
-                            }}
+                            errors={errors}
+                            label='Name'
+                            name='name'
+                            onClear={() => setValue('name', '')}
+                            testId='edit_project_modal_name_tf'
                         />
                     </StyledCol>
                 </form>

@@ -233,6 +233,8 @@ describe('template spec', () => {
     cy.visit('/projects')
     cy.wait('@getProjectsPage');
     cy.contains('No Data').should('not.exist');
+    cy.get('[data-testid="MenuIcon"] path').click(); //to hide sidenav and make all actions buttons visible
+
 
     //update project and assert
     cy.get('tr:nth-child(1) [data-cy="name_data_cell"]').should('have.text', 'Project 1001');
@@ -267,11 +269,12 @@ describe('template spec', () => {
     cy.get('tbody tr').should('have.length', 1); //cause there is row with No Data
   });
 
-  it('delete single project flow', function() {
+  it('delete single project flow', function () {
     cy.visit('/projects')
     cy.wait('@getProjectsPage');
     cy.contains('No Data').should('not.exist');
-    
+    cy.get('[data-testid="MenuIcon"] path').click(); //to hide sidenav and make all actions buttons visible
+
     cy.get('#root p:nth-child(4)').should('have.text', '1–10 of 20');
     cy.get('tr:nth-of-type(1) [data-testid="DeleteIcon"] path').click();
     cy.get('[data-cy="confirm_modal_text"]').should('have.text', 'Do you want to delete project Project 1001?');
@@ -281,7 +284,7 @@ describe('template spec', () => {
     cy.get('[data-cy="confirm_modal_apply_btn"]').click();
     cy.get('tr:nth-child(1) [data-cy="name_data_cell"]').should('have.text', 'Project 1002');
     cy.get('#root p:nth-child(4)').should('have.text', '1–10 of 19');
-    
+
     //when deleting selected item, selection is adjusted correctly
     cy.get('tr:nth-of-type(2) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').check();
     cy.get('tr:nth-of-type(1) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').check();
@@ -305,10 +308,11 @@ describe('template spec', () => {
     cy.get('[data-cy="name_data_cell"]').should('have.text', 'Project 1003');
   });
 
-  it('delete multi project flow', ()=>{
+  it('delete multi project flow', () => {
     cy.visit('/projects')
     cy.wait('@getProjectsPage');
     cy.contains('No Data').should('not.exist');
+    cy.get('[data-testid="MenuIcon"] path').click(); //to hide sidenav and make all actions buttons visible
 
     cy.get('tr:nth-of-type(1) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').check();
     cy.get('tr:nth-of-type(2) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').check();

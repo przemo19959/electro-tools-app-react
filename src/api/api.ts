@@ -25,23 +25,22 @@ export interface UpdateTerminalElementDto {
 export interface UpdateWireDto {
   /** @format uuid */
   id?: string;
-  /** @format double */
   diameter?:
-    | 0.5
-    | 0.75
-    | 1
-    | 1.5
-    | 2.5
-    | 4
-    | 6
-    | 10
-    | 16
-    | 25
-    | 35
-    | 50
-    | 70
-    | 95
-    | 120;
+    | "D_05"
+    | "D_075"
+    | "D_1"
+    | "D_15"
+    | "D_25"
+    | "D_40"
+    | "D_60"
+    | "D_100"
+    | "D_160"
+    | "D_250"
+    | "D_350"
+    | "D_500"
+    | "D_700"
+    | "D_950"
+    | "D_1200";
   placement?: "UNDER_PLASTER" | "IN_PIPE_ON_WALL" | "DIRECT_ON_WALL";
   type?: "ONE_WIRE" | "MULTI_WIRE";
   phase?: "ONE" | "THREE";
@@ -70,23 +69,22 @@ export interface ReadAbstractElementDto {
 }
 
 export interface ReadWireDto {
-  /** @format double */
   diameter?:
-    | 0.5
-    | 0.75
-    | 1
-    | 1.5
-    | 2.5
-    | 4
-    | 6
-    | 10
-    | 16
-    | 25
-    | 35
-    | 50
-    | 70
-    | 95
-    | 120;
+    | "D_05"
+    | "D_075"
+    | "D_1"
+    | "D_15"
+    | "D_25"
+    | "D_40"
+    | "D_60"
+    | "D_100"
+    | "D_160"
+    | "D_250"
+    | "D_350"
+    | "D_500"
+    | "D_700"
+    | "D_950"
+    | "D_1200";
   placement?: "UNDER_PLASTER" | "IN_PIPE_ON_WALL" | "DIRECT_ON_WALL";
   type?: "ONE_WIRE" | "MULTI_WIRE";
   phase?: "ONE" | "THREE";
@@ -159,6 +157,17 @@ export interface UpdateLoadElementDto {
   zeroed?: boolean;
 }
 
+export interface UpdateAbstractElementDto {
+  /** @format double */
+  x?: number;
+  /** @format double */
+  y?: number;
+  label?: string;
+  /** @format uuid */
+  parentId?: string;
+  wire?: UpdateWireDto;
+}
+
 export interface CreateTerminalElementDto {
   /** @format double */
   x?: number;
@@ -174,23 +183,22 @@ export interface CreateTerminalElementDto {
 }
 
 export interface CreateWireDto {
-  /** @format double */
   diameter?:
-    | 0.5
-    | 0.75
-    | 1
-    | 1.5
-    | 2.5
-    | 4
-    | 6
-    | 10
-    | 16
-    | 25
-    | 35
-    | 50
-    | 70
-    | 95
-    | 120;
+    | "D_05"
+    | "D_075"
+    | "D_1"
+    | "D_15"
+    | "D_25"
+    | "D_40"
+    | "D_60"
+    | "D_100"
+    | "D_160"
+    | "D_250"
+    | "D_350"
+    | "D_500"
+    | "D_700"
+    | "D_950"
+    | "D_1200";
   placement?: "UNDER_PLASTER" | "IN_PIPE_ON_WALL" | "DIRECT_ON_WALL";
   type?: "ONE_WIRE" | "MULTI_WIRE";
   phase?: "ONE" | "THREE";
@@ -257,35 +265,48 @@ export interface CreateLoadElementDto {
   zeroed?: boolean;
 }
 
+export interface CreateAbstractElementDto {
+  /** @format double */
+  x?: number;
+  /** @format double */
+  y?: number;
+  label?: string;
+  /** @format uuid */
+  parentId?: string;
+  wire?: CreateWireDto;
+  /** @format uuid */
+  projectId?: string;
+}
+
 export interface PageReadProjectDto {
-  /** @format int32 */
-  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
   /** @format int32 */
   size?: number;
   content?: ReadProjectDto[];
   /** @format int32 */
   number?: number;
-  first?: boolean;
-  last?: boolean;
-  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
   sort?: SortObject;
+  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
 export interface PageableObject {
   /** @format int64 */
   offset?: number;
-  /** @format int32 */
-  pageSize?: number;
-  /** @format int32 */
-  pageNumber?: number;
   sort?: SortObject;
   paged?: boolean;
   unpaged?: boolean;
+  /** @format int32 */
+  pageNumber?: number;
+  /** @format int32 */
+  pageSize?: number;
 }
 
 export interface SortObject {
@@ -894,7 +915,7 @@ export class Api<
      */
     update5: (
       basicElementId: string,
-      data: UpdateLoadElementDto,
+      data: UpdateAbstractElementDto,
       params: RequestParams = {},
     ) =>
       this.request<ReadAbstractElementDto, any>({
@@ -912,7 +933,7 @@ export class Api<
      * @name Create5
      * @request POST:/api/v1/elements
      */
-    create5: (data: CreateLoadElementDto, params: RequestParams = {}) =>
+    create5: (data: CreateAbstractElementDto, params: RequestParams = {}) =>
       this.request<ReadAbstractElementDto, any>({
         path: `/api/v1/elements`,
         method: "POST",
@@ -941,10 +962,10 @@ export class Api<
      * No description
      *
      * @tags basic-element-controller
-     * @name GetTree
+     * @name GetTrees
      * @request GET:/api/v1/elements/tree
      */
-    getTree: (
+    getTrees: (
       query: {
         /** @format uuid */
         projectId: string;

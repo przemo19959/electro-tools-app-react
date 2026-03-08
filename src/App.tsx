@@ -9,7 +9,7 @@ import { AlertStack } from './components/alert-stack/alert-stack';
 import styled from "@emotion/styled";
 
 function App() {
-  const [sidenavOpen, setSidenavOpen] = useState(false);
+  const [sidenavOpen, setSidenavOpen] = useState(true);
 
   return (
     <div>

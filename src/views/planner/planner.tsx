@@ -1,29 +1,65 @@
-import { MenuButton } from "../../components/menu-button/menu-button";
-import { MenuItem } from "@mui/material";
-import type { ReadAbstractElementDto } from "../../api/api";
+import { Button } from "@mui/material";
 import { StyledAvatar, StyledCard, StyledCardContent, StyledCardHeader } from "../styles";
 import { ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge, type Node, type Edge, type NodeChange, type EdgeChange, Controls, Background, BackgroundVariant, type Connection } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import AddIcon from '@mui/icons-material/Add';
+import type { ElectricElement } from "../../domain/electricelement/electric-element";
+import { EditElementModal } from "./edit-element-modal";
+import { useNavigate, useParams } from "react-router";
+import { useAppDispatch } from "../../store/hooks";
+import { addAlert } from "../../components/alert-stack/alert-stack-slice";
+import { useElectricElementApi } from "../../hooks/element/use-electric-element-api";
+import { HANDLE_ABORT_EXCEPTION } from "../../utils/api-utils";
 
-type ElementType = NonNullable<ReadAbstractElementDto['elementType']>
-const ELEMENT_TYPES: ElementType[] = [
-    'LOAD',
-    'OVER_CURRENT_PROTECTION',
-    'RCD',
-    'TERMINAL',
-    'UNKNOWN',
-];
+type EditElementModalMode = 'CREATE' | 'EDIT' | 'NONE';
 
 export const Planner = () => {
-    const [nodes, setNodes] = useState<Node[]>([
-        {
-            id: '1',
-            position: { x: 0, y: 0 },
-            data: { age: 10, label: 'aaa' },
-        }
-    ]);
+    const [nodes, setNodes] = useState<Node[]>([]);
     const [edges, setEdges] = useState<Edge[]>([]);
+    const [editElementModalMode, setEditElementModalMode] = useState<EditElementModalMode>('NONE');
+    const [editedElement, setEditedElement] = useState<ElectricElement | undefined>(undefined);
+
+    const dispatch = useAppDispatch();
+    const params = useParams();
+    const navigate = useNavigate();
+    const { getTrees } = useElectricElementApi();
+
+    const reload = () => {
+        if (params.projectId) {
+            getTrees(params.projectId)
+                .then(v => {
+                    setNodes(v.map(v2 => ({
+                        id: v2.id ?? '',
+                        position: {
+                            x: v2.x ?? 0,
+                            y: v2.y ?? 0,
+                        },
+                        data: {
+                            label: v2.label,
+                        }
+                    })));
+                })
+                .catch(HANDLE_ABORT_EXCEPTION)
+        }
+    }
+
+    const validateProjectIdParam = () => {
+        if (!params.projectId) {
+            dispatch(addAlert({
+                id: new Date().getTime(),
+                message: 'Unable to load planner view for unknown project',
+                type: 'error',
+            }))
+            navigate("/projects", {});
+        }
+    }
+
+    useEffect(() => {
+        validateProjectIdParam();
+        reload();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const onNodesChange = useCallback(
         (changes: NodeChange<Node>[]) => setNodes((prev) => applyNodeChanges(changes, prev)),
@@ -38,8 +74,10 @@ export const Planner = () => {
         [],
     );
 
-    const handleAddElement = (type: ElementType) => {
-        console.log(type);
+    const handleAddElement = () => {
+        validateProjectIdParam();
+        setEditedElement(undefined);
+        setEditElementModalMode('CREATE');
     }
 
     return (
@@ -51,16 +89,14 @@ export const Planner = () => {
                     </StyledAvatar>
                 }
                 action={
-                    <MenuButton label="Add element">
-                        {ELEMENT_TYPES.map(v => (
-                            <MenuItem
-                                key={v}
-                                onClick={() => handleAddElement(v)}
-                            >
-                                {v}
-                            </MenuItem>
-                        ))}
-                    </MenuButton>
+                    <Button
+                        variant="contained"
+                        endIcon={<AddIcon />}
+                        onClick={handleAddElement}
+                        data-cy="add_element_btn"
+                    >
+                        Add element
+                    </Button>
                 }
                 title="Planner"
                 subheader="Manage your project elements"
@@ -80,6 +116,18 @@ export const Planner = () => {
                         <Background color="#ccc" variant={BackgroundVariant.Dots} />
                     </ReactFlow>
                 </div>
+                {editElementModalMode !== 'NONE' && Boolean(params.projectId) && (
+                    <EditElementModal
+                        projectId={params.projectId!}
+                        edit={editElementModalMode === 'EDIT'}
+                        element={editedElement}
+                        onSuccess={() => {
+                            setEditElementModalMode('NONE');
+                            reload();
+                        }}
+                        onCancel={() => setEditElementModalMode('NONE')}
+                    />
+                )}
             </StyledCardContent>
         </StyledCard>
     );

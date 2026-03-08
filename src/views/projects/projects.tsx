@@ -13,6 +13,7 @@ import dayjs from "dayjs";
 import { ConfirmModal } from "../../components/modals/confirm-modal";
 import { HANDLE_ABORT_EXCEPTION } from "../../utils/api-utils";
 import { StyledAvatar, StyledCard, StyledCardContent, StyledCardHeader } from "../styles";
+import { useNavigate } from "react-router";
 
 const onToggle = (project: ReadProjectDto, selection: string[]): string[] => {
     const key = `${project.id}`;
@@ -51,6 +52,7 @@ export const Projects = () => {
         pageAll,
         deleteAllById,
     } = useProjectApi();
+    const navigate = useNavigate();
 
     const reload = useCallback((
         page: number,
@@ -79,15 +81,18 @@ export const Projects = () => {
             label: 'Actions',
             render: (v) => (
                 <ProjectActions
+                    onGoToPlanner={() => {
+                        navigate(`/planner/${v.id}`);
+                    }}
+                    onEdit={() => {
+                        setEditProjectModalMode('EDIT');
+                        setEditedProject(v);
+                    }}
                     onDelete={() => {
                         if (v.id) {
                             setDeleteProjectIds([v.id]);
                             setDeleteModalMessage(`Do you want to delete project ${v.name}?`);
                         }
-                    }}
-                    onEdit={() => {
-                        setEditProjectModalMode('EDIT');
-                        setEditedProject(v);
                     }}
                 />
             ),
@@ -95,11 +100,12 @@ export const Projects = () => {
                 width: '40px',
             }
         },
-    ], []);
+    ], [navigate]);
 
 
     useEffect(() => {
         reload(page, pageSize, sort, query);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []); //this must be empty
 
     return (

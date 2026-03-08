@@ -1,15 +1,33 @@
 import styled from "@emotion/styled";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import SchemaIcon from '@mui/icons-material/Schema';
 import { IconButton, Tooltip } from "@mui/material";
 
 type ProjectActionsProps = {
-    onDelete: () => void;
+    onGoToPlanner: () => void;
     onEdit: () => void;
+    onDelete: () => void;
 };
 
-export const ProjectActions = ({ onDelete, onEdit }: ProjectActionsProps) => (
+export const ProjectActions = ({ 
+    onGoToPlanner,
+    onEdit, 
+    onDelete, 
+}: ProjectActionsProps) => (
     <StyledRow>
+        <Tooltip title="Go To Planner">
+            <IconButton
+                aria-label="planner"
+                size="small"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onGoToPlanner();
+                }}
+            >
+                <SchemaIcon />
+            </IconButton>
+        </Tooltip>
         <Tooltip title="Edit">
             <IconButton
                 aria-label="edit"

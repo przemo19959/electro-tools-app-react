@@ -1,0 +1,1 @@
+export const RCD_NOMINAL_VALUES: number[] = [6, 10, 13, 16, 20, 25, 32, 40, 50, 63, 80, 100, 125];
