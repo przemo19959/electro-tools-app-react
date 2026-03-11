@@ -16,6 +16,7 @@ export const Sidenav = ({
       <NavLink to="/">Home</NavLink>
       <NavLink to="/projects">Projects</NavLink>
       <NavLink to="/planner" onClick={e => e.preventDefault()}>Planner</NavLink>
+      <NavLink to="/load_calculator">Load Calculator</NavLink>
     </StyledContainer>
   );
 };

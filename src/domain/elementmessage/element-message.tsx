@@ -1,3 +1,8 @@
+import type { ReactNode } from "react";
+import ReportIcon from '@mui/icons-material/Report';
+import WarningIcon from '@mui/icons-material/Warning';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
+import type { Palette } from "@mui/material";
 
 export class ElementMessage {
     private constructor(public id: string,
@@ -18,9 +23,9 @@ export const MESSAGE_TYPE_VALUES = ['ERROR', 'WARN', 'INFO'] as const; //order d
 export type MessageTypeVal = typeof MESSAGE_TYPE_VALUES[number];
 
 export class MessageType {
-    static ERROR = new MessageType('ERROR', 'indianred', 'error');
-    static WARN = new MessageType('WARN', 'orange', 'warning');
-    static INFO = new MessageType('INFO', '#69f0ae', 'lightbulb');
+    static ERROR = new MessageType('ERROR', <ReportIcon color="error" />);
+    static WARN = new MessageType('WARN', <WarningIcon color="warning" />);
+    static INFO = new MessageType('INFO', <LightbulbIcon color="primary" />);
 
     static of(type: MessageTypeVal) {
         return [this.ERROR, this.WARN, this.INFO].find(v => v.value === type);
@@ -28,9 +33,16 @@ export class MessageType {
 
     constructor(
         public value: MessageTypeVal,
-        public color: string,
-        public sign: string,
+        public sign: ReactNode,
     ) {
+    }
+
+    public fromPalette(palette: Palette): string {
+        switch (this.value) {
+            case 'ERROR': return palette.error.main;
+            case 'WARN': return palette.warning.main;
+            case 'INFO': return palette.primary.main;
+        }
     }
 }
 

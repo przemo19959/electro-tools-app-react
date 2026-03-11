@@ -187,10 +187,12 @@ export class LoadElement extends ElectricElement {
         return super.powerForCurrent(current) * this.powerFactor;
     }
 
-    check(withChildren?: boolean): void {
+    check(withChildren?: boolean): LoadElement {
         super.check(withChildren);
         this.zeroedRule();
         this.startCurrentRule();
+
+        return this;
     }
 
     private zeroedRule() {

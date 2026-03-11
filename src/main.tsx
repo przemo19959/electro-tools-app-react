@@ -11,6 +11,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material'
 import { theme } from './theme.ts'
 import { Api } from './api/api.ts'
 import { Planner } from './views/planner/planner.tsx'
+import { LoadCalculator } from './views/load-calculator/load-calculator.tsx'
 
 export const ApiInstance = new Api({ baseUrl: '', baseApiParams: { format: 'json' } })
 
@@ -25,6 +26,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="/" element={<Home />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/planner/:projectId" element={<Planner />} />
+              <Route path="/load_calculator" element={<LoadCalculator />} />
             </Route>
           </Routes>
         </BrowserRouter>

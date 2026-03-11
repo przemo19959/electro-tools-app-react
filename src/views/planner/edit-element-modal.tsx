@@ -39,8 +39,7 @@ export const EditElementModal = ({
     const {
         handleSubmit,
         control,
-        setValue,
-        formState: { errors, isValid },
+        formState: { isValid },
     } = useForm<ElementForm>({
         resolver: zodResolver(ELEMENT_SCHEMA),
         defaultValues: {
@@ -75,11 +74,9 @@ export const EditElementModal = ({
                         <StyledRow>
                             <FormTextField
                                 control={control}
-                                errors={errors}
                                 label='Name'
                                 name='label'
-                                onClear={() => setValue('label', '')}
-                                testId='edit_element_modal_name_tf'
+                                testID='edit_element_modal_name_tf'
                             />
                         </StyledRow>
                     </StyledCol>

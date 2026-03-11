@@ -39,8 +39,7 @@ export const EditProjectModal = ({
     const {
         handleSubmit,
         control,
-        setValue,
-        formState: { errors, isValid },
+        formState: { isValid },
     } = useForm<ProjectForm>({
         resolver: zodResolver(PROJECT_SCHEMA),
         defaultValues: {
@@ -74,11 +73,9 @@ export const EditProjectModal = ({
                     <StyledCol>
                         <FormTextField
                             control={control}
-                            errors={errors}
                             label='Name'
                             name='name'
-                            onClear={() => setValue('name', '')}
-                            testId='edit_project_modal_name_tf'
+                            testID='edit_project_modal_name_tf'
                         />
                     </StyledCol>
                 </form>

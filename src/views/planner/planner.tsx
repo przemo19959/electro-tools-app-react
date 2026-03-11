@@ -11,7 +11,7 @@ import { useAppDispatch } from "../../store/hooks";
 import { addAlert } from "../../components/alert-stack/alert-stack-slice";
 import { useElectricElementApi } from "../../hooks/element/use-electric-element-api";
 import { HANDLE_ABORT_EXCEPTION } from "../../utils/api-utils";
-import type { UpdateBasicElementPositionDto } from "../../api/api";
+import { getPositionDragEndChanges } from "./types";
 
 type EditElementModalMode = 'CREATE' | 'EDIT' | 'NONE';
 
@@ -68,16 +68,7 @@ export const Planner = () => {
 
             setNodes((prev) => applyNodeChanges(changes, prev));
 
-            const positionDragEndChanges: UpdateBasicElementPositionDto[] = changes
-                .map(v => {
-                    if (v.type === 'position' && v.dragging === false) {
-                        return ({
-                            elementId: v.id,
-                            ...v.position,
-                        }) as UpdateBasicElementPositionDto
-                    }
-                    return {};
-                }).filter(v => Boolean(v.elementId));
+            const positionDragEndChanges = getPositionDragEndChanges(changes);
             if (positionDragEndChanges.length !== 0) {
                 updatePositions(positionDragEndChanges);
             }
