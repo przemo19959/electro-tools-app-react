@@ -129,10 +129,13 @@ export const LoadView = <T extends FieldValues,>({
                 name='zeroed'
             />
             {modalOpen && (
-                <LightPowerSelector onSelect={v => {
-                    onPowerChange?.(v);
-                    setModalOpen(false);
-                }} />
+                <LightPowerSelector
+                    onSelect={v => {
+                        onPowerChange?.(v);
+                        setModalOpen(false);
+                    }}
+                    onCancel={() => setModalOpen(false)}
+                />
             )}
         </StyledCol>
     );

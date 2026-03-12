@@ -155,6 +155,7 @@ const resources = {
                 'PROJECT_WIRE_TITLE': 'Project wire: ',
                 'EDITED_ELEMENT_WIRE_TITLE': 'Element wire: ',
                 'PREDEFINED_WIRE_TITLE': 'Pre-defined wire: ',
+                "SELECT_LIGHT_POWER_TITLE": 'Light-based power selector',
                 "LIGHT_POWER_SELECTOR": 'Select lighting power depending on room parameters and type of light.',
                 "ROOM_TYPE": "Room Type",
                 "ROOMS": {
@@ -175,6 +176,9 @@ const resources = {
                 "EDIT": "Edit",
                 "GO_TO_PLANNER": "Go to planner",
                 "DELETE": "Delete",
+                "CANCEL": "Cancel",
+                "LIGHT_EFFICIENCY_TOOLTIP":"Luminous efficiency of the light source. Each kind of light source has some possible range of this efficiency, but your concrete light sources may have some custom value from that range, so set it here. If you don't have specific value, just press Avg button to set average value from correct range.",
+                "SET_AVG": "Set Avg",
             },
             "VALIDATION": {
                 'OUT_OF_RANGE': 'Outside range [{{min}}, {{max}}]',
@@ -343,6 +347,7 @@ const resources = {
                 'PROJECT_WIRE_TITLE': 'Przewód projektowy: ',
                 'EDITED_ELEMENT_WIRE_TITLE': 'Przewód elementu: ',
                 'PREDEFINED_WIRE_TITLE': 'Przewód pre-definiowany: ',
+                "SELECT_LIGHT_POWER_TITLE": 'Dobór mocy oświetlenia',
                 'LIGHT_POWER_SELECTOR': 'Dobierz moc oświetlenia w zależności od parametrów pomieszczenia i rodzaju światła.',
                 'ROOM_TYPE': 'Rodzaj pomieszczenia',
                 'ROOMS': {
@@ -363,6 +368,9 @@ const resources = {
                 "EDIT": "Edytuj",
                 "GO_TO_PLANNER": "Przejdź do planera",
                 "DELETE": "Usuń",
+                "CANCEL": "Anuluj",
+                "LIGHT_EFFICIENCY_TOOLTIP": "Wydajność świetlna źródła światła. Każdy rodzaj źródła światła ma możliwy zakres tej wydajności, ale Twoje konkretne źródła mogą mieć jakąś niestandardową wartość z tego zakresu, więc ustaw ją tutaj. Jeśli nie masz konkretnej wartości, po prostu naciśnij przycisk Średnia, aby ustawić średnią wartość z poprawnego zakresu.",
+                "SET_AVG": "Średnia",
             },
             "VALIDATION": {
                 'OUT_OF_RANGE': 'Przekroczono przedział [{{min}}, {{max}}]',

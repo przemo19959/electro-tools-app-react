@@ -2,24 +2,19 @@ import { useForm } from "react-hook-form"
 import { LightKind, LIGHT_KIND_KEY_VALUES, type RoomType, ROOM_TYPE_VALUES, type LightKindKey } from "./types"
 import * as z from 'zod';
 import { useEffect, useState } from "react"
-import { AvgEfficiencyTouchable } from "./avg-efficiency-touchable"
+import { AvgEfficiencyIndicator } from "./avg-efficiency-indicator"
 import { customZodResolver } from "../../utils/zod-utils";
 import { FormSelect } from "../form-select/form-select";
 import { FormTextField } from "../form-text-field/form-text-field";
-import { Button, TextField } from "@mui/material";
+import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import styled from "@emotion/styled";
+import { ModalTransition } from "../modals/modal-transition";
+import { useTranslation } from "react-i18next";
 
 const EFFICIENCY_FIELD_KEY = 'efficiency';
 const LIGHT_SELECTOR_SCHEMA = z.object({
     roomType: z.enum(ROOM_TYPE_VALUES),
     lightKind: z.enum(LIGHT_KIND_KEY_VALUES),
-    // lightKind: z.object({
-    //     key: z.enum(LIGHT_KIND_KEY_VALUES),
-    //     efficiency: z.object({
-    //         min: z.number(),
-    //         max: z.number(),
-    //     }),
-    // }).required(),
     efficiency: z.number(),
     roomArea: z.number().refine(v => v >= 0, { message: 'VALIDATION.GREATER_THAN', params: { value: 0 } }),
 })
@@ -61,6 +56,7 @@ type LightPowerSelectorProps = {
     initialRoomArea?: number;
     initialRoomType?: RoomType;
     onSelect?: (power: number) => void;
+    onCancel: () => void;
 }
 
 export const LightPowerSelector = ({
@@ -68,9 +64,9 @@ export const LightPowerSelector = ({
     initialLightKind = LightKind.VALUES[0],
     initialRoomType = ROOM_TYPE_VALUES[0],
     onSelect,
+    onCancel,
 }: LightPowerSelectorProps) => {
-    // const { t } = useTranslation();
-    //FIXME: this must be modal
+    const { t } = useTranslation();
 
     const [requiredPower, setRequiredPower] = useState<number>(initialLightKind.requiredPowerByArea(initialRoomArea, initialRoomType));
     const [isEffOutOfRange, setIsEffOutOfRange] = useState<boolean>(false);
@@ -101,7 +97,7 @@ export const LightPowerSelector = ({
         setRequiredPower(lightKind.requiredPowerByArea(value.roomArea!, value.roomType ?? 'RESIDENTIAL', eff));
 
         const { efficiency: { min, max } } = lightKind;
-        setIsEffOutOfRange(max < eff || eff < min)
+        setIsEffOutOfRange(max < eff || eff < min || eff !== lightKind.average());
         if (changedFieldName !== EFFICIENCY_FIELD_KEY) {
             trigger(EFFICIENCY_FIELD_KEY);
         }
@@ -124,76 +120,106 @@ export const LightPowerSelector = ({
     }
 
     return (
-        <StyledCol>
-            <StyledRow>
-                <FormSelect<RoomType, LightPowerSelectorForm>
-                    label={/*t('COMMON.ROOM_TYPE')*/'todo'}
-                    items={ROOM_TYPE_VALUES as unknown as RoomType[]}
-                    textMapper={e => /*t('COMMON.ROOMS.' + e)*/e}
-                    control={control}
-                    errors={errors}
-                    name="roomType"
-                    testID={LightPowerSelector_TestIDs.roomType}
-                />
-            </StyledRow>
-            <StyledRow>
-                <FormSelect<LightKindKey, LightPowerSelectorForm>
-                    label={/*t('COMMON.LIGHT_KIND')*/ 'todo'}
-                    items={LIGHT_KIND_KEY_VALUES}
-                    textMapper={e => /*t('COMMON.LIGHT_KINDS.' + e?.key)*/ e}
-                    control={control}
-                    errors={errors}
-                    name="lightKind"
-                    testID={LightPowerSelector_TestIDs.lightKind}
-                />
-                <FormTextField
-                    label={/*t('COMMON.LIGHT_EFFICIENCY')*/'todo'}
-                    type='number'
-                    control={control}
-                    name={EFFICIENCY_FIELD_KEY}
-                    testID={LightPowerSelector_TestIDs.efficiency}
-                    appendSlot={
-                        <AvgEfficiencyTouchable
-                            active={isEffOutOfRange}
-                            onClick={setAvgEfficencyByCurrentLightKind}
-                            testID={LightPowerSelector_TestIDs.avgTouchable}
-                        />
-                    }
-                />
-            </StyledRow>
-            <StyledRow>
-                <FormTextField
-                    label={/*t('COMMON.ROOM_AREA')*/'todo'}
-                    type='number'
-                    control={control}
-                    name='roomArea'
-                    testID={LightPowerSelector_TestIDs.roomArea}
-                />
-                <TextField
-                    style={{ flex: 1 }}
-                    label={/*t('COMMON.REQUIRED_LOAD_POWER')*/'todo'}
-                    value={`${requiredPower.toFixed(2)}`}
-                    disabled
-                    data-cy={LightPowerSelector_TestIDs.requiredPower}
-                />
+        <Dialog
+            open
+            slots={{
+                transition: ModalTransition,
+            }}
+            keepMounted
+            onClose={onCancel}
+        >
+            <DialogTitle data-cy="light_power_selector_title">
+                {t('COMMON.SELECT_LIGHT_POWER_TITLE')}
+            </DialogTitle>
+            <StyledDialogContent>
+                <form>
+                    <StyledCol>
+                        <StyledRow>
+                            <FormSelect<RoomType, LightPowerSelectorForm>
+                                label={t('COMMON.ROOM_TYPE')}
+                                items={ROOM_TYPE_VALUES as unknown as RoomType[]}
+                                textMapper={e => t('COMMON.ROOMS.' + e)}
+                                control={control}
+                                errors={errors}
+                                name="roomType"
+                                testID={LightPowerSelector_TestIDs.roomType}
+                            />
+                        </StyledRow>
+                        <StyledRow>
+                            <FormSelect<LightKindKey, LightPowerSelectorForm>
+                                label={t('COMMON.LIGHT_KIND')}
+                                items={LIGHT_KIND_KEY_VALUES}
+                                textMapper={e => t('COMMON.LIGHT_KINDS.' + e)}
+                                control={control}
+                                errors={errors}
+                                name="lightKind"
+                                testID={LightPowerSelector_TestIDs.lightKind}
+                            />
+                            <FormTextField
+                                label={t('COMMON.LIGHT_EFFICIENCY')}
+                                type='number'
+                                control={control}
+                                name={EFFICIENCY_FIELD_KEY}
+                                testID={LightPowerSelector_TestIDs.efficiency}
+                                tooltip={t('COMMON.LIGHT_EFFICIENCY_TOOLTIP')}
+                                appendSlot={
+                                    <AvgEfficiencyIndicator
+                                        active={isEffOutOfRange}
+                                        onClick={setAvgEfficencyByCurrentLightKind}
+                                        testID={LightPowerSelector_TestIDs.avgTouchable}
+                                    />
+                                }
+                            />
+                        </StyledRow>
+                        <StyledRow>
+                            <FormTextField
+                                label={t('COMMON.ROOM_AREA')}
+                                type='number'
+                                control={control}
+                                name='roomArea'
+                                testID={LightPowerSelector_TestIDs.roomArea}
+                            />
+                            <TextField
+                                style={{ flex: 1 }}
+                                size="small"
+                                label={t('COMMON.REQUIRED_LOAD_POWER')}
+                                value={`${requiredPower.toFixed(2)}`}
+                                disabled
+                                data-cy={LightPowerSelector_TestIDs.requiredPower}
+                            />
+                        </StyledRow>
+                    </StyledCol>
+                </form>
+            </StyledDialogContent>
+            <DialogActions>
+                <Button onClick={onCancel} variant='outlined' color='secondary' data-cy="light_power_selector_cancel_btn">
+                    {t('COMMON.CANCEL')}
+                </Button>
                 <Button
+                    onClick={() => onSelect?.(Number(requiredPower.toFixed(2)))}
                     color="primary"
-                    title={/*t('COMMON.SELECT')*/'todo'}
                     disabled={!isValid}
                     data-cy={LightPowerSelector_TestIDs.acceptBtn}
-                    onClick={() => onSelect?.(Number(requiredPower.toFixed(2)))}
-                >from title</Button>
-            </StyledRow>
-        </StyledCol>
+                >
+                    {t('COMMON.SELECT')}
+                </Button>
+            </DialogActions>
+        </Dialog>
     )
 }
 
 const StyledCol = styled.div`
     display: flex;
     flex-direction: column;
+    gap: 1rem;
 `;
 
 const StyledRow = styled.div`
     display: flex;
     align-items: center;
+    gap: 1rem;
+`;
+
+const StyledDialogContent = styled(DialogContent)`
+    padding-top: 20px !important;
 `;
