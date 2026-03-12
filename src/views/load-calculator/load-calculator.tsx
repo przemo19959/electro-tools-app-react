@@ -12,9 +12,12 @@ import { MessageListView } from "../../components/message-list-view/message-list
 import { WIRE_SCHEMA, LOAD_SCHEMA, type WireForm, type LoadForm } from "../planner/types";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 
 export const LoadCalculator = () => {
     const [load, setLoad] = useState<LoadElement>(LoadElement.empty().check());
+
+    const { t } = useTranslation();
     const {
         control,
         formState: { errors },
@@ -33,12 +36,11 @@ export const LoadCalculator = () => {
     });
 
     useEffect(() => {
-        console.log('aaa');
         const subscription = watch((value, { name }) => {
             console.log(value, name);
-            
+
             const tmp = LoadElement.createFromRaw(value);
-            if (name !== MAX_CAPACITY_FORM_KEY) {
+            if (name !== MAX_CAPACITY_FORM_KEY && name?.startsWith("wire.")) {
                 setValue(MAX_CAPACITY_FORM_KEY, CurrentTable.findLoadCapacityByWire(tmp.wire).orElse(0), { shouldValidate: true });
             } else {
                 tmp.check();
@@ -53,17 +55,17 @@ export const LoadCalculator = () => {
 
     const voltageDropIndicator = <VoltageDropIndicator {...load.context} testID="load_calculator" />
     const impedanceIndicator = <ImpedanceIndicator {...load.context} testID="load_calculator" />
-    
+
     return (
         <StyledCard>
             <StyledCardHeader
                 avatar={
-                    <StyledAvatar aria-label="calculator">
+                    <StyledAvatar>
                         C
                     </StyledAvatar>
                 }
-                title="Load calculator"
-                subheader="Test load and wire match"
+                title={t('LOAD_CALC')}
+                subheader={t('LOAD_CALC_SUBHEADER')}
             />
             <StyledCardContent>
                 <WireView
@@ -83,10 +85,8 @@ export const LoadCalculator = () => {
                     voltageDropIndicator={voltageDropIndicator}
                     onPowerChange={onPowerChange}
                 />
-                <hr style={{ width: '100%' }} />
                 <MessageListView messages={load.messages} />
             </StyledCardContent>
         </StyledCard>
-
     );
 }

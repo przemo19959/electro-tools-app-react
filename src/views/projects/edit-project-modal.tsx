@@ -12,6 +12,7 @@ import { useProjectApi } from '../../hooks/project/use-project-api';
 import type { ReadProjectDto } from '../../api/api';
 import { ModalTransition } from '../../components/modals/modal-transition';
 import { FormTextField } from '../../components/form-text-field/form-text-field';
+import { useTranslation } from 'react-i18next';
 
 const PROJECT_SCHEMA = zod.object({
     name: zod.string().min(1, "Field is required"),
@@ -36,6 +37,7 @@ export const EditProjectModal = ({
 }: EditProjectModalProps) => {
     const { create, update } = useProjectApi();
 
+    const { t } = useTranslation();
     const {
         handleSubmit,
         control,
@@ -73,7 +75,7 @@ export const EditProjectModal = ({
                     <StyledCol>
                         <FormTextField
                             control={control}
-                            label='Name'
+                            label={t('COMMON.NAME')}
                             name='name'
                             testID='edit_project_modal_name_tf'
                         />

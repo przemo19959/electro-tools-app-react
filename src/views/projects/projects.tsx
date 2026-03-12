@@ -14,6 +14,7 @@ import { ConfirmModal } from "../../components/modals/confirm-modal";
 import { HANDLE_ABORT_EXCEPTION } from "../../utils/api-utils";
 import { StyledAvatar, StyledCard, StyledCardContent, StyledCardHeader } from "../styles";
 import { useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 
 const onToggle = (project: ReadProjectDto, selection: string[]): string[] => {
     const key = `${project.id}`;
@@ -53,6 +54,7 @@ export const Projects = () => {
         deleteAllById,
     } = useProjectApi();
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const reload = useCallback((
         page: number,
@@ -71,14 +73,14 @@ export const Projects = () => {
         .catch(HANDLE_ABORT_EXCEPTION), [pageAll]);
 
     const columns: DataTableColumn<ReadProjectDto>[] = useMemo(() => [
-        { key: 'name', label: 'Project name' },
-        { key: 'elementCount', label: 'Element count', colStyle: { width: '200px' } },
-        { key: 'createdBy', label: 'Owner' },
-        { key: 'modifiedBy', label: 'Modified by' },
-        { key: 'modifiedDate', label: 'Last modified at', render: v => dayjs(v.modifiedDate).format('YYYY-MM-DD HH:mm') },
+        { key: 'name', label: t('PROJECTS_COL.PROJECT_NAME') },
+        { key: 'elementCount', label: t('PROJECTS_COL.ELEMENT_COUNT'), colStyle: { width: '200px' } },
+        { key: 'createdBy', label: t('PROJECTS_COL.OWNER') },
+        { key: 'modifiedBy', label: t('PROJECTS_COL.MODIFIED_BY') },
+        { key: 'modifiedDate', label: t('PROJECTS_COL.LAST_MODIFIED_AT'), render: v => dayjs(v.modifiedDate).format('YYYY-MM-DD HH:mm') },
         {
             key: 'actions' as keyof ReadProjectDto,
-            label: 'Actions',
+            label: t('PROJECTS_COL.ACTIONS'),
             render: (v) => (
                 <ProjectActions
                     onGoToPlanner={() => {
@@ -91,7 +93,7 @@ export const Projects = () => {
                     onDelete={() => {
                         if (v.id) {
                             setDeleteProjectIds([v.id]);
-                            setDeleteModalMessage(`Do you want to delete project ${v.name}?`);
+                            setDeleteModalMessage(t('QUESTIONS.DELETE_PROJECT'));
                         }
                     }}
                 />
@@ -100,7 +102,7 @@ export const Projects = () => {
                 width: '40px',
             }
         },
-    ], [navigate]);
+    ], [navigate, t]);
 
 
     useEffect(() => {
@@ -112,7 +114,7 @@ export const Projects = () => {
         <StyledCard>
             <StyledCardHeader
                 avatar={
-                    <StyledAvatar aria-label="project">
+                    <StyledAvatar>
                         P
                     </StyledAvatar>
                 }
@@ -129,8 +131,8 @@ export const Projects = () => {
                         Create Project
                     </Button>
                 }
-                title="Projects"
-                subheader="Manage your projects here"
+                title={t('VIEWS.PROJECTS')}
+                subheader={t('TITLES.PROJECTS_SUBHEADER')}
             />
             <StyledCardContent>
                 <DataTableToolbar
@@ -144,7 +146,7 @@ export const Projects = () => {
                     numSelected={selection.length}
                     onDeleteSelected={() => {
                         setDeleteProjectIds(selection);
-                        setDeleteModalMessage(`Do you want to delete ${selection.length} project(s)?`);
+                        setDeleteModalMessage(t('QUESTIONS.DELETE_MULTI_PROJECT', { count: selection.length }));
                     }}
                 />
                 <DataTable

@@ -7,6 +7,7 @@ import { WIRE_TYPE_VALUES } from "../../domain/currenttable/enums/WireType";
 import styled from "@emotion/styled";
 import { FormTextField } from "../form-text-field/form-text-field";
 import { FormSelect } from "../form-select/form-select";
+import { useTranslation } from 'react-i18next';
 
 export const MAX_CAPACITY_FORM_KEY = 'wire.maxCapacity';
 
@@ -34,38 +35,40 @@ export const RawWireView = <T extends FieldValues,>({
     titleAppendSlot,
     fieldIndicatorSlot,
 }: RawWireViewProps<T>) => {
+    const { t } = useTranslation();
+
     return (
         <StyledCol>
-            <StyledRow style={{gap: 0}}>
+            <StyledRow style={{ gap: 0 }}>
                 {titlePrependSlot}
-                <StyledTitle>{/*t('TITLES.WIRE')*/'todo'}</StyledTitle>
+                <StyledTitle>{t('TITLES.WIRE')}</StyledTitle>
                 {titleAppendSlot}
             </StyledRow>
             <StyledRow>
                 <FormSelect<PlacementType, T>
-                    label={/*t('WIRE.PLACEMENT')*/ 'todo'}
+                    label={t('WIRE.PLACEMENT')}
                     items={PLACEMENT_TYPE_VALUES}
-                    textMapper={e => /*t('WIRE.PLACEMENTS.' + e)*/ e}
+                    textMapper={e => t('WIRE.PLACEMENTS.' + e)}
                     control={control}
                     errors={errors}
                     name={'wire.placement'}
                     testID={RawWireView_TestIDs.placement}
                 />
                 <FormSelect
-                    label={/*t('WIRE.TYPE')*/ 'todo'}
+                    label={t('WIRE.TYPE')}
                     items={WIRE_TYPE_VALUES}
-                    textMapper={e => /*t('WIRE.TYPES.' + e)*/ e}
+                    textMapper={e => t('WIRE.TYPES.' + e)}
                     control={control}
                     errors={errors}
                     name={'wire.type'}
-                    tooltip={/*t('WIRE.TYPE_INFO')*/ 'todo'}
+                    tooltip={t('WIRE.TYPE_INFO')}
                     testID={RawWireView_TestIDs.type}
                 />
             </StyledRow>
             <StyledRow>
-                <FormSelect label={/*t('WIRE.PHASE')*/ 'todo'}
+                <FormSelect label={t('WIRE.PHASE')}
                     items={PhaseType.VALUES}
-                    textMapper={e => /*t('WIRE.PHASES.' + e?.id)*/ e.id}
+                    textMapper={e => t('WIRE.PHASES.' + e.id)}
                     control={control}
                     errors={errors}
                     name={'wire.phase'}
@@ -73,7 +76,7 @@ export const RawWireView = <T extends FieldValues,>({
                     testID={RawWireView_TestIDs.phase}
                 />
                 <FormSelect
-                    label={/*t('WIRE.DIAMETER')*/ 'todo'}
+                    label={t('WIRE.DIAMETER')}
                     items={WireDiameter.VALUES}
                     control={control}
                     textMapper={v => `${v?.value}`}
@@ -86,20 +89,20 @@ export const RawWireView = <T extends FieldValues,>({
             </StyledRow>
             <StyledRow>
                 <FormTextField
-                    label={/*t('WIRE.LENGTH')*/'todo'}
+                    label={t('WIRE.LENGTH')}
                     type='number'
                     control={control}
                     name='wire.length'
-                    tooltip={/*t('WIRE.LENGTH_INFO')*/ 'todo'}
+                    tooltip={t('WIRE.LENGTH_INFO')}
                     appendSlot={fieldIndicatorSlot}
                     testID={RawWireView_TestIDs.length}
                 />
                 <FormTextField
-                    label={/*t('WIRE.MAX_CAPACITY')*/'todo'}
+                    label={t('WIRE.MAX_CAPACITY')}
                     type='number'
                     control={control}
                     name={MAX_CAPACITY_FORM_KEY}
-                    tooltip={/*t('WIRE.MAX_CAPACITY_INFO')*/ 'todo'}
+                    tooltip={t('WIRE.MAX_CAPACITY_INFO')}
                     disabled
                     testID={RawWireView_TestIDs.capacity}
                 />

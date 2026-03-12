@@ -12,6 +12,7 @@ import StarIcon from '@mui/icons-material/Star';
 import BoltIcon from '@mui/icons-material/Bolt';
 import { FormCheckbox } from "../form-checkbox/form-checkbox";
 import { LightPowerSelector } from "../light-power-selector/light-power-selector";
+import { useTranslation } from "react-i18next";
 
 type LoadViewProps<T extends FieldValues,> = {
     load: LoadElement;
@@ -26,34 +27,36 @@ export const LoadView = <T extends FieldValues,>({
     voltageDropIndicator,
     onPowerChange,
 }: LoadViewProps<T>) => {
-    // const { t } = useTranslation();
+    const { t } = useTranslation();
     const [modalOpen, setModalOpen] = useState<boolean>(false);
 
     return (
         <StyledCol>
             <StyledRow>
-                <StyledTitle>{/*t('TITLES.LOAD')*/'todo'}</StyledTitle>
+                <StyledTitle>{t('TITLES.LOAD')}</StyledTitle>
             </StyledRow>
             <StyledRow>
                 <FormTextField
-                    label={/*t('LOAD.DRAW_POWER')*/'todo'}
+                    label={t('LOAD.DRAW_POWER')}
                     type='number'
                     control={control}
                     name={'drawPower'}
                     appendSlot={(<>
                         {voltageDropIndicator}
-                        <IconButton onClick={() => setModalOpen(true)} size="small">
-                            <BoltIcon color="info"/>
-                        </IconButton>
+                        <Tooltip title={t('COMMON.LIGHT_POWER_SELECTOR')}>
+                            <IconButton onClick={() => setModalOpen(true)} size="small">
+                                <BoltIcon color="info" />
+                            </IconButton>
+                        </Tooltip>
                     </>)}
                     testID="draw_power_tf"
                 />
                 <FormTextField
-                    label={/*t('LOAD.POWER_FACTOR')*/'todo'}
+                    label={t('LOAD.POWER_FACTOR')}
                     type='number'
                     control={control}
                     name={'powerFactor'}
-                    tooltip={/*t('LOAD.POWER_FACTOR_INFO')*/'todo'}
+                    tooltip={t('LOAD.POWER_FACTOR_INFO')}
                     testID="power_factor_tf"
                 />
             </StyledRow>
@@ -61,14 +64,14 @@ export const LoadView = <T extends FieldValues,>({
                 <TextField
                     style={{ flex: 1 }}
                     size="small"
-                    label={/*t('LOAD.LINE_CURRENT')*/'todo'}
+                    label={t('LOAD.LINE_CURRENT')}
                     value={`${load.getLineCurrent().toFixed(2)}`}
                     disabled
                     slotProps={{
                         input: {
                             endAdornment: (
                                 <InputAdornment position="end">
-                                    <Tooltip title={/*t('LOAD.LINE_CURRENT_INFO')*/'todo'}>
+                                    <Tooltip title={t('LOAD.LINE_CURRENT_INFO')}>
                                         <HelpIcon />
                                     </Tooltip>
                                 </InputAdornment>
@@ -82,14 +85,14 @@ export const LoadView = <T extends FieldValues,>({
                         <TextField
                             style={{ flex: 1 }}
                             size="small"
-                            label={/*t('LOAD.PHASE_CURRENT')*/'todo'}
+                            label={t('LOAD.PHASE_CURRENT')}
                             value={`${load.getPhaseCurrent().toFixed(2)}`}
                             disabled
                             slotProps={{
                                 input: {
                                     endAdornment: (
                                         <InputAdornment position="end">
-                                            <Tooltip title={/*t('LOAD.PHASE_CURRENT_INFO')*/'todo'}>
+                                            <Tooltip title={t('LOAD.PHASE_CURRENT_INFO')}>
                                                 <HelpIcon />
                                             </Tooltip>
                                         </InputAdornment>
@@ -116,12 +119,12 @@ export const LoadView = <T extends FieldValues,>({
                 )}
             </StyledRow>
             <FormCheckbox
-                label={/*t('LOAD.IS_HIGH_CURRENT')*/'todo'}
+                label={t('LOAD.IS_HIGH_CURRENT')}
                 control={control}
                 name='highStartCurrent'
             />
             <FormCheckbox
-                label={/*t('LOAD.IS_ZEROED')*/'todo'}
+                label={t('LOAD.IS_ZEROED')}
                 control={control}
                 name='zeroed'
             />
@@ -130,7 +133,6 @@ export const LoadView = <T extends FieldValues,>({
                     onPowerChange?.(v);
                     setModalOpen(false);
                 }} />
-                // t('COMMON.LIGHT_POWER_SELECTOR')
             )}
         </StyledCol>
     );

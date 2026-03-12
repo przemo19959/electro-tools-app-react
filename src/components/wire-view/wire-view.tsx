@@ -14,8 +14,6 @@ enum WireView_TestIDs {
 }
 
 type WireViewProps<T extends FieldValues> = Pick<RawWireViewProps<T>, 'control' | 'errors'> & {
-    // control: Control<T, any, T>;
-    // errors: FieldErrors<T>;
     voltageDropIndicator: ReactNode;
     context: ElectricElementContext;
     impedanceIndicator: ReactNode;

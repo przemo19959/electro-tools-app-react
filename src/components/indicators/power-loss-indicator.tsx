@@ -1,6 +1,7 @@
 import { useTheme } from "@mui/material";
 import { IndicatorWrapper } from "./indicator-wrapper";
 import { StyledIndicatorText } from "./styles";
+import { useTranslation } from "react-i18next";
 
 type PowerLossIndicatorProps = {
     loss: number;
@@ -9,14 +10,13 @@ type PowerLossIndicatorProps = {
 export const PowerLossIndicator = ({
     loss,
 }: PowerLossIndicatorProps) => {
-    // const { t } = useTranslation();
+    const { t } = useTranslation();
     const { palette } = useTheme();
 
-    // t('WIRE.POWER_LOSS_INF0')
     return (
         <IndicatorWrapper
             color={palette.warning.main}
-            tooltipContent={'TODO'}
+            tooltipContent={t('WIRE.POWER_LOSS_INF0')}
         >
             <StyledIndicatorText>P<sub>loss</sub>[W]</StyledIndicatorText>
             <StyledIndicatorText>{loss.toFixed(2)}</StyledIndicatorText>

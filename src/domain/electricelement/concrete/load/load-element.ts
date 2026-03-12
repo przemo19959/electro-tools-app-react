@@ -101,7 +101,7 @@ export class LoadElement extends ElectricElement {
             data.parentId,
             Wire.createFromRaw(data.wire),
             data.label,
-            data.messages ?? [],
+            [...(data.messages ?? [])],
             (data.children ?? []).map((v: ElectricElement) => v.clone()),
             { ...data.context },
             data.drawPower,
