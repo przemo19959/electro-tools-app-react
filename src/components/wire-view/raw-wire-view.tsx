@@ -8,17 +8,19 @@ import styled from "@emotion/styled";
 import { FormTextField } from "../form-text-field/form-text-field";
 import { FormSelect } from "../form-select/form-select";
 import { useTranslation } from 'react-i18next';
+import { createTestIDsForComponent } from "../../utils/common-utils";
 
 export const MAX_CAPACITY_FORM_KEY = 'wire.maxCapacity';
 
-enum RawWireView_TestIDs {
-    placement = 'placement',
-    type = 'type',
-    phase = 'phase',
-    diameter = 'diameter',
-    length = 'length',
-    capacity = 'capacity',
-};
+const RawWireView_TestIDs = createTestIDsForComponent('RawWireView', [
+    'title',
+    'placement',
+    'type',
+    'phase',
+    'diameter',
+    'length',
+    'capacity',
+]);
 
 export type RawWireViewProps<T extends FieldValues> = {
     control: Control<T, any, T>;
@@ -41,7 +43,7 @@ export const RawWireView = <T extends FieldValues,>({
         <StyledCol>
             <StyledRow style={{ gap: 0 }}>
                 {titlePrependSlot}
-                <StyledTitle>{t('TITLES.WIRE')}</StyledTitle>
+                <StyledTitle data-cy={RawWireView_TestIDs.title}>{t('TITLES.WIRE')}</StyledTitle>
                 {titleAppendSlot}
             </StyledRow>
             <StyledRow>

@@ -11,6 +11,7 @@ import { PhaseType } from "../../currenttable/enums/PhaseType";
 import { Wire } from "../../wire/wire";
 import cloneDeep from "lodash.clonedeep";
 import merge from "lodash.merge";
+import {it, expect} from 'vitest'
 
 describe('Electric element tests', () => {
     it('should collect values corretly through collector', () => {

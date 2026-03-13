@@ -2,6 +2,12 @@ import { InputAdornment, MenuItem, TextField, Tooltip, type TextFieldProps } fro
 import { Controller, type Control, type FieldErrors, type FieldValues, type Path } from "react-hook-form";
 import HelpIcon from '@mui/icons-material/Help';
 import type { ReactNode } from "react";
+import { createTestIDsForComponent } from "../../utils/common-utils";
+
+const FormSelect_TestIDs = createTestIDsForComponent('FormSelect', [
+    'endAdornment',
+    'item',
+]);
 
 type FormSelectProps<T, R extends FieldValues> = {
     label: string;
@@ -55,7 +61,7 @@ export const FormSelect = <T, R extends FieldValues>({
                         input: {
                             endAdornment: (
                                 // extra margin required, so that select arrow is not overlapping this end adornment
-                                <InputAdornment position="end" style={{marginRight: '16px'}}>
+                                <InputAdornment position="end" style={{marginRight: '16px'}} data-cy={FormSelect_TestIDs.endAdornment}>
                                     {appendSlot}
                                     {tooltip && (
                                         <Tooltip title={tooltip}>
@@ -70,7 +76,7 @@ export const FormSelect = <T, R extends FieldValues>({
                     disabled={disabled}
                     style={{ flex: 1 }}
                 >
-                    {items.map(v => (<MenuItem key={idMapper(v)} value={idMapper(v)}>{textMapper(v)}</MenuItem>))}
+                    {items.map(v => (<MenuItem key={idMapper(v)} value={idMapper(v)} data-cy={FormSelect_TestIDs.item}>{textMapper(v)}</MenuItem>))}
                 </TextField>
             );
         }} />

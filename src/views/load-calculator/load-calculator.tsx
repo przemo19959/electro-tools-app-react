@@ -64,8 +64,9 @@ export const LoadCalculator = () => {
                         C
                     </StyledAvatar>
                 }
-                title={t('LOAD_CALC')}
-                subheader={t('LOAD_CALC_SUBHEADER')}
+                title={t('TITLES.LOAD_CALC')}
+                subheader={t('TITLES.LOAD_CALC_SUBHEADER')}
+                data-cy="load_calculator_header"
             />
             <StyledCardContent>
                 <WireView

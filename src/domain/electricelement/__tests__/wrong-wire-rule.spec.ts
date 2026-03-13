@@ -3,6 +3,7 @@ import { WireDiameter } from "../../currenttable/enums/WireDiameter";
 import { MessageKey } from "../../elementmessage/element-message";
 import { Wire } from "../../wire/wire";
 import { LoadElement } from "../concrete/load/load-element";
+import {it, expect} from 'vitest';
 
 describe('WrongWireRule', () => {
     it(`should not add ${MessageKey.WRONG_WIRE_DIAMETER.id} when wire is ok`, () => {

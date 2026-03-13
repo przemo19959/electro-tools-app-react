@@ -93,7 +93,7 @@ export const Projects = () => {
                     onDelete={() => {
                         if (v.id) {
                             setDeleteProjectIds([v.id]);
-                            setDeleteModalMessage(t('QUESTIONS.DELETE_PROJECT'));
+                            setDeleteModalMessage(t('QUESTIONS.DELETE_PROJECT', { projectName: v.name }));
                         }
                     }}
                 />

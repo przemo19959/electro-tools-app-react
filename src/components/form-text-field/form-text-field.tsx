@@ -3,8 +3,12 @@ import { Controller, type Control, type FieldError, type FieldValues, type Path 
 import ClearIcon from '@mui/icons-material/Clear';
 import HelpIcon from '@mui/icons-material/Help';
 import type { ReactNode } from "react";
-import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
+import { createTestIDsForComponent } from "../../utils/common-utils";
+
+const FormTextField_TestIDs = createTestIDsForComponent('FormTextField', [
+    'endAdornment',
+]);
 
 type FormTextFieldProps<T extends FieldValues> = {
     label: string;
@@ -44,7 +48,6 @@ export const FormTextField = <T extends FieldValues,>({
             control={control}
             render={({ field, fieldState }) => {
                 const hasError = Boolean(fieldState.error);
-
                 return (
                     <TextField
                         label={label}
@@ -59,20 +62,18 @@ export const FormTextField = <T extends FieldValues,>({
                         slotProps={{
                             input: {
                                 endAdornment: (
-                                    <InputAdornment position="end">
-                                        <StyledRow>
-                                            {appendSlot}
-                                            {tooltip && (
-                                                <Tooltip title={tooltip}>
-                                                    <HelpIcon style={{ margin: '5px' }} />
-                                                </Tooltip>
-                                            )}
-                                            {field.value && (
-                                                <IconButton onClick={() => field.onChange('')} size="small">
-                                                    <ClearIcon />
-                                                </IconButton>
-                                            )}
-                                        </StyledRow>
+                                    <InputAdornment position="end" data-cy={FormTextField_TestIDs.endAdornment}>
+                                        {appendSlot}
+                                        {tooltip && (
+                                            <Tooltip title={tooltip}>
+                                                <HelpIcon style={{ margin: '5px' }} />
+                                            </Tooltip>
+                                        )}
+                                        {field.value && (
+                                            <IconButton onClick={() => field.onChange('')} size="small">
+                                                <ClearIcon />
+                                            </IconButton>
+                                        )}
                                     </InputAdornment>
                                 ),
                             },
@@ -85,8 +86,3 @@ export const FormTextField = <T extends FieldValues,>({
             }} />
     );
 }
-
-const StyledRow = styled.div`
-    display: flex;
-    align-items: center;
-`

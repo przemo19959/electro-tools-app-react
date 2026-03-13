@@ -8,6 +8,7 @@ import { PhaseType } from '../../currenttable/enums/PhaseType';
 import { WireDiameter } from '../../currenttable/enums/WireDiameter';
 import { MessageKey } from '../../elementmessage/element-message';
 import { Wire } from '../../wire/wire';
+import {it, expect} from 'vitest'
 
 describe('SelfTurnOffRule', () => {
     it('case 1 - positive one', () => {

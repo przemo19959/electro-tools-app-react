@@ -3,6 +3,7 @@ import uuid from 'react-native-uuid';
 import { TerminalElement } from "./terminal-element";
 import { TerminalType } from "./terminal-type";
 import { MessageKey } from "../../../elementmessage/element-message";
+import {it, expect} from 'vitest';
 
 describe('ZeroedRule', () => {
     it('should work fine on TN-C', () => {

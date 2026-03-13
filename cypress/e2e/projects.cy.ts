@@ -277,7 +277,7 @@ describe('template spec', () => {
 
     cy.get('#root p:nth-child(4)').should('have.text', '1–10 of 20');
     cy.get('tr:nth-of-type(1) [data-testid="DeleteIcon"] path').click();
-    cy.get('[data-cy="confirm_modal_text"]').should('have.text', 'Do you want to delete project Project 1001?');
+    cy.get('[data-cy="confirm_modal_text"]').should('have.text', 'Do you want to delete project: Project 1001?');
     cy.get('[data-cy="confirm_modal_cancel_btn"]').click();
     cy.get('tr:nth-child(1) [data-cy="name_data_cell"]').should('have.text', 'Project 1001');
     cy.get('tr:nth-of-type(1) [data-testid="DeleteIcon"] path').click();
@@ -325,7 +325,7 @@ describe('template spec', () => {
     cy.get('[data-cy="selection-count-label"]').should('have.text', '2 selected');
 
     cy.get('button[aria-label="Delete"] path').click();
-    cy.get('[data-cy="confirm_modal_text"]').should('have.text', 'Do you want to delete 2 project(s)?');
+    cy.get('[data-cy="confirm_modal_text"]').should('have.text', 'Are you sure you want to delete 2 project(s)?');
     cy.get('[data-cy="confirm_modal_apply_btn"]').click();
     cy.get('#root p:nth-child(4)').should('have.text', '1–10 of 17');
 

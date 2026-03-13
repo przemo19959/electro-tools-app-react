@@ -1,8 +1,8 @@
 import { LightKind, type RoomType } from "../types";
+import {it, expect} from 'vitest'
 
 describe('light-power-selector types spec', () => {
-
-    test.each([
+    it.each([
         [18.8, 'CORRIDOR_OR_UTILITY', '299.407'],
         [9.1, 'CORRIDOR_OR_UTILITY', '144.926'],
         [0, 'CORRIDOR_OR_UTILITY', '0.000'],

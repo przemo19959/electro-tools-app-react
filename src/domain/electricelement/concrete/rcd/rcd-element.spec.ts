@@ -5,6 +5,7 @@ import { TerminalElement } from "../terminal/terminal-element";
 import { TerminalType } from "../terminal/terminal-type";
 import { RcdElement } from "./rcd-element";
 import uuid from 'react-native-uuid';
+import {it, expect} from 'vitest';
 
 describe('rcd element tests', () => {
     it('case 1 - when nominal current is lower than wire capacity', () => {

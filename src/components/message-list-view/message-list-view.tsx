@@ -2,6 +2,11 @@ import styled from "@emotion/styled";
 import { ElementMessage } from "../../domain/elementmessage/element-message";
 import { css, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { createTestIDsForComponent, joinTestIDs } from "../../utils/common-utils";
+
+const MessageListView_TestIDs = createTestIDsForComponent('MessageListView', [
+    'message_text',
+]);
 
 type Props = {
     messages: ElementMessage[];
@@ -16,7 +21,7 @@ export const MessageListView = ({ messages }: Props) => {
             {messages.map(v => (
                 <StyledRow key={v.id} style={{ alignItems: 'center' }}>
                     {v.key.type.sign}
-                    <StyledText color={v.key.type.fromPalette(palette)}>
+                    <StyledText color={v.key.type.fromPalette(palette)} data-cy={joinTestIDs(MessageListView_TestIDs.message_text, v.id)}>
                         {t(v.key.translationKey(), v.params)}
                     </StyledText>
                 </StyledRow>

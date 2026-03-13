@@ -6,6 +6,7 @@ import { PhaseType } from "../../../currenttable/enums/PhaseType";
 import { WireDiameter } from "../../../currenttable/enums/WireDiameter";
 import { MessageKey } from "../../../elementmessage/element-message";
 import { Wire } from "../../../wire/wire";
+import {it, expect} from 'vitest'
 
 describe('OvercurrentProtectionRule', () => {
     it(`should add ${MessageKey.WRONG_OVERCURRENT_PROTECTION.id} when neccessary`, function () {

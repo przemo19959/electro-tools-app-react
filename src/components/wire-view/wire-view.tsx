@@ -5,13 +5,14 @@ import { VoltageDropIndicator } from "../indicators/voltage-drop-indicator";
 import { RawWireView, type RawWireViewProps } from "./raw-wire-view";
 import type { ElectricElementContext } from "../../domain/electricelement/types";
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
-import styled from "@emotion/styled";
 import type { FieldValues } from "react-hook-form";
+import { createTestIDsForComponent } from "../../utils/common-utils";
 
-enum WireView_TestIDs {
-    voltageIndicator = 'WireView_voltageIndicator',
-    impedanceIndicator = 'WireView_impedanceIndicator',
-}
+const WireView_TestIDs = createTestIDsForComponent('WireView', [
+    'voltageIndicator',
+    'impedanceIndicator',
+    'fieldIndicatorSlot',
+]);
 
 type WireViewProps<T extends FieldValues> = Pick<RawWireViewProps<T>, 'control' | 'errors'> & {
     voltageDropIndicator: ReactNode;
@@ -46,13 +47,8 @@ export const WireView = <T extends FieldValues,>({
                 <ImpedanceIndicator {...context} variant='PARENT' testID={WireView_TestIDs.impedanceIndicator} />
             </>
         )}
-        fieldIndicatorSlot={<StyledRow>
+        fieldIndicatorSlot={<>
             {voltageDropIndicator}
             {impedanceIndicator}
-        </StyledRow>} />
+        </>} />
 );
-
-const StyledRow = styled.div`
-    display: flex;
-    align-items: center;
-`

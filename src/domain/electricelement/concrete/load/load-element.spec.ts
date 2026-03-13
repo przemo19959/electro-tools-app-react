@@ -4,6 +4,7 @@ import { LoadElement } from "./load-element";
 import { PhaseType } from "../../../currenttable/enums/PhaseType";
 import { MessageKey } from "../../../elementmessage/element-message";
 import uuid from 'react-native-uuid';
+import {it, expect} from 'vitest'
 
 describe('LoadElement tests', () => {
     it('line current is calculated corretly for single phase connection', () => {

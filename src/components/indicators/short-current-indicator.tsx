@@ -29,7 +29,7 @@ export const ShortCurrentIndicator = ({
                 })}
         >
             <StyledIndicatorText >I<sub>sh</sub>[A]</StyledIndicatorText>
-            <StyledIndicatorText >{shortCurrent.toFixed(0)}</StyledIndicatorText>
+            <StyledIndicatorText data-cy="short_current_indicator_value">{shortCurrent.toFixed(0)}</StyledIndicatorText>
         </IndicatorWrapper>
     );
 }

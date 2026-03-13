@@ -19,7 +19,7 @@ export const PowerLossIndicator = ({
             tooltipContent={t('WIRE.POWER_LOSS_INF0')}
         >
             <StyledIndicatorText>P<sub>loss</sub>[W]</StyledIndicatorText>
-            <StyledIndicatorText>{loss.toFixed(2)}</StyledIndicatorText>
+            <StyledIndicatorText data-cy="power_loss_indicator_value">{loss.toFixed(2)}</StyledIndicatorText>
         </IndicatorWrapper>
     );
 };

@@ -19,7 +19,7 @@ export const ProjectActions = ({
     const { t } = useTranslation();
     return (
         <StyledRow>
-            <Tooltip title={t('PROJECTS.GO_TO_PLANNER')}>
+            <Tooltip title={t('COMMON.GO_TO_PLANNER')}>
                 <IconButton
                     aria-label="planner"
                     size="small"
@@ -31,7 +31,7 @@ export const ProjectActions = ({
                     <SchemaIcon />
                 </IconButton>
             </Tooltip>
-            <Tooltip title={t('PROJECTS.EDIT')}>
+            <Tooltip title={t('COMMON.EDIT')}>
                 <IconButton
                     aria-label="edit"
                     size="small"
@@ -43,7 +43,7 @@ export const ProjectActions = ({
                     <EditIcon />
                 </IconButton>
             </Tooltip>
-            <Tooltip title={t('PROJECTS.DELETE')}>
+            <Tooltip title={t('COMMON.DELETE')}>
                 <IconButton
                     aria-label="delete"
                     size="small"

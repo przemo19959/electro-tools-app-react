@@ -131,11 +131,11 @@ const resources = {
             "QUESTIONS": {
                 "SINGLE_ELEMENT_DELETE": 'Are you sure you want to delete this element?',
                 "MULTI_ELEMENT_DELETE": 'This element has {{childrenCount}} more connected elements! Are you sure you want to delete them all?',
-                "DELETE_PROJECT": 'Do you want to delete project: {{projectName}}',
+                "DELETE_PROJECT": 'Do you want to delete project: {{projectName}}?',
                 "UNSAVED_CHANGES": 'There are unsaved changed? Are you sure you want to go back and lose them?',
                 "DELETE_ORPHANS": 'Are you sure you want to delete all items assigned to non-existent projects?',
                 'RESET_MIGRATIONS': 'Are you sure you want to reset database migrations? All data will be lost!',
-                "DELETE_MULTI_PROJECT": 'Are you sure you want to delete {{count}} projects?',
+                "DELETE_MULTI_PROJECT": 'Are you sure you want to delete {{count}} project(s)?',
             },
             "COMMON": {
                 "LOADING": 'Loading...',
@@ -323,7 +323,7 @@ const resources = {
             "QUESTIONS": {
                 "SINGLE_ELEMENT_DELETE": 'Na pewno chcesz usunąć wskazany element?',
                 "MULTI_ELEMENT_DELETE": 'Ten element posiada {{childrenCount}} podłączonych dalej elementów! Na pewno chcesz usunąć je wszystkie?',
-                "DELETE_PROJECT": 'Na pewno chcesz usunąć projekt: {{projectName}}',
+                "DELETE_PROJECT": 'Na pewno chcesz usunąć projekt: {{projectName}}?',
                 "UNSAVED_CHANGES": 'Istnieją niezapisane zmiany! Na pewno chcesz się wykonać operację i utracić je?',
                 "DELETE_ORPHANS": 'Czy na pewno chcesz usunąć wszystkie elementy przypisane do nie istniejących projektów?',
                 'RESET_MIGRATIONS': 'Czy na pewno chcesz zresetować migracje bazodanowe? Wszystkie dane zostaną utracone!',

@@ -1,5 +1,10 @@
 import { Checkbox, FormControlLabel } from "@mui/material";
 import { Controller, type Control, type FieldValues, type Path } from "react-hook-form";
+import { createTestIDsForComponent } from "../../utils/common-utils";
+
+const FormCheckbox_TestIDs = createTestIDsForComponent('FormCheckbox', [
+    'checkbox',
+]);
 
 type FormCheckboxProps<T extends FieldValues> = {
     label: string;
@@ -27,6 +32,7 @@ export const FormCheckbox = <T extends FieldValues,>({
                                 slotProps={{
                                     input: { 'aria-label': 'controlled' },
                                 }}
+                                data-cy={FormCheckbox_TestIDs.checkbox}
                             />
                         }
                         label={label}

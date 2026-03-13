@@ -16,6 +16,7 @@ export const StyledCardContent = styled(CardContent)`
     flex: 1;
     min-height:0;
     gap: .5rem;
+    overflow: auto;
 `
 
 export const StyledCardHeader = styled(CardHeader)`

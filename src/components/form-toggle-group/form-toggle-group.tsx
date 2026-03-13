@@ -1,6 +1,11 @@
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import type { ReactNode } from "react";
 import { Controller, type Control, type FieldValues, type Path } from "react-hook-form";
+import { createTestIDsForComponent, joinTestIDs } from "../../utils/common-utils";
+
+const FormToggleGroup_TestIDs = createTestIDsForComponent('FormToggleGroup', [
+    'button',
+]);
 
 type FormToggleGroupProps<T, R extends FieldValues> = {
     name: string;
@@ -32,17 +37,20 @@ export const FormToggleGroup = <T, R extends FieldValues>({
                         onChange={(_e, value) => {
                             const item = buttons.find(v => idMapper(v.value) === value);
                             console.log(item, value);
-                            
+
                             if (item) {
                                 field.onChange(item.value);
                             }
                         }}
                     >
-                        {buttons.map(v => (
-                            <ToggleButton value={idMapper(v.value)}>
-                                {v.label}
-                            </ToggleButton>
-                        ))}
+                        {buttons.map(v => {
+                            const id = idMapper(v.value);
+                            return (
+                                <ToggleButton value={id} data-cy={joinTestIDs(FormToggleGroup_TestIDs.button, id)}>
+                                    {v.label}
+                                </ToggleButton>
+                            );
+                        })}
                     </ToggleButtonGroup>
                 );
             }}

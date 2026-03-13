@@ -13,6 +13,12 @@ import BoltIcon from '@mui/icons-material/Bolt';
 import { FormCheckbox } from "../form-checkbox/form-checkbox";
 import { LightPowerSelector } from "../light-power-selector/light-power-selector";
 import { useTranslation } from "react-i18next";
+import { createTestIDsForComponent } from "../../utils/common-utils";
+
+const LoadView_TestIDs = createTestIDsForComponent('LoadView', [
+    'title',
+    'lightPowerSelectorBtn',
+]);
 
 type LoadViewProps<T extends FieldValues,> = {
     load: LoadElement;
@@ -33,7 +39,7 @@ export const LoadView = <T extends FieldValues,>({
     return (
         <StyledCol>
             <StyledRow>
-                <StyledTitle>{t('TITLES.LOAD')}</StyledTitle>
+                <StyledTitle data-cy={LoadView_TestIDs.title}>{t('TITLES.LOAD')}</StyledTitle>
             </StyledRow>
             <StyledRow>
                 <FormTextField
@@ -44,7 +50,7 @@ export const LoadView = <T extends FieldValues,>({
                     appendSlot={(<>
                         {voltageDropIndicator}
                         <Tooltip title={t('COMMON.LIGHT_POWER_SELECTOR')}>
-                            <IconButton onClick={() => setModalOpen(true)} size="small">
+                            <IconButton onClick={() => setModalOpen(true)} size="small" data-cy={LoadView_TestIDs.lightPowerSelectorBtn}>
                                 <BoltIcon color="info" />
                             </IconButton>
                         </Tooltip>

@@ -1,4 +1,5 @@
 import { CommonUtils } from "./common-utils";
+import {it, expect} from 'vitest'
 
 describe('commons', () => {
     it('remove alphabet works fine', () => {
