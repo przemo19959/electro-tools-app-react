@@ -10,6 +10,7 @@ import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle } 
 import styled from "@emotion/styled";
 import { ModalTransition } from "../modals/modal-transition";
 import { useTranslation } from "react-i18next";
+import { createTestIDsForComponent } from "../../utils/common-utils";
 
 const EFFICIENCY_FIELD_KEY = 'efficiency';
 const LIGHT_SELECTOR_SCHEMA = z.object({
@@ -39,15 +40,15 @@ const LIGHT_SELECTOR_SCHEMA = z.object({
         }
     });
 
-enum LightPowerSelector_TestIDs {
-    roomType = 'roomType',
-    lightKind = 'lightKind',
-    efficiency = 'efficiency',
-    avgTouchable = 'avgTouchable',
-    roomArea = 'roomArea',
-    requiredPower = 'requiredPower',
-    acceptBtn = 'acceptBtn',
-};
+const LightPowerSelector_TestIDs = createTestIDsForComponent('LightPowerSelector', [
+    'roomType',
+    'lightKind',
+    'efficiency',
+    'avgTouchable',
+    'roomArea',
+    'requiredPower',
+    'acceptBtn',
+]);
 
 type LightPowerSelectorForm = z.infer<typeof LIGHT_SELECTOR_SCHEMA>
 

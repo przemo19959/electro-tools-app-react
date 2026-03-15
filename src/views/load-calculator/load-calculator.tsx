@@ -37,8 +37,6 @@ export const LoadCalculator = () => {
 
     useEffect(() => {
         const subscription = watch((value, { name }) => {
-            console.log(value, name);
-
             const tmp = LoadElement.createFromRaw(value);
             if (name !== MAX_CAPACITY_FORM_KEY && name?.startsWith("wire.")) {
                 setValue(MAX_CAPACITY_FORM_KEY, CurrentTable.findLoadCapacityByWire(tmp.wire).orElse(0), { shouldValidate: true });

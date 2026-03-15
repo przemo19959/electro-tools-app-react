@@ -18,6 +18,7 @@ import { createTestIDsForComponent } from "../../utils/common-utils";
 const LoadView_TestIDs = createTestIDsForComponent('LoadView', [
     'title',
     'lightPowerSelectorBtn',
+    'load_config',
 ]);
 
 type LoadViewProps<T extends FieldValues,> = {
@@ -120,6 +121,7 @@ export const LoadView = <T extends FieldValues,>({
                                     label: <StarIcon />
                                 }
                             ]}
+                            testID={LoadView_TestIDs.load_config}
                         />
                     </>
                 )}

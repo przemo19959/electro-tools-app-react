@@ -49,7 +49,7 @@ export type BasicForm = z.infer<typeof BASIC_SCHEMA>;
 
 export const LOAD_SCHEMA = z.object({
     drawPower: z.number(),
-    powerFactor: z.number().min(0).max(1),
+    powerFactor: z.number().min(0.1).max(1),
     highStartCurrent: z.boolean().optional(),
     zeroed: z.boolean().optional(),
     config: z.enum(LOAD_CONFIG_VALUES),

@@ -69,7 +69,7 @@ export const FormTextField = <T extends FieldValues,>({
                                                 <HelpIcon style={{ margin: '5px' }} />
                                             </Tooltip>
                                         )}
-                                        {field.value && (
+                                        {String(field.value) && !disabled && (
                                             <IconButton onClick={() => field.onChange('')} size="small">
                                                 <ClearIcon />
                                             </IconButton>

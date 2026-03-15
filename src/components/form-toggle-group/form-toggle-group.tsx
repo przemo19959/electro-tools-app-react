@@ -15,6 +15,7 @@ type FormToggleGroupProps<T, R extends FieldValues> = {
         label: ReactNode;
     }[];
     idMapper?: (v: T) => string;
+    testID: string;
 }
 
 export const FormToggleGroup = <T, R extends FieldValues>({
@@ -22,6 +23,7 @@ export const FormToggleGroup = <T, R extends FieldValues>({
     control,
     buttons,
     idMapper = (v: T) => String(v),
+    testID,
 }: FormToggleGroupProps<T, R>) => {
     return (
         <Controller
@@ -42,6 +44,7 @@ export const FormToggleGroup = <T, R extends FieldValues>({
                                 field.onChange(item.value);
                             }
                         }}
+                        data-cy={testID}
                     >
                         {buttons.map(v => {
                             const id = idMapper(v.value);
