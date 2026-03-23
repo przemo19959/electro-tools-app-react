@@ -121,7 +121,7 @@ describe('template spec', () => {
   });
 
   it('data is fetched and shown', () => {
-    cy.visit('/projects')
+    cy.visit('/projects').wait(1000).get('[data-cy="route-loader"]', { timeout: 20000 }).should('not.exist')  // Wait for loader to disappear
     cy.wait('@getProjectsPage');
     cy.contains('No Data').should('not.exist');
 
@@ -144,7 +144,7 @@ describe('template spec', () => {
   });
 
   it('data table selection works fine', () => {
-    cy.visit('/projects')
+    cy.visit('/projects').wait(1000).get('[data-cy="route-loader"]', { timeout: 20000 }).should('not.exist')  // Wait for loader to disappear
     cy.wait('@getProjectsPage');
     cy.contains('No Data').should('not.exist');
 
@@ -189,7 +189,7 @@ describe('template spec', () => {
   });
 
   it('create project flow works', () => {
-    cy.visit('/projects')
+    cy.visit('/projects').wait(1000).get('[data-cy="route-loader"]', { timeout: 20000 }).should('not.exist')  // Wait for loader to disappear
     cy.wait('@getProjectsPage');
     cy.contains('No Data').should('not.exist');
 
@@ -230,7 +230,7 @@ describe('template spec', () => {
   });
 
   it('update project flow works', () => {
-    cy.visit('/projects')
+    cy.visit('/projects').wait(1000).get('[data-cy="route-loader"]', { timeout: 20000 }).should('not.exist')  // Wait for loader to disappear
     cy.wait('@getProjectsPage');
     cy.contains('No Data').should('not.exist');
     cy.get('[data-testid="MenuIcon"] path').click(); //to hide sidenav and make all actions buttons visible
@@ -263,14 +263,14 @@ describe('template spec', () => {
       fixture: 'projects-empty-page.json',
     }).as('getEmptyProjectsPage');
 
-    cy.visit('/projects');
+    cy.visit('/projects').wait(1000).get('[data-cy="route-loader"]', { timeout: 20000 }).should('not.exist')  // Wait for loader to disappear;
     cy.wait('@getEmptyProjectsPage');
     cy.contains('No Data').should('be.visible');
     cy.get('tbody tr').should('have.length', 1); //cause there is row with No Data
   });
 
   it('delete single project flow', function () {
-    cy.visit('/projects')
+    cy.visit('/projects').wait(1000).get('[data-cy="route-loader"]', { timeout: 20000 }).should('not.exist')  // Wait for loader to disappear
     cy.wait('@getProjectsPage');
     cy.contains('No Data').should('not.exist');
     cy.get('[data-testid="MenuIcon"] path').click(); //to hide sidenav and make all actions buttons visible
@@ -309,7 +309,7 @@ describe('template spec', () => {
   });
 
   it('delete multi project flow', () => {
-    cy.visit('/projects')
+    cy.visit('/projects').wait(1000).get('[data-cy="route-loader"]', { timeout: 20000 }).should('not.exist')  // Wait for loader to disappear
     cy.wait('@getProjectsPage');
     cy.contains('No Data').should('not.exist');
     cy.get('[data-testid="MenuIcon"] path').click(); //to hide sidenav and make all actions buttons visible
