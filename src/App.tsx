@@ -7,6 +7,7 @@ import { Outlet } from 'react-router';
 import { OverlaySpinner } from './components/overlay-spinner/overlay-spinner';
 import { AlertStack } from './components/alert-stack/alert-stack';
 import styled from "@emotion/styled";
+import { AiChat } from './components/ai-chat/AiChat';
 
 function App() {
   const [sidenavOpen, setSidenavOpen] = useState(true);
@@ -37,6 +38,7 @@ function App() {
           <AlertStack />
         </StyledContainer>
       </StyledRow>
+      <AiChat />
       <OverlaySpinner />
     </div>
   )

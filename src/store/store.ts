@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import overlaySpinnerSlice from '../components/overlay-spinner/overlay-spinner-slice'
 import alertStackSlice, { alertListener } from '../components/alert-stack/alert-stack-slice'
+import aiChatSlice from '../components/ai-chat/ai-chat-slice'
 
 export const store = configureStore({
   reducer: {
     overlaySpinnerSlice,
     alertStackSlice,
+    aiChatSlice,
   },
   middleware: (gdm) => gdm().prepend(alertListener.middleware),
 })

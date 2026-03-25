@@ -34,6 +34,24 @@ export const theme = createTheme({
     borderRadius: 8,
   },
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        "*": {
+          scrollbarColor: "#4A525A #1E1E1E",
+        },
+        "*::-webkit-scrollbar-track": {
+          background: "#1E1E1E",
+        },
+        "*::-webkit-scrollbar-thumb": {
+          backgroundColor: "#4A525A",
+          borderRadius: "8px",
+          border: "2px solid #1E1E1E",
+        },
+        "*::-webkit-scrollbar-thumb:hover": {
+          backgroundColor: "#5A646D",
+        },
+      },
+    },
     MuiAppBar: {
       styleOverrides: {
         root: {
