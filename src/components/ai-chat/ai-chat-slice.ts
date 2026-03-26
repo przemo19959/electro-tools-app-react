@@ -12,10 +12,12 @@ export type AiChatMessage = {
 
 type AiChatState = {
     messages: AiChatMessage[];
+    lastPendingAiMessageIdx: number;
 };
 
 const initialState: AiChatState = {
     messages: [],
+    lastPendingAiMessageIdx: -1,
 };
 
 const createMessage = (content: string, sender: 'user' | 'ai', pending: boolean): AiChatMessage => {
@@ -36,11 +38,10 @@ const aiChatSlice = createSlice({
         addUserAndPendingAiMessage: (state, action: PayloadAction<string>) => {
             state.messages.push(createMessage(action.payload, 'user', false));
             state.messages.push(createMessage('', 'ai', true));
+            state.lastPendingAiMessageIdx = state.messages.length - 1;
         },
         appendToLastPendingAiMessage: (state, action: PayloadAction<string>) => {
-            const lastPendingAi = [...state.messages].reverse().find((message) =>
-                message.sender === 'ai' && message.pending,
-            );
+            const lastPendingAi = state.lastPendingAiMessageIdx !== -1 ? state.messages[state.lastPendingAiMessageIdx] : undefined;
 
             if (!lastPendingAi) {
                 console.error('No pending AI message found to append to.');
@@ -50,9 +51,7 @@ const aiChatSlice = createSlice({
             lastPendingAi.content += action.payload;
         },
         finalizeLastPendingAiMessage: (state) => {
-            const lastPendingAi = [...state.messages].reverse().find((message) =>
-                message.sender === 'ai' && message.pending,
-            );
+            const lastPendingAi = state.lastPendingAiMessageIdx !== -1 ? state.messages[state.lastPendingAiMessageIdx] : undefined;
 
             if (!lastPendingAi) {
                 console.error('No pending AI message found to finalize.');
@@ -61,9 +60,11 @@ const aiChatSlice = createSlice({
 
             lastPendingAi.pending = false;
             lastPendingAi.timestamp = dayjs().valueOf();
+            state.lastPendingAiMessageIdx = -1;
         },
         clearMessages: (state) => {
             state.messages = [];
+            state.lastPendingAiMessageIdx = -1;
         },
     },
 });

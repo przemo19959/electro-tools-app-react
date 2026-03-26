@@ -3,8 +3,6 @@ import styled from "@emotion/styled";
 import { Button, IconButton, TextField } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { useEffect, useRef, useState } from "react";
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
     addUserAndPendingAiMessage,
     aiChatMessages,
@@ -69,7 +67,6 @@ export const AiChat = () => {
     const [expanded, setExpanded] = useState<boolean>(false);
     const messages = useAppSelector(aiChatMessages);
     const [query, setQuery] = useState<string>('');
-    const [loading, setLoading] = useState<boolean>(false);
     const [showScrollButton, setShowScrollButton] = useState<boolean>(false);
     const contentRef = useRef<HTMLDivElement | null>(null);
     const shouldScrollAfterNextMessageRef = useRef<boolean>(false);
@@ -135,7 +132,6 @@ export const AiChat = () => {
         autoScrollActiveRef.current = true;
         dispatch(addUserAndPendingAiMessage(message));
         setQuery('');
-        setLoading(true);
 
         try {
             // Gemini stream temporarily replaced by local async generator for UI testing.
@@ -154,19 +150,19 @@ export const AiChat = () => {
             dispatch(finalizeLastPendingAiMessage());
         } finally {
             autoScrollActiveRef.current = false;
-            setLoading(false);
         }
     };
 
     return (
-        <StyledContainer onClick={(e) => {
+        <StyledContainer expanded={expanded} onClick={(e) => {
             e.stopPropagation();
             setExpanded(!expanded);
         }}>
             <StyledRow>
-                <div>AI Chat</div>
+                {autoScrollActiveRef.current ? <StyledSmartToyIcon /> : <SmartToyIcon />}
+                {expanded && <div>AI Chat</div>}
                 <div style={{ flex: 1 }} />
-                {messages.length > 0 && (
+                {expanded && messages.length > 0 && (
                     <IconButton
                         size="small"
                         onClick={(e) => {
@@ -177,15 +173,6 @@ export const AiChat = () => {
                         <ClearIcon />
                     </IconButton>
                 )}
-                <IconButton
-                    size="small"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        setExpanded(!expanded);
-                    }}
-                >
-                    {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                </IconButton>
             </StyledRow>
             <StyledContent ref={contentRef} expanded={expanded} onScroll={updateScrollButtonVisibility}>
                 <StyledCol>
@@ -195,7 +182,6 @@ export const AiChat = () => {
                             sender={v.sender}
                             ref={v.sender === 'user' ? lastUserMessageRef : null}
                         >
-                            {v.pending && <StyledSmartToyIcon />}
                             <div><strong>{v.sender === 'user' ? 'You' : 'AI'}:</strong> {v.content}</div>
                             {!v.pending && <StyledTimestamp>{dayjs(v.timestamp).format('YYYY-MM-DD HH:mm:ss')}</StyledTimestamp>}
                         </StyledMessage>
@@ -206,10 +192,10 @@ export const AiChat = () => {
                     <StyledTextField
                         onClick={e => e.stopPropagation()}
                         multiline
-                        disabled={loading}
+                        disabled={autoScrollActiveRef.current}
                         maxRows={4}
                         variant="standard"
-                        placeholder={loading ? 'Waiting for AI response...' : 'Ask me anything...'}
+                        placeholder={autoScrollActiveRef.current ? 'Waiting for AI response...' : 'Ask me anything...'}
                         fullWidth
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
@@ -221,6 +207,7 @@ export const AiChat = () => {
                             }
                         }}
                         inputRef={input => input && expanded && input.focus()}
+
                     />
                     <StyledScrollButton
                         visible={showScrollButton}
@@ -240,7 +227,7 @@ export const AiChat = () => {
     );
 };
 
-const StyledContainer = styled.div`
+const StyledContainer = styled.div<{ expanded: boolean }>`
     position: absolute;
     bottom: 1rem;
     right: 1rem;
@@ -253,11 +240,12 @@ const StyledContainer = styled.div`
         border: 1px solid ${theme.palette.divider};
         border-radius: 8px;
         padding: 1rem;
-        width: 500px;
         margin: 1rem;
     `}
 
     z-index: 1;
+    width: ${({ expanded }) => (expanded ? '500px' : '58px')};
+    transition: width 400ms ease;
 `;
 
 const StyledRow = styled.div`
@@ -269,12 +257,12 @@ const StyledRow = styled.div`
 
 const StyledSmartToyIcon = styled(SmartToyIcon)`
     @keyframes swing {
-        0%   { transform: translateX(0px) rotate(0deg); }
-        50%  { transform: translateX(300px)  rotate(180deg); }
-        100% { transform: translateX(0px) rotate(0deg); }
+        0%   { transform: translateY(0px); }
+        50%  { transform: translateY(-5px); }
+        100% { transform: translateY(0px); }
     }
 
-    animation: swing 1.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    animation: swing 0.75s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 `;
 
 const StyledTimestamp = styled.div`
@@ -348,7 +336,8 @@ const StyledScrollButton = styled(Button, {
     shouldForwardProp: (prop) => prop !== 'visible',
 }) <{ visible: boolean }>`
     position: absolute;
-    right: 0;
+    left: 50%;
+    transform: translateX(-50%);
     top: 0;
     z-index: 2;
 
@@ -358,7 +347,7 @@ const StyledScrollButton = styled(Button, {
         box-shadow: 0 10px 24px ${alpha(theme.palette.common.black, 0.18)};
         opacity: ${visible ? 1 : 0};
         pointer-events: ${visible ? 'auto' : 'none'};
-        transform: translate(0, ${visible ? '-rem' : '0'}) scale(${visible ? 1 : 0.96});
+        transform: translate(-50%, ${visible ? '-2rem' : '0'}) scale(${visible ? 1 : 0.96});
         transition: opacity 220ms ease, transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
             box-shadow 220ms ease;
 
