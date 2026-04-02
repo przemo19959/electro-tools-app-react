@@ -26,7 +26,7 @@ describe('template spec', () => {
   beforeEach(() => {
     projects = originalProjects;
 
-    cy.intercept('GET', '**/projects/page*', (req) => {
+    cy.intercept('POST', '**/projects/page*', (req) => {
       const page = Math.max(0, Number.parseInt(String(req.query.page ?? 0), 10) || 0);
       const size = Math.max(1, Number.parseInt(String(req.query.size ?? 10), 10) || 10);
       const search = String(req.query.query ?? req.query.search ?? '').trim().toLowerCase();
