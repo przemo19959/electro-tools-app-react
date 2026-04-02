@@ -138,7 +138,7 @@ describe('template spec', () => {
     cy.get('#root input[type="text"]').should('have.value', 'user11');
     cy.get('#root p:nth-child(4)').should('have.text', '1–1 of 1');
     cy.get('#root div[tabindex="0"]').should('have.text', '10');
-    cy.get('[data-testid="ClearIcon"]').click();
+    cy.get('[data-cy="search_clear_btn"]').click();
     cy.get('#root p:nth-child(4)').should('have.text', '1–10 of 20');
     cy.get('#root div[tabindex="0"]').should('have.text', '10');
   });
@@ -207,8 +207,8 @@ describe('template spec', () => {
     cy.get('[data-cy="edit_project_modal_name_tf"] input').click();
     cy.get('[data-cy="edit_project_modal_name_tf"] input').type('ddd');
     cy.get('[data-cy="edit_project_modal_name_tf"] input').should('have.value', 'ddd');
-    cy.get('[data-testid="ClearIcon"]').should('be.visible');
-    cy.get('[data-testid="ClearIcon"] path').click();
+    cy.get('[data-cy="edit_project_modal_name_tf:clear_btn"]').should('be.visible');
+    cy.get('[data-cy="edit_project_modal_name_tf:clear_btn"] path').click();
     cy.get('[data-cy="edit_project_modal_name_tf"] input').should('have.text', '');
 
     cy.get('[data-cy="edit_project_modal_apply_btn"]').click();
@@ -225,7 +225,7 @@ describe('template spec', () => {
     cy.get('[data-cy="search_tf"] input').click();
     cy.get('[data-cy="search_tf"] input').type('new');
     cy.get('[data-cy="name_data_cell"]').should('have.text', 'new');
-    cy.get('[data-testid="ClearIcon"]').click();
+    cy.get('[data-cy="search_clear_btn"]').click();
     cy.get('[data-cy="search_tf"] input').should('have.value', '');
   });
 
@@ -259,7 +259,7 @@ describe('template spec', () => {
   })
 
   it('shows empty state when API returns no projects', () => {
-    cy.intercept('GET', '**/projects/page*', {
+    cy.intercept('POST', '**/projects/page*', {
       fixture: 'projects-empty-page.json',
     }).as('getEmptyProjectsPage');
 

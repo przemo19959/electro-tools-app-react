@@ -48,7 +48,7 @@ export const Search = ({
                     endAdornment: (
                         <InputAdornment position="end">
                             {localValue && (
-                                <IconButton onClick={handleClear} size="small">
+                                <IconButton onClick={handleClear} size="small" data-cy="search_clear_btn">
                                     <ClearIcon />
                                 </IconButton>
                             )}

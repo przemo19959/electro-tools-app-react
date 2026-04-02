@@ -4,7 +4,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import HelpIcon from '@mui/icons-material/Help';
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { createTestIDsForComponent } from "../../utils/common-utils";
+import { createTestIDsForComponent, joinTestIDs } from "../../utils/common-utils";
 
 const FormTextField_TestIDs = createTestIDsForComponent('FormTextField', [
     'endAdornment',
@@ -70,7 +70,7 @@ export const FormTextField = <T extends FieldValues,>({
                                             </Tooltip>
                                         )}
                                         {String(field.value) && !disabled && (
-                                            <IconButton onClick={() => field.onChange('')} size="small">
+                                            <IconButton onClick={() => field.onChange('')} size="small" data-cy={joinTestIDs(testID, 'clear_btn')}>
                                                 <ClearIcon />
                                             </IconButton>
                                         )}
