@@ -125,6 +125,7 @@ export const AiChat = () => {
         });
 
         return () => cancelAnimationFrame(frameId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [expanded, messages]);
 
     const sendMessage = async (message: string) => {

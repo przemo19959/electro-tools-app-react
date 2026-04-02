@@ -9,6 +9,7 @@ type DataTableToolbarProps = {
     beforeSlot?: ReactNode;
     numSelected: number;
     onDeleteSelected?: () => void;
+    onFilterToggle?: () => void;
 }
 
 
@@ -16,6 +17,7 @@ export const DataTableToolbar = ({
     numSelected,
     beforeSlot,
     onDeleteSelected,
+    onFilterToggle,
 }: DataTableToolbarProps) => {
     return (
         <StyledContainer>
@@ -35,7 +37,7 @@ export const DataTableToolbar = ({
                     </Tooltip>
                 ) : (
                     <Tooltip title="Filter list">
-                        <IconButton>
+                        <IconButton onClick={onFilterToggle}>
                             <FilterListIcon />
                         </IconButton>
                     </Tooltip>

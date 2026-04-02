@@ -108,7 +108,8 @@ export interface UpdateRcdElementDto {
 }
 
 export interface UpdateProjectDto {
-  name?: string;
+  /** @minLength 1 */
+  name: string;
 }
 
 export interface ReadProjectDto {
@@ -233,7 +234,75 @@ export interface CreateRcdElementDto {
 }
 
 export interface CreateProjectDto {
-  name?: string;
+  /** @minLength 1 */
+  name: string;
+}
+
+export interface FilterColumnDto {
+  column?: string;
+  operator?:
+    | "STRING_EQ"
+    | "STRING_NOT_EQ"
+    | "STRING_IN"
+    | "STRING_NOT_IN"
+    | "NUMBER_EQ"
+    | "NUMBER_NOT_EQ"
+    | "NUMBER_GT"
+    | "NUMBER_GTE"
+    | "NUMBER_LT"
+    | "NUMBER_LTE"
+    | "NUMBER_IN"
+    | "NUMBER_NOT_IN"
+    | "DATE_EQ"
+    | "DATE_NOT_EQ"
+    | "DATE_BEFORE"
+    | "DATE_AFTER"
+    | "DATE_IN"
+    | "DATE_NOT_IN";
+  value?: string;
+}
+
+export interface FilterGroupDto {
+  operator?: "AND" | "OR";
+  columns?: FilterColumnDto[];
+  groups?: FilterGroupDto[];
+}
+
+export interface PageReadProjectDto {
+  /** @format int64 */
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+  /** @format int32 */
+  size?: number;
+  content?: ReadProjectDto[];
+  /** @format int32 */
+  number?: number;
+  pageable?: PageableObject;
+  sort?: SortObject;
+  /** @format int32 */
+  numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
+  empty?: boolean;
+}
+
+export interface PageableObject {
+  /** @format int64 */
+  offset?: number;
+  sort?: SortObject;
+  paged?: boolean;
+  /** @format int32 */
+  pageNumber?: number;
+  /** @format int32 */
+  pageSize?: number;
+  unpaged?: boolean;
+}
+
+export interface SortObject {
+  empty?: boolean;
+  sorted?: boolean;
+  unsorted?: boolean;
 }
 
 export interface CreateOvercurrentProtectionElementDto {
@@ -283,43 +352,6 @@ export interface CreateAbstractElementDto {
   wire?: CreateWireDto;
   /** @format uuid */
   projectId?: string;
-}
-
-export interface PageReadProjectDto {
-  /** @format int64 */
-  totalElements?: number;
-  /** @format int32 */
-  totalPages?: number;
-  /** @format int32 */
-  size?: number;
-  content?: ReadProjectDto[];
-  /** @format int32 */
-  number?: number;
-  sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
-  empty?: boolean;
-}
-
-export interface PageableObject {
-  /** @format int64 */
-  offset?: number;
-  paged?: boolean;
-  sort?: SortObject;
-  unpaged?: boolean;
-  /** @format int32 */
-  pageNumber?: number;
-  /** @format int32 */
-  pageSize?: number;
-}
-
-export interface SortObject {
-  empty?: boolean;
-  sorted?: boolean;
-  unsorted?: boolean;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -775,9 +807,10 @@ export class Api<
      *
      * @tags project-controller
      * @name PageAll
-     * @request GET:/api/v1/projects/page
+     * @request POST:/api/v1/projects/page
      */
     pageAll: (
+      data: FilterGroupDto,
       query?: {
         /**
          * Zero-based page index (0..N)
@@ -799,8 +832,10 @@ export class Api<
     ) =>
       this.request<PageReadProjectDto, any>({
         path: `/api/v1/projects/page`,
-        method: "GET",
+        method: "POST",
         query: query,
+        body: data,
+        type: ContentType.Json,
         ...params,
       }),
   };

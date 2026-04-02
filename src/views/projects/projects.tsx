@@ -15,6 +15,8 @@ import { HANDLE_ABORT_EXCEPTION } from "../../utils/api-utils";
 import { StyledAvatar, StyledCard, StyledCardContent, StyledCardHeader } from "../styles";
 import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
+import { type FilterGroupDto } from "../../api/api";
+import { DataTableFilters } from "../../components/data-table/data-table-filters";
 
 const onToggle = (project: ReadProjectDto, selection: string[]): string[] => {
     const key = `${project.id}`;
@@ -32,6 +34,11 @@ const onAllToggle = (selectAll: boolean, projects: ReadProjectDto[]): string[] =
         return [];
     }
 }
+const DEFAULT_FILTER: FilterGroupDto = {
+    operator: 'AND',
+    columns: [],
+    groups: [],
+};
 
 type EditProjectModalMode = 'CREATE' | 'EDIT' | 'NONE';
 
@@ -43,6 +50,8 @@ export const Projects = () => {
     const [pageSize, setPageSize] = useState(10);
     const [totalElements, setTotalElements] = useState<number>(0);
     const [projects, setProjects] = useState<ReadProjectDto[]>([]);
+    const [filterOpen, setFilterOpen] = useState(false);
+    const [filter, setFilter] = useState<FilterGroupDto>(DEFAULT_FILTER);
 
     const [editProjectModalMode, setEditProjectModalMode] = useState<EditProjectModalMode>('NONE');
     const [editedProject, setEditedProject] = useState<ReadProjectDto | undefined>(undefined);
@@ -62,6 +71,7 @@ export const Projects = () => {
         sort?: DataTableSort<ReadProjectDto>,
         query?: string,
     ) => pageAll(
+        filter,
         page,
         pageSize,
         sort,
@@ -70,7 +80,7 @@ export const Projects = () => {
         setTotalElements(v.totalElements ?? 0);
         setProjects(v.content ?? []);
     })
-        .catch(HANDLE_ABORT_EXCEPTION), [pageAll]);
+        .catch(HANDLE_ABORT_EXCEPTION), [pageAll, filter]);
 
     const columns: DataTableColumn<ReadProjectDto>[] = useMemo(() => [
         { key: 'name', label: t('PROJECTS_COL.PROJECT_NAME') },
@@ -108,7 +118,7 @@ export const Projects = () => {
     useEffect(() => {
         reload(page, pageSize, sort, query);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []); //this must be empty
+    }, []);
 
     return (
         <StyledCard>
@@ -148,7 +158,9 @@ export const Projects = () => {
                         setDeleteProjectIds(selection);
                         setDeleteModalMessage(t('QUESTIONS.DELETE_MULTI_PROJECT', { count: selection.length }));
                     }}
+                    onFilterToggle={() => setFilterOpen(prev => !prev)}
                 />
+                <DataTableFilters open={filterOpen} onClear={() => setFilter(DEFAULT_FILTER)} />
                 <DataTable
                     columns={columns}
                     items={projects}

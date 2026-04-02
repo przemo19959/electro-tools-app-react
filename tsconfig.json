@@ -9,7 +9,6 @@
     "module": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "jsx": "react-jsx",
-    "moduleResolution": "Node",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "erasableSyntaxOnly": false

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { type CreateProjectDto, type ReadProjectDto, type UpdateProjectDto } from "../../api/api"
+import { type CreateProjectDto, type FilterGroupDto, type ReadProjectDto, type UpdateProjectDto } from "../../api/api"
 import { decrement, increment } from "../../components/overlay-spinner/overlay-spinner-slice";
 import { ApiInstance } from "../../main";
 import { useAppDispatch } from "../../store/hooks";
@@ -18,13 +18,14 @@ export const useProjectApi = () => {
     }));
 
     const pageAll = (
+        filter: FilterGroupDto,
         page: number,
         pageSize: number,
         sort?: DataTableSort<ReadProjectDto>,
         query?: string,
     ) => {
         dispatch(increment());
-        return ApiInstance.projectController.pageAll({
+        return ApiInstance.projectController.pageAll(filter, {
             page,
             size: pageSize,
             sort: sort ? [`${sort.key},${sort.order}`] : undefined,
