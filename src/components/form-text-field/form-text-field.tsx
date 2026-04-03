@@ -1,25 +1,11 @@
-import { IconButton, InputAdornment, TextField, Tooltip, type TextFieldProps } from "@mui/material";
 import { Controller, type Control, type FieldError, type FieldValues, type Path } from "react-hook-form";
-import ClearIcon from '@mui/icons-material/Clear';
-import HelpIcon from '@mui/icons-material/Help';
-import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { createTestIDsForComponent, joinTestIDs } from "../../utils/common-utils";
-
-const FormTextField_TestIDs = createTestIDsForComponent('FormTextField', [
-    'endAdornment',
-]);
+import { BaseTextField, type BaseTextFieldProps } from "./base-text-field";
 
 type FormTextFieldProps<T extends FieldValues> = {
-    label: string;
     name: string;
     control: Control<T, any, T>;
-    testID: string;
-    type?: TextFieldProps['type'];
-    disabled?: TextFieldProps['disabled'];
-    tooltip?: string;
-    appendSlot?: ReactNode;
-}
+} & BaseTextFieldProps;
 
 export const FormTextField = <T extends FieldValues,>({
     label,
@@ -48,41 +34,18 @@ export const FormTextField = <T extends FieldValues,>({
             control={control}
             render={({ field, fieldState }) => {
                 const hasError = Boolean(fieldState.error);
-                return (
-                    <TextField
-                        label={label}
-                        variant="outlined"
-                        size="small"
-                        value={field.value}
-                        onChange={(v) => {
-                            field.onChange(type === 'number' ? Number(v.target.value) : v.target.value);
-                        }}
-                        error={hasError}
-                        helperText={hasError ? getMessage(fieldState.error) : ''}
-                        slotProps={{
-                            input: {
-                                endAdornment: (
-                                    <InputAdornment position="end" data-cy={FormTextField_TestIDs.endAdornment}>
-                                        {appendSlot}
-                                        {tooltip && (
-                                            <Tooltip title={tooltip}>
-                                                <HelpIcon style={{ margin: '5px' }} />
-                                            </Tooltip>
-                                        )}
-                                        {String(field.value) && !disabled && (
-                                            <IconButton onClick={() => field.onChange('')} size="small" data-cy={joinTestIDs(testID, 'clear_btn')}>
-                                                <ClearIcon />
-                                            </IconButton>
-                                        )}
-                                    </InputAdornment>
-                                ),
-                            },
-                        }}
-                        data-cy={testID}
-                        type={type}
-                        disabled={disabled}
-                        style={{ flex: 1 }} />
-                );
+                return <BaseTextField
+                    label={label}
+                    value={field.value}
+                    onChange={(value) => field.onChange(type === 'number' ? Number(value) : value)}
+                    error={hasError}
+                    helperText={hasError ? getMessage(fieldState.error) : ''}
+                    testID={testID}
+                    tooltip={tooltip}
+                    appendSlot={appendSlot}
+                    disabled={disabled}
+                    type={type}
+                />
             }} />
     );
 }

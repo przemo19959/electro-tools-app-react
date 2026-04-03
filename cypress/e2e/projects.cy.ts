@@ -192,30 +192,30 @@ describe('template spec', () => {
     cy.visit('/projects').wait(1000).get('[data-cy="route-loader"]', { timeout: 20000 }).should('not.exist')  // Wait for loader to disappear
     cy.wait('@getProjectsPage');
     cy.contains('No Data').should('not.exist');
-
+    
     //basic create project flow
     cy.get('[data-cy="create_project_btn"]').click();
     cy.get('[data-cy="edit_project_modal_title"]').should('be.visible');
     cy.get('[data-cy="edit_project_modal_title"]').should('have.text', 'Create project');
-
+    
     cy.get('[data-cy="edit_project_modal_apply_btn"]').click();
     cy.get('[data-cy="edit_project_modal_name_tf"] p:nth-child(3)').should('have.text', 'Field is required');
     cy.get('[data-cy="edit_project_modal_name_tf"] input').click();
-
+    
     cy.get('[data-cy="edit_project_modal_apply_btn"]').click();
     cy.get('[data-cy="edit_project_modal_name_tf"] p:nth-child(3)').should('have.text', 'Field is required');
     cy.get('[data-cy="edit_project_modal_name_tf"] input').click();
     cy.get('[data-cy="edit_project_modal_name_tf"] input').type('ddd');
     cy.get('[data-cy="edit_project_modal_name_tf"] input').should('have.value', 'ddd');
-    cy.get('[data-cy="edit_project_modal_name_tf:clear_btn"]').should('be.visible');
-    cy.get('[data-cy="edit_project_modal_name_tf:clear_btn"] path').click();
+    cy.get('[data-cy="edit_project_modal_name_tf:BaseTextField_TestIDs_clear_btn"] [data-testid="ClearIcon"]').should('be.visible');
+    cy.get('[data-cy="edit_project_modal_name_tf:BaseTextField_TestIDs_clear_btn"] path').click();
     cy.get('[data-cy="edit_project_modal_name_tf"] input').should('have.text', '');
-
+    
     cy.get('[data-cy="edit_project_modal_apply_btn"]').click();
     cy.get('[data-cy="edit_project_modal_name_tf"] p:nth-child(3)').should('have.text', 'Field is required');
     cy.get('[data-cy="edit_project_modal_cancel_btn"]').click();
     cy.get('[data-cy="edit_project_modal_title"]').should('not.exist');
-
+    
     //create new project and assert
     cy.get('[data-cy="create_project_btn"]').click();
     cy.get('[data-cy="edit_project_modal_name_tf"] input').click();

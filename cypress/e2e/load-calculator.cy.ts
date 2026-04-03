@@ -16,9 +16,9 @@ describe('template spec', () => {
     cy.get('[data-cy="power_loss_indicator_value"]').should('have.text', '8.79');
     cy.get('[data-cy="short_current_indicator_value"]').should('have.text', '1468');
     cy.get('[data-cy="RawWireView_TestIDs_length"] [data-cy="load_calculator:VoltageDropIndicator_TestIDs_text"]').should('have.text', '0.56');
-    cy.get('[data-cy="FormSelect_TestIDs_endAdornment"] [data-cy="load_calculator:VoltageDropIndicator_TestIDs_text"]').should('have.text', '0.56');
-    cy.get('[data-cy="FormTextField_TestIDs_endAdornment"] [data-cy="load_calculator:ImpedanceIndicator_TestIDs_text"]').should('have.text', '0.15');
-    cy.get('[data-cy="FormSelect_TestIDs_endAdornment"] [data-cy="load_calculator:ImpedanceIndicator_TestIDs_text"]').should('have.text', '0.15');
+    cy.get('[data-cy="RawWireView_TestIDs_diameter:BaseSelect_TestIDs_endAdornment"] [data-cy="load_calculator:VoltageDropIndicator_TestIDs_text"]').should('have.text', '0.56');
+    cy.get('[data-cy="RawWireView_TestIDs_length:BaseTextField_TestIDs_endAdornment"] [data-cy="load_calculator:ImpedanceIndicator_TestIDs_text"]').should('have.text', '0.15');
+    cy.get('[data-cy="RawWireView_TestIDs_diameter:BaseSelect_TestIDs_endAdornment"] [data-cy="load_calculator:ImpedanceIndicator_TestIDs_text"]').should('have.text', '0.15');
     cy.get('[data-cy="LoadView_TestIDs_title"]').should('have.text', 'Load settings');
     cy.get('[data-cy="draw_power_tf"] input').should('have.value', '2500');
     cy.get('[data-cy="draw_power_tf"] [data-cy="load_calculator:VoltageDropIndicator_TestIDs_text"]').should('have.text', '0.56');
@@ -42,24 +42,24 @@ describe('template spec', () => {
 
     //when changing wire diameter
     cy.get('[data-cy="RawWireView_TestIDs_diameter"]').click();
-    cy.get('[data-cy="FormSelect_TestIDs_item:D_25"]').click();
+    cy.get('[data-cy="RawWireView_TestIDs_diameter:BaseSelect_TestIDs_item:D_25"]').click();
     cy.get('[data-cy="MessageListView_TestIDs_message_text:TOO_BIG_WIRE_DIAMETER"]').should('be.visible');
     cy.get('[data-cy="RawWireView_TestIDs_diameter"] div[tabindex="0"]').should('have.text', '2.5');
     cy.get('[data-cy="RawWireView_TestIDs_capacity"] input').should('have.value', '24');
-    cy.get('[data-cy="FormSelect_TestIDs_endAdornment"] [data-cy="load_calculator:VoltageDropIndicator_TestIDs_text"]').should('have.text', '0.34');
-    cy.get('[data-cy="FormSelect_TestIDs_endAdornment"] [data-cy="load_calculator:ImpedanceIndicator_TestIDs_text"]').should('have.text', '0.09');
+    cy.get('[data-cy="RawWireView_TestIDs_diameter:BaseSelect_TestIDs_endAdornment"] [data-cy="load_calculator:VoltageDropIndicator_TestIDs_text"]').should('have.text', '0.34');
+    cy.get('[data-cy="RawWireView_TestIDs_diameter:BaseSelect_TestIDs_endAdornment"] [data-cy="load_calculator:ImpedanceIndicator_TestIDs_text"]').should('have.text', '0.09');
     cy.get('[data-cy="short_current_indicator_value"]').should('have.text', '2447');
     cy.get('[data-cy="power_loss_indicator_value"]').should('have.text', '5.27');
     cy.get('[data-cy="RawWireView_TestIDs_diameter"]').click();
-    cy.get('[data-cy="FormSelect_TestIDs_item:D_15"]').click();
+    cy.get('[data-cy="RawWireView_TestIDs_diameter:BaseSelect_TestIDs_item:D_15"]').click();
     cy.get('[data-cy="MessageListView_TestIDs_message_text:TOO_BIG_WIRE_DIAMETER"]').should('not.exist');
 
     //when changing multi wire params
     cy.get('[data-cy="RawWireView_TestIDs_placement"]').click();
-    cy.get('[data-cy="FormSelect_TestIDs_item:UNDER_PLASTER"]').click();
+    cy.get('[data-cy="RawWireView_TestIDs_placement:BaseSelect_TestIDs_item:UNDER_PLASTER"]').click();
     cy.get('[data-cy="RawWireView_TestIDs_capacity"] input').should('have.value', '15.5');
     cy.get('[data-cy="RawWireView_TestIDs_type"]').click();
-    cy.get('[data-cy="FormSelect_TestIDs_item:ONE_WIRE"]').click();
+    cy.get('[data-cy="RawWireView_TestIDs_type:BaseSelect_TestIDs_item:ONE_WIRE"]').click();
     cy.get('[data-cy="RawWireView_TestIDs_capacity"] input').should('have.value', '16.5');
 
     //when changing wire length
@@ -68,14 +68,14 @@ describe('template spec', () => {
     cy.get('[data-cy="RawWireView_TestIDs_length"] [data-cy="load_calculator:VoltageDropIndicator_TestIDs_text"]').should('have.text', '5.63');
     cy.get('[data-cy="power_loss_indicator_value"]').should('have.text', '87.91');
     cy.get('[data-cy="short_current_indicator_value"]').should('have.text', '147');
-    cy.get('[data-cy="FormTextField_TestIDs_endAdornment"] [data-cy="load_calculator:ImpedanceIndicator_TestIDs_text"]').should('have.text', '1.49');
+    cy.get('[data-cy="RawWireView_TestIDs_length:BaseTextField_TestIDs_endAdornment"] [data-cy="load_calculator:ImpedanceIndicator_TestIDs_text"]').should('have.text', '1.49');
     cy.get('[data-cy="MessageListView_TestIDs_message_text:TOO_BIG_VOLTAGE_DROP_THIS"]').should('be.visible');
 
     //when resolving voltage drop by increasing wire diameter
     cy.get('[data-cy="RawWireView_TestIDs_diameter"]').click();
-    cy.get('[data-cy="FormSelect_TestIDs_item:D_40"]').click();
-    cy.get('[data-cy="FormSelect_TestIDs_endAdornment"] [data-cy="load_calculator:VoltageDropIndicator_TestIDs_text"]').should('have.text', '2.11');
-    cy.get('[data-cy="FormSelect_TestIDs_endAdornment"] [data-cy="load_calculator:ImpedanceIndicator_TestIDs_text"]').should('have.text', '0.56');
+    cy.get('[data-cy="RawWireView_TestIDs_diameter:BaseSelect_TestIDs_item:D_40"]').click();
+    cy.get('[data-cy="RawWireView_TestIDs_diameter:BaseSelect_TestIDs_endAdornment"] [data-cy="load_calculator:VoltageDropIndicator_TestIDs_text"]').should('have.text', '2.11');
+    cy.get('[data-cy="RawWireView_TestIDs_diameter:BaseSelect_TestIDs_endAdornment"] [data-cy="load_calculator:ImpedanceIndicator_TestIDs_text"]').should('have.text', '0.56');
     cy.get('[data-cy="RawWireView_TestIDs_capacity"] input').should('have.value', '28');
     cy.get('[data-cy="power_loss_indicator_value"]').should('have.text', '32.97');
     cy.get('[data-cy="short_current_indicator_value"]').should('have.text', '392');
@@ -83,13 +83,13 @@ describe('template spec', () => {
 
     //go back and resolve by wire length decrease to max allowable
     cy.get('[data-cy="RawWireView_TestIDs_diameter"]').click();
-    cy.get('[data-cy="FormSelect_TestIDs_item:D_15"]').click();
+    cy.get('[data-cy="RawWireView_TestIDs_diameter:BaseSelect_TestIDs_item:D_15"]').click();
     cy.get('[data-cy="MessageListView_TestIDs_message_text:TOO_BIG_VOLTAGE_DROP_THIS"]').should('be.visible');
     cy.get('[data-cy="RawWireView_TestIDs_length"] input').click();
     cy.get('[data-cy="RawWireView_TestIDs_length"] input').clear();
     cy.get('[data-cy="RawWireView_TestIDs_length"] input').type('26.6');
     cy.get('[data-cy="RawWireView_TestIDs_length"] [data-cy="load_calculator:VoltageDropIndicator_TestIDs_text"]').should('have.text', '2.99');
-    cy.get('[data-cy="FormTextField_TestIDs_endAdornment"] [data-cy="load_calculator:ImpedanceIndicator_TestIDs_text"]').should('have.text', '0.79');
+    cy.get('[data-cy="RawWireView_TestIDs_length:BaseTextField_TestIDs_endAdornment"] [data-cy="load_calculator:ImpedanceIndicator_TestIDs_text"]').should('have.text', '0.79');
     cy.get('[data-cy="power_loss_indicator_value"]').should('have.text', '46.77');
     cy.get('[data-cy="short_current_indicator_value"]').should('have.text', '276');
   });
@@ -110,7 +110,7 @@ describe('template spec', () => {
     cy.get('[data-cy="power_factor_tf"] input').type('.1');
     cy.get('[data-cy="power_factor_tf"] p').should('not.exist');
     cy.get('[data-cy="power_factor_tf"] [data-testid="ClearIcon"]').click();
-    cy.get('[data-cy="power_factor_tf"] p').should('have.text', 'Invalid input: expected number, received string');
+    cy.get('[data-cy="power_factor_tf"] p').should('have.text', 'Too small: expected number to be >=0.1');
     cy.get('[data-cy="power_factor_tf"] input').click();
     cy.get('[data-cy="power_factor_tf"] input').type('2');
     cy.get('[data-cy="power_factor_tf"] p').should('have.text', 'Too big: expected number to be <=1');
@@ -121,7 +121,7 @@ describe('template spec', () => {
 
     //when changing to 3-phase wire
     cy.get('[data-cy="RawWireView_TestIDs_phase"]').click();
-    cy.get('[data-cy="FormSelect_TestIDs_item:THREE"]').click();
+    cy.get('[data-cy="RawWireView_TestIDs_phase:BaseSelect_TestIDs_item:THREE"]').click();
     cy.get('[data-cy="phase_current_tf"] input').should('be.visible');
     cy.get('[data-cy="line_current_tf"] input').should('have.value', '0.70');
     cy.get('[data-cy="phase_current_tf"] input').should('have.value', '0.70');
@@ -145,10 +145,10 @@ describe('template spec', () => {
 
     //on form changes
     cy.get('[data-cy="LightPowerSelector_TestIDs_roomType"]').click();
-    cy.get('[data-cy="FormSelect_TestIDs_item:CORRIDOR_OR_UTILITY"]').click();
+    cy.get('[data-cy="LightPowerSelector_TestIDs_roomType:BaseSelect_TestIDs_item:CORRIDOR_OR_UTILITY"]').click();
     cy.get('[data-cy="LightPowerSelector_TestIDs_requiredPower"] input').should('have.value', '93.48');
     cy.get('[data-cy="LightPowerSelector_TestIDs_lightKind"]').click();
-    cy.get('[data-cy="FormSelect_TestIDs_item:LINEAR_FLUORESCENT_LAMP"]').click();
+    cy.get('[data-cy="LightPowerSelector_TestIDs_lightKind:BaseSelect_TestIDs_item:LINEAR_FLUORESCENT_LAMP"]').click();
     cy.get('[data-cy="LightPowerSelector_TestIDs_avgTouchable:AvgEfficiencyIndicator_touchable"] span:nth-child(1)').should('be.visible');
     cy.get('[data-cy="LightPowerSelector_TestIDs_efficiency"] p').should('have.text', 'Outside range [45, 100]');
     cy.get('[data-cy="LightPowerSelector_TestIDs_efficiency"] input').click();
