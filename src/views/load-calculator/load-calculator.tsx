@@ -20,7 +20,6 @@ export const LoadCalculator = () => {
     const { t } = useTranslation();
     const {
         control,
-        formState: { errors },
         watch,
         setValue,
     } = useForm<WireForm & LoadForm>({
@@ -69,7 +68,6 @@ export const LoadCalculator = () => {
             <StyledCardContent>
                 <WireView
                     control={control}
-                    errors={errors}
                     voltageDropIndicator={voltageDropIndicator}
                     context={load.context}
                     impedanceIndicator={impedanceIndicator}

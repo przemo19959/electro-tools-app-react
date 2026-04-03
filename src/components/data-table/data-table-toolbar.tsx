@@ -4,6 +4,13 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { alpha, css } from '@mui/material/styles';
 import styled from '@emotion/styled';
 import type { ReactNode } from "react";
+import { createTestIDsForComponent } from "../../utils/common-utils";
+
+const DataTableToolbar_TestIDs = createTestIDsForComponent('DataTableToolbar', [
+    'selection_count_label',
+    'filter_toggle_btn',
+    'delete_btn',
+]);
 
 type DataTableToolbarProps = {
     beforeSlot?: ReactNode;
@@ -11,7 +18,6 @@ type DataTableToolbarProps = {
     onDeleteSelected?: () => void;
     onFilterToggle?: () => void;
 }
-
 
 export const DataTableToolbar = ({
     numSelected,
@@ -24,20 +30,20 @@ export const DataTableToolbar = ({
             {beforeSlot}
             <StyledRow numSelected={numSelected}>
                 {numSelected > 0 && (
-                    <StyledTitleTypography color="inherit" variant="subtitle1" data-cy="selection-count-label">
+                    <StyledTitleTypography color="inherit" variant="subtitle1" data-cy={DataTableToolbar_TestIDs.selection_count_label}>
                         {numSelected} selected
                     </StyledTitleTypography>
                 )}
                 <div style={{ flex: 1 }} />
                 {numSelected > 0 ? (
                     <Tooltip title="Delete">
-                        <IconButton color="error" onClick={onDeleteSelected}>
+                        <IconButton color="error" onClick={onDeleteSelected} data-cy={DataTableToolbar_TestIDs.delete_btn}>
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
                 ) : (
                     <Tooltip title="Filter list">
-                        <IconButton onClick={onFilterToggle}>
+                        <IconButton onClick={onFilterToggle} data-cy={DataTableToolbar_TestIDs.filter_toggle_btn}>
                             <FilterListIcon />
                         </IconButton>
                     </Tooltip>

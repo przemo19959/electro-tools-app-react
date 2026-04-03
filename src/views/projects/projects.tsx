@@ -17,6 +17,8 @@ import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import { type FilterGroupDto } from "../../api/api";
 import { DataTableFilters } from "../../components/data-table/data-table-filters";
+import { FilterUtils } from "../../utils/filter-utils";
+import { DebouncedTextField } from "../../components/form-text-field/debounced-text-field";
 
 const onToggle = (project: ReadProjectDto, selection: string[]): string[] => {
     const key = `${project.id}`;
@@ -66,6 +68,7 @@ export const Projects = () => {
     const { t } = useTranslation();
 
     const reload = useCallback((
+        filter: FilterGroupDto,
         page: number,
         pageSize: number,
         sort?: DataTableSort<ReadProjectDto>,
@@ -80,7 +83,7 @@ export const Projects = () => {
         setTotalElements(v.totalElements ?? 0);
         setProjects(v.content ?? []);
     })
-        .catch(HANDLE_ABORT_EXCEPTION), [pageAll, filter]);
+        .catch(HANDLE_ABORT_EXCEPTION), [pageAll]);
 
     const columns: DataTableColumn<ReadProjectDto>[] = useMemo(() => [
         { key: 'name', label: t('PROJECTS_COL.PROJECT_NAME') },
@@ -116,10 +119,10 @@ export const Projects = () => {
 
 
     useEffect(() => {
-        reload(page, pageSize, sort, query);
+        reload(filter, page, pageSize, sort, query);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
+    
     return (
         <StyledCard>
             <StyledCardHeader
@@ -150,7 +153,7 @@ export const Projects = () => {
                         <Search value={query} onChange={(v) => {
                             setPage(0);
                             setQuery(v);
-                            reload(0, pageSize, sort, v);
+                            reload(filter, 0, pageSize, sort, v);
                         }} />
                     )}
                     numSelected={selection.length}
@@ -160,7 +163,65 @@ export const Projects = () => {
                     }}
                     onFilterToggle={() => setFilterOpen(prev => !prev)}
                 />
-                <DataTableFilters open={filterOpen} onClear={() => setFilter(DEFAULT_FILTER)} />
+                <DataTableFilters
+                    open={filterOpen}
+                    onClear={() => {
+                        setFilter(DEFAULT_FILTER);
+                        reload(DEFAULT_FILTER, 0, pageSize, sort, query);
+                    }}
+                    testID="project_filters"
+                >
+                    <DebouncedTextField
+                        label="Name"
+                        value={FilterUtils.getColumnValue(filter, 'NAME')}
+                        onChange={(v) => {
+                            const newFilter = FilterUtils.updateStringEq(filter, 'NAME', v);
+                            setFilter(newFilter);
+                            reload(newFilter, 0, pageSize, sort, query);
+                        }}
+                        testID="project_filter_name_input"
+                    />
+                    <DebouncedTextField
+                        label="Created By"
+                        value={FilterUtils.getColumnValue(filter, 'CREATED_BY')}
+                        onChange={(v) => {
+                            const newFilter = FilterUtils.updateStringEq(filter, 'CREATED_BY', v);
+                            setFilter(newFilter);
+                            reload(newFilter, 0, pageSize, sort, query);
+                        }}
+                        testID="project_filter_created_by_input"
+                    />
+                    <DebouncedTextField
+                        label="Created At"
+                        value={FilterUtils.getColumnValue(filter, 'CREATED_DATE')}
+                        onChange={(v) => {
+                            const newFilter = FilterUtils.updateStringEq(filter, 'CREATED_DATE', v);
+                            setFilter(newFilter);
+                            reload(newFilter, 0, pageSize, sort, query);
+                        }}
+                        testID="project_filter_created_date_input"
+                    />
+                    <DebouncedTextField
+                        label="Updated By"
+                        value={FilterUtils.getColumnValue(filter, 'MODIFIED_BY')}
+                        onChange={(v) => {
+                            const newFilter = FilterUtils.updateStringEq(filter, 'MODIFIED_BY', v);
+                            setFilter(newFilter);
+                            reload(newFilter, 0, pageSize, sort, query);
+                        }}
+                        testID="project_filter_modified_by_input"
+                    />
+                    <DebouncedTextField
+                        label="Updated At"
+                        value={FilterUtils.getColumnValue(filter, 'MODIFIED_DATE')}
+                        onChange={(v) => {
+                            const newFilter = FilterUtils.updateStringEq(filter, 'MODIFIED_DATE', v);
+                            setFilter(newFilter);
+                            reload(newFilter, 0, pageSize, sort, query);
+                        }}
+                        testID="project_filter_modified_date_input"
+                    />
+                </DataTableFilters>
                 <DataTable
                     columns={columns}
                     items={projects}
@@ -168,13 +229,13 @@ export const Projects = () => {
                     page={page}
                     onPageChange={(v) => {
                         setPage(v);
-                        reload(v, pageSize, sort, query);
+                        reload(filter, v, pageSize, sort, query);
                     }}
                     pageSize={pageSize}
                     onPageSizeChange={(v) => {
                         setPage(0);
                         setPageSize(v);
-                        reload(0, v, sort, query);
+                        reload(filter, 0, v, sort, query);
                     }}
                     selection={selection}
                     sort={sort}
@@ -190,7 +251,7 @@ export const Projects = () => {
                     project={editedProject}
                     onSuccess={() => {
                         setEditProjectModalMode('NONE');
-                        reload(page, pageSize, sort, query);
+                        reload(filter, page, pageSize, sort, query);
                     }}
                     onCancel={() => setEditProjectModalMode('NONE')}
                 />
@@ -203,7 +264,7 @@ export const Projects = () => {
                             .then(() => {
                                 setPage(0);
                                 setSelection(prev => prev.filter(v2 => !deleteProjectIds.includes(v2)));
-                                reload(0, pageSize, sort, query);
+                                reload(filter, 0, pageSize, sort, query);
                                 setDeleteModalMessage(undefined);
                             })
                     }}

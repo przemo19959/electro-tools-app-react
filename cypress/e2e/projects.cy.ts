@@ -124,18 +124,18 @@ describe('template spec', () => {
     cy.visit('/projects').wait(1000).get('[data-cy="route-loader"]', { timeout: 20000 }).should('not.exist')  // Wait for loader to disappear
     cy.wait('@getProjectsPage');
     cy.contains('No Data').should('not.exist');
-
+    
     //when search changes, page and totals are shown correctly
     cy.get('#root p:nth-child(4)').should('have.text', '1–10 of 20');
     cy.get('#root div[tabindex="0"]').should('have.text', '10');
-    cy.get('#root input[type="text"]').click();
-    cy.get('#root input[type="text"]').type('user1');
-    cy.get('#root input[type="text"]').should('have.value', 'user1');
+    cy.get('[data-cy="search_tf"] input').click();
+    cy.get('[data-cy="search_tf"] input').type('user1');
+    cy.get('[data-cy="search_tf"] input').should('have.value', 'user1');
     cy.get('#root p:nth-child(4)').should('have.text', '1–7 of 7');
     cy.get('#root div[tabindex="0"]').should('have.text', '10');
-    cy.get('#root input[type="text"]').click();
-    cy.get('#root input[type="text"]').type('1');
-    cy.get('#root input[type="text"]').should('have.value', 'user11');
+    cy.get('[data-cy="search_tf"] input').click();
+    cy.get('[data-cy="search_tf"] input').type('1');
+    cy.get('[data-cy="search_tf"] input').should('have.value', 'user11');
     cy.get('#root p:nth-child(4)').should('have.text', '1–1 of 1');
     cy.get('#root div[tabindex="0"]').should('have.text', '10');
     cy.get('[data-cy="search_clear_btn"]').click();
@@ -150,7 +150,7 @@ describe('template spec', () => {
 
     //when single items selected
     cy.get('tr:nth-of-type(1) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').check();
-    cy.get('[data-cy="selection-count-label"]').should('have.text', '1 selected');
+    cy.get('[data-cy="DataTableToolbar_TestIDs_selection_count_label"]').should('have.text', '1 selected');
     cy.get('button[aria-label="Delete"] path').should('be.visible');
     cy.get('#root tr[aria-checked="true"] input.PrivateSwitchBase-input').should('have.value', 'on');
     cy.get('#root input[data-indeterminate="true"]').should('have.value', 'on');
@@ -159,12 +159,12 @@ describe('template spec', () => {
     //when second item selected
     cy.get('tr:nth-of-type(3) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').check();
     cy.get('tr:nth-of-type(3) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').should('be.checked');
-    cy.get('[data-cy="selection-count-label"]').should('have.text', '2 selected');
+    cy.get('[data-cy="DataTableToolbar_TestIDs_selection_count_label"]').should('have.text', '2 selected');
     cy.get('button[aria-label="Delete"] path').should('be.visible');
 
     //when all selected through header checkbox
     cy.get('[data-cy="header-checkbox"] input.PrivateSwitchBase-input').check();
-    cy.get('[data-cy="selection-count-label"]').should('have.text', '10 selected');
+    cy.get('[data-cy="DataTableToolbar_TestIDs_selection_count_label"]').should('have.text', '10 selected');
     cy.get('[data-cy="header-checkbox"] input.PrivateSwitchBase-input').should('be.checked');
     cy.get('tr:nth-of-type(9) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').should('be.checked');
     cy.get('tr:nth-of-type(8) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').should('be.checked');
@@ -172,13 +172,13 @@ describe('template spec', () => {
 
     //when single deselected now
     cy.get('tr:nth-of-type(2) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').uncheck();
-    cy.get('[data-cy="selection-count-label"]').should('have.text', '9 selected');
+    cy.get('[data-cy="DataTableToolbar_TestIDs_selection_count_label"]').should('have.text', '9 selected');
     cy.get('#root tr[aria-checked="false"] input.PrivateSwitchBase-input').should('not.be.checked');
     cy.get('#root input[data-indeterminate="true"]').should('have.attr', 'data-indeterminate', 'true');
 
     //when header checkbox clicked again, select all again
     cy.get('[data-cy="header-checkbox"] input.PrivateSwitchBase-input').check();
-    cy.get('[data-cy="selection-count-label"]').should('have.text', '10 selected');
+    cy.get('[data-cy="DataTableToolbar_TestIDs_selection_count_label"]').should('have.text', '10 selected');
     cy.get('tr:nth-of-type(2) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').should('be.checked');
 
     //when header checkbox clicked, deselect all
@@ -288,10 +288,10 @@ describe('template spec', () => {
     //when deleting selected item, selection is adjusted correctly
     cy.get('tr:nth-of-type(2) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').check();
     cy.get('tr:nth-of-type(1) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').check();
-    cy.get('[data-cy="selection-count-label"]').should('have.text', '2 selected');
+    cy.get('[data-cy="DataTableToolbar_TestIDs_selection_count_label"]').should('have.text', '2 selected');
     cy.get('tr:nth-child(1) [data-testid="DeleteIcon"] path').click();
     cy.get('[data-cy="confirm_modal_apply_btn"]').click();
-    cy.get('[data-cy="selection-count-label"]').should('have.text', '1 selected');
+    cy.get('[data-cy="DataTableToolbar_TestIDs_selection_count_label"]').should('have.text', '1 selected');
     cy.get('#root p:nth-child(4)').should('have.text', '1–10 of 18');
 
     //when using search to find
@@ -317,12 +317,12 @@ describe('template spec', () => {
     cy.get('tr:nth-of-type(1) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').check();
     cy.get('tr:nth-of-type(2) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').check();
     cy.get('tr:nth-of-type(3) [data-cy="row-checkbox"] input.PrivateSwitchBase-input').check();
-    cy.get('[data-cy="selection-count-label"]').should('have.text', '3 selected');
+    cy.get('[data-cy="DataTableToolbar_TestIDs_selection_count_label"]').should('have.text', '3 selected');
 
     cy.get('tr:nth-child(2) [data-testid="DeleteIcon"] path').click();
     cy.get('[data-cy="confirm_modal_apply_btn"]').click();
     cy.get('#root p:nth-child(4)').should('have.text', '1–10 of 19');
-    cy.get('[data-cy="selection-count-label"]').should('have.text', '2 selected');
+    cy.get('[data-cy="DataTableToolbar_TestIDs_selection_count_label"]').should('have.text', '2 selected');
 
     cy.get('button[aria-label="Delete"] path').click();
     cy.get('[data-cy="confirm_modal_text"]').should('have.text', 'Are you sure you want to delete 2 project(s)?');
@@ -340,5 +340,25 @@ describe('template spec', () => {
     cy.get('[data-cy="search_tf"] input').clear();
     cy.get('[data-cy="search_tf"] input').type('1003');
     cy.get('#root td').should('have.text', 'No Data');
+  });
+
+  it('filters bar works fine', () => {
+    cy.visit('/projects').wait(1000).get('[data-cy="route-loader"]', { timeout: 20000 }).should('not.exist')  // Wait for loader to disappear
+    cy.wait('@getProjectsPage');
+    cy.contains('No Data').should('not.exist');
+    
+    //all fields are there and visible when filter bar opened
+    cy.get('[data-testid="FilterListIcon"] path').should('be.visible');
+    cy.get('[data-testid="FilterListIcon"] path').click();
+    cy.get('[data-cy="project_filter_name_input"] input').should('be.visible');
+    cy.get('[data-cy="project_filter_created_by_input"] input').should('be.visible');
+    cy.get('[data-cy="project_filter_created_date_input"] input').should('be.visible');
+    cy.get('[data-cy="project_filter_modified_by_input"] label').should('be.visible');
+    cy.get('[data-cy="project_filter_modified_date_input"] input').should('be.visible');
+    cy.get('[data-testid="ClearIcon"]').should('be.visible');
+    
+    //when closed hide all fields
+    cy.get('[data-testid="FilterListIcon"] path').click();
+    cy.get('[data-testid="ClearIcon"]').should('not.be.visible');
   });
 })

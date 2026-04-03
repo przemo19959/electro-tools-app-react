@@ -14,7 +14,7 @@ const WireView_TestIDs = createTestIDsForComponent('WireView', [
     'fieldIndicatorSlot',
 ]);
 
-type WireViewProps<T extends FieldValues> = Pick<RawWireViewProps<T>, 'control' | 'errors'> & {
+type WireViewProps<T extends FieldValues> = Pick<RawWireViewProps<T>, 'control'> & {
     voltageDropIndicator: ReactNode;
     context: ElectricElementContext;
     impedanceIndicator: ReactNode;
@@ -25,7 +25,6 @@ type WireViewProps<T extends FieldValues> = Pick<RawWireViewProps<T>, 'control' 
 
 export const WireView = <T extends FieldValues,>({
     control,
-    errors,
     voltageDropIndicator,
     context,
     impedanceIndicator,
@@ -35,7 +34,6 @@ export const WireView = <T extends FieldValues,>({
 }: WireViewProps<T>) => (
     <RawWireView
         control={control}
-        errors={errors}
         titlePrependSlot={<>
             <PowerLossIndicator loss={loss} />
             {shortCurrentIndicator}

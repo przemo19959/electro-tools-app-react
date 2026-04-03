@@ -5,7 +5,7 @@ import { BaseTextField, type BaseTextFieldProps } from "./base-text-field";
 type FormTextFieldProps<T extends FieldValues> = {
     name: string;
     control: Control<T, any, T>;
-} & BaseTextFieldProps;
+} & Omit<BaseTextFieldProps, 'value' | 'onChange'>;
 
 export const FormTextField = <T extends FieldValues,>({
     label,

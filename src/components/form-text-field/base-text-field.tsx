@@ -16,7 +16,7 @@ export type BaseTextFieldProps = {
     testID: string;
     tooltip?: string;
     appendSlot?: ReactNode;
-} & TextFieldProps;
+} & Omit<TextFieldProps, 'onChange' | 'value'>;
 
 export const BaseTextField = ({
     label,

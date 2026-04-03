@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { Control, FieldErrors, FieldValues } from "react-hook-form";
+import type { Control, FieldValues } from "react-hook-form";
 import { PhaseType } from "../../domain/currenttable/enums/PhaseType";
 import { type PlacementType, PLACEMENT_TYPE_VALUES } from "../../domain/currenttable/enums/PlacementType";
 import { WireDiameter } from "../../domain/currenttable/enums/WireDiameter";
@@ -24,7 +24,6 @@ const RawWireView_TestIDs = createTestIDsForComponent('RawWireView', [
 
 export type RawWireViewProps<T extends FieldValues> = {
     control: Control<T, any, T>;
-    errors: FieldErrors<T>;
     titlePrependSlot?: ReactNode;
     titleAppendSlot?: ReactNode;
     fieldIndicatorSlot?: ReactNode;
@@ -32,7 +31,6 @@ export type RawWireViewProps<T extends FieldValues> = {
 
 export const RawWireView = <T extends FieldValues,>({
     control,
-    errors,
     titlePrependSlot,
     titleAppendSlot,
     fieldIndicatorSlot,
@@ -52,7 +50,6 @@ export const RawWireView = <T extends FieldValues,>({
                     items={PLACEMENT_TYPE_VALUES}
                     textMapper={e => t('WIRE.PLACEMENTS.' + e)}
                     control={control}
-                    errors={errors}
                     name={'wire.placement'}
                     testID={RawWireView_TestIDs.placement}
                 />
@@ -61,7 +58,6 @@ export const RawWireView = <T extends FieldValues,>({
                     items={WIRE_TYPE_VALUES}
                     textMapper={e => t('WIRE.TYPES.' + e)}
                     control={control}
-                    errors={errors}
                     name={'wire.type'}
                     tooltip={t('WIRE.TYPE_INFO')}
                     testID={RawWireView_TestIDs.type}
@@ -72,7 +68,6 @@ export const RawWireView = <T extends FieldValues,>({
                     items={PhaseType.VALUES}
                     textMapper={e => t('WIRE.PHASES.' + e.id)}
                     control={control}
-                    errors={errors}
                     name={'wire.phase'}
                     idMapper={v => v.id}
                     testID={RawWireView_TestIDs.phase}
@@ -82,7 +77,6 @@ export const RawWireView = <T extends FieldValues,>({
                     items={WireDiameter.VALUES}
                     control={control}
                     textMapper={v => `${v?.value}`}
-                    errors={errors}
                     name={'wire.diameter'}
                     idMapper={v => v.key}
                     appendSlot={fieldIndicatorSlot}

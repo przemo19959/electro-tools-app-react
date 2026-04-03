@@ -4,7 +4,7 @@ import { BaseSelect, type BaseSelectProps } from "./base-select";
 type FormSelectProps<T, R extends FieldValues> = {
     name: string;
     control: Control<R, any, R>;
-} & BaseSelectProps<T>;
+} & Omit<BaseSelectProps<T>, 'value' | 'onChange'>;
 
 export const FormSelect = <T, R extends FieldValues>({
     label,

@@ -74,7 +74,7 @@ export const LightPowerSelector = ({
 
     const {
         control,
-        formState: { errors, isValid },
+        formState: { isValid },
         watch,
         setValue,
         getValues,
@@ -141,7 +141,6 @@ export const LightPowerSelector = ({
                                 items={ROOM_TYPE_VALUES as unknown as RoomType[]}
                                 textMapper={e => t('COMMON.ROOMS.' + e)}
                                 control={control}
-                                errors={errors}
                                 name="roomType"
                                 testID={LightPowerSelector_TestIDs.roomType}
                             />
@@ -152,7 +151,6 @@ export const LightPowerSelector = ({
                                 items={LIGHT_KIND_KEY_VALUES}
                                 textMapper={e => t('COMMON.LIGHT_KINDS.' + e)}
                                 control={control}
-                                errors={errors}
                                 name="lightKind"
                                 testID={LightPowerSelector_TestIDs.lightKind}
                             />
