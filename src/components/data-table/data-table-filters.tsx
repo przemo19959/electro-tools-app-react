@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
-import type { PropsWithChildren } from "react";
-import ClearIcon from '@mui/icons-material/Clear';
-import { IconButton } from "@mui/material";
+import type { FilterGroupDto } from "../../api/api";
 import { createTestIDsForComponent, joinTestIDs } from "../../utils/common-utils";
+import { FilterGroupNode } from "./data-table-filter-group";
+import type { FilterColumnDef } from "./types";
 
 const DataTableFilters_TestIDs = createTestIDsForComponent('DataTableFilters', [
     'container',
@@ -11,40 +11,38 @@ const DataTableFilters_TestIDs = createTestIDsForComponent('DataTableFilters', [
 
 type DataTableFiltersProps = {
     open: boolean;
-    onClear: () => void;
     testID: string;
-} & PropsWithChildren;
+    filter: FilterGroupDto;
+    onChange: (filter: FilterGroupDto) => void;
+    availableColumns: FilterColumnDef[];
+};
 
-export const DataTableFilters = ({
-    open,
-    children,
-    onClear,
-    testID,
-}: DataTableFiltersProps) => {
+export const DataTableFilters = ({ open, testID, filter, onChange, availableColumns }: DataTableFiltersProps) => {
     return (
         <StyledContainer open={open} data-cy={joinTestIDs(testID, DataTableFilters_TestIDs.container)}>
-            {children}
-            <StyledClearContainer>
-                <IconButton onClick={onClear} size="small" data-cy={joinTestIDs(testID, DataTableFilters_TestIDs.clear_btn)}>
-                    <ClearIcon />
-                </IconButton>
-            </StyledClearContainer>
+            <StyledRoot>
+                <FilterGroupNode
+                    group={filter}
+                    onChange={onChange}
+                    availableColumns={availableColumns}
+                    depth={0}
+                />
+            </StyledRoot>
         </StyledContainer>
     );
-}
+};
 
 const StyledContainer = styled.div<{ open: boolean }>`
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem;
-    overflow: hidden;
-    max-height: ${({ open }) => (open ? '500px' : '0')};
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: ${({ open }) => (open ? '800px' : '0')};
     transition: max-height 300ms ease;
-    padding-top: ${({ open }) => (open ? '0.5rem' : '0')};
+    padding-top:    ${({ open }) => (open ? '0.5rem' : '0')};
     padding-bottom: ${({ open }) => (open ? '0.5rem' : '0')};
 `;
 
-const StyledClearContainer = styled.div`
+const StyledRoot = styled.div`
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    gap: 0.5rem;
 `;

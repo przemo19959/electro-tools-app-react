@@ -18,7 +18,7 @@ export type BaseSelectProps<T> = {
     idMapper?: (option: T) => string;
     textMapper?: (option: T) => string;
     testID: string;
-} & TextFieldProps;
+} & Omit<TextFieldProps, 'onChange' | 'value'>;
 
 export const BaseSelect = <T,>({
     label,

@@ -1,4 +1,4 @@
-import { IconButton, Tooltip, Typography } from "@mui/material";
+import { Badge, IconButton, Tooltip, Typography } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { alpha, css } from '@mui/material/styles';
@@ -15,6 +15,7 @@ const DataTableToolbar_TestIDs = createTestIDsForComponent('DataTableToolbar', [
 type DataTableToolbarProps = {
     beforeSlot?: ReactNode;
     numSelected: number;
+    filterCount: number;
     onDeleteSelected?: () => void;
     onFilterToggle?: () => void;
 }
@@ -22,6 +23,7 @@ type DataTableToolbarProps = {
 export const DataTableToolbar = ({
     numSelected,
     beforeSlot,
+    filterCount,
     onDeleteSelected,
     onFilterToggle,
 }: DataTableToolbarProps) => {
@@ -44,7 +46,9 @@ export const DataTableToolbar = ({
                 ) : (
                     <Tooltip title="Filter list">
                         <IconButton onClick={onFilterToggle} data-cy={DataTableToolbar_TestIDs.filter_toggle_btn}>
-                            <FilterListIcon />
+                            <Badge color="primary" badgeContent={filterCount}>
+                                <FilterListIcon />
+                            </Badge>
                         </IconButton>
                     </Tooltip>
                 )}

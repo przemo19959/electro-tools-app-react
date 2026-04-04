@@ -2,7 +2,7 @@ import { Button } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Search } from "../../components/search/search";
-import type { DataTableColumn, DataTableSort } from "../../components/data-table/types";
+import type { DataTableColumn, DataTableSort, FilterColumnDef } from "../../components/data-table/types";
 import { DataTable } from "../../components/data-table/data-table";
 import { DataTableToolbar } from "../../components/data-table/data-table-toolbar";
 import { EditProjectModal } from "./edit-project-modal";
@@ -18,7 +18,6 @@ import { useTranslation } from "react-i18next";
 import { type FilterGroupDto } from "../../api/api";
 import { DataTableFilters } from "../../components/data-table/data-table-filters";
 import { FilterUtils } from "../../utils/filter-utils";
-import { DebouncedTextField } from "../../components/form-text-field/debounced-text-field";
 
 const onToggle = (project: ReadProjectDto, selection: string[]): string[] => {
     const key = `${project.id}`;
@@ -41,6 +40,14 @@ const DEFAULT_FILTER: FilterGroupDto = {
     columns: [],
     groups: [],
 };
+
+const PROJECT_FILTER_COLUMNS: FilterColumnDef[] = [
+    { key: 'NAME', label: 'Name', type: 'string' },
+    { key: 'CREATED_BY', label: 'Created By', type: 'string' },
+    { key: 'CREATED_DATE', label: 'Created At', type: 'date' },
+    { key: 'MODIFIED_BY', label: 'Updated By', type: 'string' },
+    { key: 'MODIFIED_DATE', label: 'Updated At', type: 'date' },
+];
 
 type EditProjectModalMode = 'CREATE' | 'EDIT' | 'NONE';
 
@@ -74,7 +81,7 @@ export const Projects = () => {
         sort?: DataTableSort<ReadProjectDto>,
         query?: string,
     ) => pageAll(
-        filter,
+        FilterUtils.sanitizeFilter(filter),
         page,
         pageSize,
         sort,
@@ -162,66 +169,18 @@ export const Projects = () => {
                         setDeleteModalMessage(t('QUESTIONS.DELETE_MULTI_PROJECT', { count: selection.length }));
                     }}
                     onFilterToggle={() => setFilterOpen(prev => !prev)}
+                    filterCount={FilterUtils.countActiveConditions(filter)}
                 />
                 <DataTableFilters
                     open={filterOpen}
-                    onClear={() => {
-                        setFilter(DEFAULT_FILTER);
-                        reload(DEFAULT_FILTER, 0, pageSize, sort, query);
-                    }}
                     testID="project_filters"
-                >
-                    <DebouncedTextField
-                        label="Name"
-                        value={FilterUtils.getColumnValue(filter, 'NAME')}
-                        onChange={(v) => {
-                            const newFilter = FilterUtils.updateStringEq(filter, 'NAME', v);
-                            setFilter(newFilter);
-                            reload(newFilter, 0, pageSize, sort, query);
-                        }}
-                        testID="project_filter_name_input"
-                    />
-                    <DebouncedTextField
-                        label="Created By"
-                        value={FilterUtils.getColumnValue(filter, 'CREATED_BY')}
-                        onChange={(v) => {
-                            const newFilter = FilterUtils.updateStringEq(filter, 'CREATED_BY', v);
-                            setFilter(newFilter);
-                            reload(newFilter, 0, pageSize, sort, query);
-                        }}
-                        testID="project_filter_created_by_input"
-                    />
-                    <DebouncedTextField
-                        label="Created At"
-                        value={FilterUtils.getColumnValue(filter, 'CREATED_DATE')}
-                        onChange={(v) => {
-                            const newFilter = FilterUtils.updateStringEq(filter, 'CREATED_DATE', v);
-                            setFilter(newFilter);
-                            reload(newFilter, 0, pageSize, sort, query);
-                        }}
-                        testID="project_filter_created_date_input"
-                    />
-                    <DebouncedTextField
-                        label="Updated By"
-                        value={FilterUtils.getColumnValue(filter, 'MODIFIED_BY')}
-                        onChange={(v) => {
-                            const newFilter = FilterUtils.updateStringEq(filter, 'MODIFIED_BY', v);
-                            setFilter(newFilter);
-                            reload(newFilter, 0, pageSize, sort, query);
-                        }}
-                        testID="project_filter_modified_by_input"
-                    />
-                    <DebouncedTextField
-                        label="Updated At"
-                        value={FilterUtils.getColumnValue(filter, 'MODIFIED_DATE')}
-                        onChange={(v) => {
-                            const newFilter = FilterUtils.updateStringEq(filter, 'MODIFIED_DATE', v);
-                            setFilter(newFilter);
-                            reload(newFilter, 0, pageSize, sort, query);
-                        }}
-                        testID="project_filter_modified_date_input"
-                    />
-                </DataTableFilters>
+                    filter={filter}
+                    onChange={(newFilter) => {
+                        setFilter(newFilter);
+                        reload(newFilter, 0, pageSize, sort, query);
+                    }}
+                    availableColumns={PROJECT_FILTER_COLUMNS}
+                />
                 <DataTable
                     columns={columns}
                     items={projects}

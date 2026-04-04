@@ -1,14 +1,14 @@
 import { useRef, useState } from "react";
-import { BaseTextField } from "./base-text-field";
+import { BaseTextField, type BaseTextFieldProps } from "./base-text-field";
 
 type DebouncedTextFieldProps = {
     label: string;
     value: string;
     onChange: (value: string) => void;
     testID: string;
-};
+} & Omit<BaseTextFieldProps, 'onChange' | 'value'>;
 
-export const DebouncedTextField = ({ label, value, onChange, testID }: DebouncedTextFieldProps) => {
+export const DebouncedTextField = ({ label, value, onChange, testID, ...props }: DebouncedTextFieldProps) => {
     const timeoutId = useRef<number | null>(null);
     const [inputValue, setInputValue] = useState(value);
 
@@ -28,6 +28,7 @@ export const DebouncedTextField = ({ label, value, onChange, testID }: Debounced
             value={inputValue}
             onChange={debouncedOnChange}
             testID={testID}
+            {...props}
         />
     );
 }

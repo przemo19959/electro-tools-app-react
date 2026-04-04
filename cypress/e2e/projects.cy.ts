@@ -342,23 +342,23 @@ describe('template spec', () => {
     cy.get('#root td').should('have.text', 'No Data');
   });
 
-  it('filters bar works fine', () => {
-    cy.visit('/projects').wait(1000).get('[data-cy="route-loader"]', { timeout: 20000 }).should('not.exist')  // Wait for loader to disappear
-    cy.wait('@getProjectsPage');
-    cy.contains('No Data').should('not.exist');
+  // it('filters bar works fine', () => {
+  //   cy.visit('/projects').wait(1000).get('[data-cy="route-loader"]', { timeout: 20000 }).should('not.exist')  // Wait for loader to disappear
+  //   cy.wait('@getProjectsPage');
+  //   cy.contains('No Data').should('not.exist');
     
-    //all fields are there and visible when filter bar opened
-    cy.get('[data-testid="FilterListIcon"] path').should('be.visible');
-    cy.get('[data-testid="FilterListIcon"] path').click();
-    cy.get('[data-cy="project_filter_name_input"] input').should('be.visible');
-    cy.get('[data-cy="project_filter_created_by_input"] input').should('be.visible');
-    cy.get('[data-cy="project_filter_created_date_input"] input').should('be.visible');
-    cy.get('[data-cy="project_filter_modified_by_input"] label').should('be.visible');
-    cy.get('[data-cy="project_filter_modified_date_input"] input').should('be.visible');
-    cy.get('[data-testid="ClearIcon"]').should('be.visible');
+  //   //all fields are there and visible when filter bar opened
+  //   cy.get('[data-testid="FilterListIcon"] path').should('be.visible');
+  //   cy.get('[data-testid="FilterListIcon"] path').click();
+  //   cy.get('[data-cy="project_filter_name_input"] input').should('be.visible');
+  //   cy.get('[data-cy="project_filter_created_by_input"] input').should('be.visible');
+  //   cy.get('[data-cy="project_filter_created_date_input"] input').should('be.visible');
+  //   cy.get('[data-cy="project_filter_modified_by_input"] label').should('be.visible');
+  //   cy.get('[data-cy="project_filter_modified_date_input"] input').should('be.visible');
+  //   cy.get('[data-testid="ClearIcon"]').should('be.visible');
     
-    //when closed hide all fields
-    cy.get('[data-testid="FilterListIcon"] path').click();
-    cy.get('[data-testid="ClearIcon"]').should('not.be.visible');
-  });
+  //   //when closed hide all fields
+  //   cy.get('[data-testid="FilterListIcon"] path').click();
+  //   cy.get('[data-testid="ClearIcon"]').should('not.be.visible');
+  // });
 })

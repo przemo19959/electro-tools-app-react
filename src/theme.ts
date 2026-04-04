@@ -94,6 +94,11 @@ export const theme = createTheme({
         },
       },
     },
+    MuiSvgIcon: {
+      defaultProps: {
+        fontSize: "small",
+      },
+    },
   },
 });
 

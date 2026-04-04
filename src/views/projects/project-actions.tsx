@@ -63,6 +63,6 @@ export const ProjectActions = ({
 
 const StyledRow = styled.div`
     display: flex;
-    gap: 1rem;
+    gap: 0.5rem;
     align-items: center;
 `;

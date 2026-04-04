@@ -245,6 +245,7 @@ export interface FilterColumnDto {
     | "STRING_NOT_EQ"
     | "STRING_IN"
     | "STRING_NOT_IN"
+    | "STRING_ILIKE"
     | "NUMBER_EQ"
     | "NUMBER_NOT_EQ"
     | "NUMBER_GT"
@@ -253,12 +254,14 @@ export interface FilterColumnDto {
     | "NUMBER_LTE"
     | "NUMBER_IN"
     | "NUMBER_NOT_IN"
+    | "NUMBER_ILIKE"
     | "DATE_EQ"
     | "DATE_NOT_EQ"
     | "DATE_BEFORE"
     | "DATE_AFTER"
     | "DATE_IN"
-    | "DATE_NOT_IN";
+    | "DATE_NOT_IN"
+    | "DATE_ILIKE";
   value?: string;
 }
 
@@ -278,10 +281,10 @@ export interface PageReadProjectDto {
   content?: ReadProjectDto[];
   /** @format int32 */
   number?: number;
-  pageable?: PageableObject;
-  sort?: SortObject;
   /** @format int32 */
   numberOfElements?: number;
+  pageable?: PageableObject;
+  sort?: SortObject;
   first?: boolean;
   last?: boolean;
   empty?: boolean;
@@ -290,19 +293,19 @@ export interface PageReadProjectDto {
 export interface PageableObject {
   /** @format int64 */
   offset?: number;
-  sort?: SortObject;
+  unpaged?: boolean;
   paged?: boolean;
   /** @format int32 */
   pageNumber?: number;
   /** @format int32 */
   pageSize?: number;
-  unpaged?: boolean;
+  sort?: SortObject;
 }
 
 export interface SortObject {
   empty?: boolean;
-  sorted?: boolean;
   unsorted?: boolean;
+  sorted?: boolean;
 }
 
 export interface CreateOvercurrentProtectionElementDto {
@@ -836,6 +839,26 @@ export class Api<
         query: query,
         body: data,
         type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags project-controller
+     * @name FindDistinctValues
+     * @request GET:/api/v1/projects/distinct-values
+     */
+    findDistinctValues: (
+      query: {
+        column: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<string[], any>({
+        path: `/api/v1/projects/distinct-values`,
+        method: "GET",
+        query: query,
         ...params,
       }),
   };
