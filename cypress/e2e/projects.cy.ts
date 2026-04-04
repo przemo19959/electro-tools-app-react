@@ -22,6 +22,14 @@ let projects = [
 ];
 const originalProjects = structuredClone(projects);
 
+const DISTINCT_VALUES_POOL: Record<string, string[]> = {
+      NAME:          ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta', 'Eta', 'Theta', 'Iota', 'Kappa'],
+      CREATED_BY:    ['alice', 'bob', 'carol', 'dave', 'eve', 'frank', 'grace', 'heidi', 'ivan', 'judy'],
+      MODIFIED_BY:   ['mallory', 'oscar', 'peggy', 'rupert', 'sybil', 'trent', 'victor', 'walter', 'xenon', 'yara'],
+      CREATED_DATE:  ['2025-01-01', '2025-02-15', '2025-03-07', '2025-04-20', '2025-05-11', '2025-06-03', '2025-07-29', '2025-08-14', '2025-09-01', '2025-10-10'],
+      MODIFIED_DATE: ['2025-11-01', '2025-11-15', '2025-12-01', '2025-12-15', '2026-01-01', '2026-01-15', '2026-02-01', '2026-02-15', '2026-03-01', '2026-03-15'],
+    };
+
 describe('template spec', () => {
   beforeEach(() => {
     projects = originalProjects;
@@ -118,6 +126,12 @@ describe('template spec', () => {
         body: null,
       });
     }).as('deleteProjects');
+
+    cy.intercept('GET', '**/projects/distinct-values*', (req) => {
+      const column = String(new URL(req.url).searchParams.get('column') ?? '').toUpperCase();
+      const pool = DISTINCT_VALUES_POOL[column] ?? [];
+      req.reply({ statusCode: 200, body: pool });
+    }).as('getDistinctValues');
   });
 
   it('data is fetched and shown', () => {
@@ -342,23 +356,90 @@ describe('template spec', () => {
     cy.get('#root td').should('have.text', 'No Data');
   });
 
-  // it('filters bar works fine', () => {
-  //   cy.visit('/projects').wait(1000).get('[data-cy="route-loader"]', { timeout: 20000 }).should('not.exist')  // Wait for loader to disappear
-  //   cy.wait('@getProjectsPage');
-  //   cy.contains('No Data').should('not.exist');
+  it('filters bar works fine', () => {
+    //in this test we don't care about returned projects, otherwise i would have to implement mock for quite complex filtering logic, so just return empty page and check if filter bar UI works as expected, without worrying about actual filtering results
+    cy.intercept('POST', '**/projects/page*', {
+      fixture: 'projects-empty-page.json',
+    }).as('getEmptyProjectsPage');
     
-  //   //all fields are there and visible when filter bar opened
-  //   cy.get('[data-testid="FilterListIcon"] path').should('be.visible');
-  //   cy.get('[data-testid="FilterListIcon"] path').click();
-  //   cy.get('[data-cy="project_filter_name_input"] input').should('be.visible');
-  //   cy.get('[data-cy="project_filter_created_by_input"] input').should('be.visible');
-  //   cy.get('[data-cy="project_filter_created_date_input"] input').should('be.visible');
-  //   cy.get('[data-cy="project_filter_modified_by_input"] label').should('be.visible');
-  //   cy.get('[data-cy="project_filter_modified_date_input"] input').should('be.visible');
-  //   cy.get('[data-testid="ClearIcon"]').should('be.visible');
+    cy.visit('/projects').wait(1000).get('[data-cy="route-loader"]', { timeout: 20000 }).should('not.exist')  // Wait for loader to disappear
+    cy.wait('@getEmptyProjectsPage');
+    cy.contains('No Data').should('be.visible');
+    cy.get('tbody tr').should('have.length', 1); //cause there is row with No Data
     
-  //   //when closed hide all fields
-  //   cy.get('[data-testid="FilterListIcon"] path').click();
-  //   cy.get('[data-testid="ClearIcon"]').should('not.be.visible');
-  // });
+    //all fields are there and visible when filter bar opened
+    cy.get('[data-testid="FilterListIcon"] path').should('be.visible');
+    cy.get('[data-testid="FilterListIcon"] path').click();
+    cy.get('[data-cy="project_filters:root:DataTableFilterGroup_TestIDs_add_column_btn"] [data-testid="AddIcon"]').should('be.visible');
+    cy.get('[data-cy="project_filters:root:DataTableFilterGroup_TestIDs_add_group_btn"] [data-testid="FormatListBulletedAddIcon"]').should('be.visible');
+    cy.get('[data-cy="project_filters:root:DataTableFilterGroup_TestIDs_clear_btn"] [data-testid="ClearIcon"]').should('be.visible');
+    cy.get('[data-cy="project_filters:root:DataTableFilterGroup_TestIDs_operator_toggle_group"] button[value="AND"]').should('have.value', 'AND');
+    
+    //when add column is clicked
+    cy.get('[data-cy="project_filters:root:DataTableFilterGroup_TestIDs_add_column_btn"] [data-testid="AddIcon"]').click();
+    cy.get('[data-cy="project_filters:root:col0:DataTableFilterColumn_TestIDs_column_select"] div[tabindex="0"]').should('have.text', 'Name');
+    cy.get('[data-cy="project_filters:root:col0:DataTableFilterColumn_TestIDs_operator_select"] div[tabindex="0"]').should('have.text', 'contains');
+    cy.get('[data-cy="project_filters:root:col0:DataTableFilterColumn_TestIDs_value_input"] input').should('be.visible');
+    cy.get('[data-cy="project_filters:root:col0:DataTableFilterColumn_TestIDs_delete_btn"] path').should('be.visible');
+    
+    //when column removed, it's gone
+    // cy.get('[data-cy="project_filters:root:col0:DataTableFilterColumn_TestIDs_delete_btn"] path').click();
+    // cy.get('[data-cy="project_filters:root:col0:DataTableFilterColumn_TestIDs_delete_btn"] path').should('not.exist');
+    
+    //when value entered
+    cy.get('[data-cy="project_filters:root:col0:DataTableFilterColumn_TestIDs_value_input"] p').should('be.visible');
+    cy.get('[data-cy="project_filters:root:col0:DataTableFilterColumn_TestIDs_value_input"]').click();
+    cy.get('[data-cy="project_filters:root:col0:DataTableFilterColumn_TestIDs_value_input"] input').type('test');
+    cy.get('[data-cy="project_filters:root:col0:DataTableFilterColumn_TestIDs_value_input"] input').should('have.value', 'test');
+    cy.get('[data-cy="project_filters:root:col0:DataTableFilterColumn_TestIDs_value_input"] p').should('not.exist');
+    
+    //when second col added
+    cy.get('[data-cy="project_filters:root:DataTableFilterGroup_TestIDs_add_column_btn"] path').click();
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_column_select"] div[tabindex="0"]').should('have.text', 'Name');
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_operator_select"] div[tabindex="0"]').should('have.text', 'contains');
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_input"] p').should('have.text', 'Value is required');
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_input"] input').click();
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_input"] input').type('aaa');
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_input"] p').should('not.exist');
+    
+    //when second col operator changed
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_operator_select"]').click();
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_operator_select:BaseSelect_TestIDs_item:STRING_NOT_EQ"]').click();
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_operator_select"] div[tabindex="0"]').should('have.text', 'not equals');
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_input"] input').should('have.value', 'aaa');
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_operator_select"]').click();
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_operator_select:BaseSelect_TestIDs_item:STRING_EQ"]').click();
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_input"] input').should('have.value', 'aaa');
+    
+    //when changed operator that requires select input
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_operator_select"]').click();
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_operator_select:BaseSelect_TestIDs_item:STRING_IN"]').click();
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_select:BaseMultiSelect_TestIDs_helper_text"]').should('have.text', 'Value is required');
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_select"]').click();
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_select:BaseMultiSelect_TestIDs_menu_item:Delta"]').click();
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_select:BaseMultiSelect_TestIDs_menu_item:Iota"]').click();
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_select:BaseMultiSelect_TestIDs_menu_item:Kappa"]').click();
+    cy.get('#menu- div:nth-child(1)').click(); //click away
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_select:BaseMultiSelect_TestIDs_chip:Delta"] span:nth-child(1)').should('have.text', 'Delta');
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_select:BaseMultiSelect_TestIDs_chip:Iota"] span:nth-child(1)').should('have.text', 'Iota');
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_select:BaseMultiSelect_TestIDs_chip:Kappa"] span:nth-child(1)').should('have.text', 'Kappa');
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_select:BaseMultiSelect_TestIDs_chip:Delta"] span').click();
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_select:BaseMultiSelect_TestIDs_chip:Delta"] span').should('not.exist');
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_select:BaseMultiSelect_TestIDs_chip:Kappa"] span').click();
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_select:BaseMultiSelect_TestIDs_chip:Kappa"] span').should('not.exist');
+    
+    //when changed to other operator requiring select input, keep values
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_operator_select"]').click();
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_operator_select:BaseSelect_TestIDs_item:STRING_NOT_IN"]').click();
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_select:BaseMultiSelect_TestIDs_chip:Iota"] span:nth-child(1)').should('have.text', 'Iota');
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_select:BaseMultiSelect_TestIDs_chip:Delta"] span').should('not.exist');
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_select:BaseMultiSelect_TestIDs_chip:Kappa"] span').should('not.exist');
+    
+    //changed back to text field input
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_operator_select"]').click();
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_operator_select:BaseSelect_TestIDs_item:STRING_EQ"]').click();
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_input"] p').should('have.text', 'Value is required');
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_input"] input').click();
+    cy.get('[data-cy="project_filters:root:col1:DataTableFilterColumn_TestIDs_value_input"] input').type('aaa');
+  });
 })

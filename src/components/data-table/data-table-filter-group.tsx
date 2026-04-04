@@ -4,17 +4,26 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
 import { IconButton, Tooltip } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
-import { type FilterColumnDef } from "./types";
+import { type FilterableColumnToValues, type FilterColumnDef } from "./types";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { FilterColumnRow } from "./data-table-filter-column";
 import FormatListBulletedAddIcon from '@mui/icons-material/FormatListBulletedAdd';
 import ClearIcon from '@mui/icons-material/Clear';
 import { FilterUtils } from "../../utils/filter-utils";
+import { createTestIDsForComponent, joinTestIDs } from "../../utils/common-utils";
 
 const BRANCH_Y = 18;
 const INDENT = 24;
 
 const GROUP_OPERATORS: NonNullable<FilterGroupDto['operator']>[] = ['AND', 'OR'];
+
+const DataTableFilterGroup_TestIDs = createTestIDsForComponent('DataTableFilterGroup', [
+    'operator_toggle_group',
+    'add_column_btn',
+    'add_group_btn',
+    'clear_btn',
+    'remove_group_btn',
+]);
 
 type FilterGroupNodeProps = {
     group: FilterGroupDto;
@@ -22,9 +31,11 @@ type FilterGroupNodeProps = {
     onRemove?: () => void;
     availableColumns: FilterColumnDef[];
     depth: number;
+    columnToValues: FilterableColumnToValues;
+    testID: string;
 };
 
-export const FilterGroupNode = ({ group, onChange, onRemove, availableColumns, depth }: FilterGroupNodeProps) => {
+export const FilterGroupNode = ({ group, onChange, onRemove, availableColumns, depth, columnToValues, testID }: FilterGroupNodeProps) => {
     const handleColumnChange = (index: number, col: FilterColumnDto) => onChange(FilterUtils.updateColumn(group, index, col));
     const handleColumnRemove = (index: number) => onChange(FilterUtils.removeColumn(group, index));
     const handleAddColumn = () => onChange(FilterUtils.addColumn(group, availableColumns));
@@ -45,6 +56,7 @@ export const FilterGroupNode = ({ group, onChange, onRemove, availableColumns, d
                     value={group.operator ?? 'AND'}
                     exclusive
                     onChange={(_, v) => v && onChange({ ...group, operator: v })}
+                    data-cy={joinTestIDs(testID, DataTableFilterGroup_TestIDs.operator_toggle_group)}
                 >
                     {GROUP_OPERATORS.map(op => (
                         <ToggleButton key={op} value={op} style={{ padding: '.25rem' }}>{op}</ToggleButton>
@@ -53,25 +65,25 @@ export const FilterGroupNode = ({ group, onChange, onRemove, availableColumns, d
                 <div style={{ flex: 1 }} />
                 <Tooltip title="Add column">
                     <IconButton size="small" onClick={handleAddColumn}
-                        disabled={availableColumns.length === 0}>
+                        disabled={availableColumns.length === 0} data-cy={joinTestIDs(testID, DataTableFilterGroup_TestIDs.add_column_btn)}>
                         <AddIcon />
                     </IconButton>
                 </Tooltip>
                 <Tooltip title="Add group">
-                    <IconButton size="small" onClick={handleAddGroup}>
+                    <IconButton size="small" onClick={handleAddGroup} data-cy={joinTestIDs(testID, DataTableFilterGroup_TestIDs.add_group_btn)}>
                         <FormatListBulletedAddIcon />
                     </IconButton>
                 </Tooltip>
                 {depth === 0 && (
                     <Tooltip title="Clear">
-                        <IconButton size="small" onClick={() => onChange(FilterUtils.clearGroup(group))}>
+                        <IconButton size="small" onClick={() => onChange(FilterUtils.clearGroup(group))} data-cy={joinTestIDs(testID, DataTableFilterGroup_TestIDs.clear_btn)}>
                             <ClearIcon />
                         </IconButton>
                     </Tooltip>
                 )}
                 {onRemove && (
                     <Tooltip title="Remove group">
-                        <IconButton size="small" onClick={onRemove}>
+                        <IconButton size="small" onClick={onRemove} data-cy={joinTestIDs(testID, DataTableFilterGroup_TestIDs.remove_group_btn)}>
                             <DeleteIcon color="error" />
                         </IconButton>
                     </Tooltip>
@@ -85,8 +97,10 @@ export const FilterGroupNode = ({ group, onChange, onRemove, availableColumns, d
                             <FilterColumnRow
                                 column={col}
                                 availableColumns={availableColumns}
+                                columnToValues={columnToValues}
                                 onChange={c => handleColumnChange(i, c)}
                                 onRemove={() => handleColumnRemove(i)}
+                                testID={joinTestIDs(testID, `col${i}`)}
                             />
                         </StyledItemListItem>
                     ))}
@@ -97,7 +111,9 @@ export const FilterGroupNode = ({ group, onChange, onRemove, availableColumns, d
                                 onChange={g => handleGroupChange(i, g)}
                                 onRemove={() => handleGroupRemove(i)}
                                 availableColumns={availableColumns}
+                                columnToValues={columnToValues}
                                 depth={depth + 1}
+                                testID={joinTestIDs(testID, `lvl${depth + 1}`, `group${i}`)}
                             />
                         </StyledItemListItem>
                     ))}

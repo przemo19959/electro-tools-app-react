@@ -6,6 +6,7 @@ import { useAppDispatch } from "../../store/hooks";
 import { addAlert } from "../../components/alert-stack/alert-stack-slice";
 import type { DataTableSort } from "../../components/data-table/types";
 import { ABORT_MESSAGE } from "../../utils/api-utils";
+import type { FilterableColumn } from "../../utils/filter-utils";
 
 export const useProjectApi = () => {
     const dispatch = useAppDispatch();
@@ -31,6 +32,13 @@ export const useProjectApi = () => {
             sort: sort ? [`${sort.key},${sort.order}`] : undefined,
             query,
         }, { signal: abortControllerRef.current?.signal })
+            .then(v => v.data)
+            .finally(() => dispatch(decrement()));
+    }
+
+    const getDistinctValues = (column: FilterableColumn) => {
+        dispatch(increment());
+        return ApiInstance.projectController.findDistinctValues({ column }, { signal: abortControllerRef.current?.signal })
             .then(v => v.data)
             .finally(() => dispatch(decrement()));
     }
@@ -69,5 +77,6 @@ export const useProjectApi = () => {
         create,
         update,
         deleteAllById,
+        getDistinctValues,
     }
 }

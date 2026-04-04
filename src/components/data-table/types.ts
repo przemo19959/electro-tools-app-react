@@ -21,6 +21,7 @@ export type FilterColumnDef = {
     key: FilterableColumn;
     label: string;
     type: 'string' | 'number' | 'date';
+    fetchDistinctValues?: boolean;
 };
 
 export type FilterColumnOperator = NonNullable<FilterColumnDto['operator']>;
@@ -29,28 +30,33 @@ const STRING_OPERATORS: FilterColumnOperator[] = ['STRING_EQ', 'STRING_NOT_EQ', 
 const NUMBER_OPERATORS: FilterColumnOperator[] = ['NUMBER_EQ', 'NUMBER_NOT_EQ', 'NUMBER_GT', 'NUMBER_GTE', 'NUMBER_LT', 'NUMBER_LTE', 'NUMBER_ILIKE', 'NUMBER_IN', 'NUMBER_NOT_IN'] as const;
 const DATE_OPERATORS: FilterColumnOperator[] = ['DATE_EQ', 'DATE_NOT_EQ', 'DATE_BEFORE', 'DATE_AFTER', 'DATE_ILIKE', 'DATE_IN', 'DATE_NOT_IN'] as const;
 
-export const OPERATOR_LABELS: Record<FilterColumnOperator, string> = {
-    STRING_EQ: 'equals',
-    STRING_NOT_EQ: 'not equals',
-    STRING_IN: 'in',
-    STRING_NOT_IN: 'not in',
-    STRING_ILIKE: 'contains',
-    NUMBER_EQ: '=',
-    NUMBER_NOT_EQ: '≠',
-    NUMBER_GT: '>',
-    NUMBER_GTE: '≥',
-    NUMBER_LT: '<',
-    NUMBER_LTE: '≤',
-    NUMBER_ILIKE: 'contains',
-    NUMBER_IN: 'in',
-    NUMBER_NOT_IN: 'not in',
-    DATE_EQ: 'on',
-    DATE_NOT_EQ: 'not on',
-    DATE_BEFORE: 'before',
-    DATE_AFTER: 'after',
-    DATE_ILIKE: 'contains',
-    DATE_IN: 'in',
-    DATE_NOT_IN: 'not in',
+type OperatorProps = {
+    label: string;
+    inputType: 'textfield' | 'select';
+}
+
+export const OPERATOR_LABELS: Record<FilterColumnOperator, OperatorProps> = {
+    STRING_EQ: { label: 'equals', inputType: 'textfield' },
+    STRING_NOT_EQ: { label: 'not equals', inputType: 'textfield' },
+    STRING_IN: { label: 'in', inputType: 'select' },
+    STRING_NOT_IN: { label: 'not in', inputType: 'select' },
+    STRING_ILIKE: { label: 'contains', inputType: 'textfield' },
+    NUMBER_EQ: { label: '=', inputType: 'textfield' },
+    NUMBER_NOT_EQ: { label: '≠', inputType: 'textfield' },
+    NUMBER_GT: { label: '>', inputType: 'textfield' },
+    NUMBER_GTE: { label: '≥', inputType: 'textfield' },
+    NUMBER_LT: { label: '<', inputType: 'textfield' },
+    NUMBER_LTE: { label: '≤', inputType: 'textfield' },
+    NUMBER_ILIKE: { label: 'contains', inputType: 'textfield' },
+    NUMBER_IN: { label: 'in', inputType: 'select' },
+    NUMBER_NOT_IN: { label: 'not in', inputType: 'select' },
+    DATE_EQ: { label: 'on', inputType: 'textfield' },
+    DATE_NOT_EQ: { label: 'not on', inputType: 'textfield' },
+    DATE_BEFORE: { label: 'before', inputType: 'textfield' },
+    DATE_AFTER: { label: 'after', inputType: 'textfield' },
+    DATE_ILIKE: { label: 'contains', inputType: 'textfield' },
+    DATE_IN: { label: 'in', inputType: 'select' },
+    DATE_NOT_IN: { label: 'not in', inputType: 'select' },
 };
 
 export const DEFAULT_OPERATOR_FOR_TYPE: Record<FilterColumnDef['type'], FilterColumnOperator> = {
@@ -64,3 +70,5 @@ export const OPERATORS_FOR_TYPE: Record<FilterColumnDef['type'], FilterColumnOpe
     number: [...NUMBER_OPERATORS],
     date: [...DATE_OPERATORS],
 };
+
+export type FilterableColumnToValues = Record<FilterableColumn, string[]>;

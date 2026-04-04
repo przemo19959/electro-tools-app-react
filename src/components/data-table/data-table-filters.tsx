@@ -2,11 +2,10 @@ import styled from "@emotion/styled";
 import type { FilterGroupDto } from "../../api/api";
 import { createTestIDsForComponent, joinTestIDs } from "../../utils/common-utils";
 import { FilterGroupNode } from "./data-table-filter-group";
-import type { FilterColumnDef } from "./types";
+import type { FilterableColumnToValues, FilterColumnDef } from "./types";
 
 const DataTableFilters_TestIDs = createTestIDsForComponent('DataTableFilters', [
     'container',
-    'clear_btn',
 ]);
 
 type DataTableFiltersProps = {
@@ -15,9 +14,10 @@ type DataTableFiltersProps = {
     filter: FilterGroupDto;
     onChange: (filter: FilterGroupDto) => void;
     availableColumns: FilterColumnDef[];
+    columnToValues: FilterableColumnToValues;
 };
 
-export const DataTableFilters = ({ open, testID, filter, onChange, availableColumns }: DataTableFiltersProps) => {
+export const DataTableFilters = ({ open, testID, filter, onChange, availableColumns, columnToValues }: DataTableFiltersProps) => {
     return (
         <StyledContainer open={open} data-cy={joinTestIDs(testID, DataTableFilters_TestIDs.container)}>
             <StyledRoot>
@@ -25,7 +25,9 @@ export const DataTableFilters = ({ open, testID, filter, onChange, availableColu
                     group={filter}
                     onChange={onChange}
                     availableColumns={availableColumns}
+                    columnToValues={columnToValues}
                     depth={0}
+                    testID={joinTestIDs(testID, `root`)}
                 />
             </StyledRoot>
         </StyledContainer>

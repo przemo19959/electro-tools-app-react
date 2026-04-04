@@ -2,7 +2,7 @@ import { Button } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Search } from "../../components/search/search";
-import type { DataTableColumn, DataTableSort, FilterColumnDef } from "../../components/data-table/types";
+import type { DataTableColumn, DataTableSort, FilterableColumnToValues, FilterColumnDef } from "../../components/data-table/types";
 import { DataTable } from "../../components/data-table/data-table";
 import { DataTableToolbar } from "../../components/data-table/data-table-toolbar";
 import { EditProjectModal } from "./edit-project-modal";
@@ -42,10 +42,10 @@ const DEFAULT_FILTER: FilterGroupDto = {
 };
 
 const PROJECT_FILTER_COLUMNS: FilterColumnDef[] = [
-    { key: 'NAME', label: 'Name', type: 'string' },
-    { key: 'CREATED_BY', label: 'Created By', type: 'string' },
+    { key: 'NAME', label: 'Name', type: 'string', fetchDistinctValues: true },
+    { key: 'CREATED_BY', label: 'Created By', type: 'string', fetchDistinctValues: true },
     { key: 'CREATED_DATE', label: 'Created At', type: 'date' },
-    { key: 'MODIFIED_BY', label: 'Updated By', type: 'string' },
+    { key: 'MODIFIED_BY', label: 'Updated By', type: 'string', fetchDistinctValues: true },
     { key: 'MODIFIED_DATE', label: 'Updated At', type: 'date' },
 ];
 
@@ -66,10 +66,12 @@ export const Projects = () => {
     const [editedProject, setEditedProject] = useState<ReadProjectDto | undefined>(undefined);
     const [deleteModalMessage, setDeleteModalMessage] = useState<string | undefined>(undefined);
     const [deleteProjectIds, setDeleteProjectIds] = useState<string[]>([]);
+    const [columnToValues, setColumnToValues] = useState<FilterableColumnToValues>({} as FilterableColumnToValues);
 
     const {
         pageAll,
         deleteAllById,
+        getDistinctValues,
     } = useProjectApi();
     const navigate = useNavigate();
     const { t } = useTranslation();
@@ -127,9 +129,17 @@ export const Projects = () => {
 
     useEffect(() => {
         reload(filter, page, pageSize, sort, query);
+
+        PROJECT_FILTER_COLUMNS
+            .filter(v => v.fetchDistinctValues)
+            .forEach(col => {
+                getDistinctValues(col.key)
+                    .then(values => setColumnToValues(prev => ({ ...prev, [col.key]: values })))
+                    .catch(HANDLE_ABORT_EXCEPTION);
+            });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    
+
     return (
         <StyledCard>
             <StyledCardHeader
@@ -180,6 +190,7 @@ export const Projects = () => {
                         reload(newFilter, 0, pageSize, sort, query);
                     }}
                     availableColumns={PROJECT_FILTER_COLUMNS}
+                    columnToValues={columnToValues}
                 />
                 <DataTable
                     columns={columns}
